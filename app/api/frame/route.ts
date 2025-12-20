@@ -82,7 +82,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                 <meta property="fc:frame:button:2:target" content="${baseUrl}/api/tx?outcome=false" />
             </head>
             <body style="font-family: sans-serif; padding: 20px;">
-                <h1>FolyMarket Frame Endpoint</h1>
+                <h1>HolyMarket Frame Endpoint</h1>
                 <p>This is a Farcaster Frame (v1).</p>
                 <p>To test this frame, please use the <a href="https://warpcast.com/~/developers/frames">Frame Validator</a>.</p>
                 <p>Debug Info:</p>

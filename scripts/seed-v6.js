@@ -30,7 +30,7 @@ async function main() {
         address: PREDICTION_MARKET_ADDRESS,
         abi,
         functionName: 'createMarket',
-        args: ['FolyMarket %5 Vergi Sistemi Aktif mi?', BigInt(60 * 60 * 24 * 7)], // 7 days
+        args: ['HolyMarket %5 Vergi Sistemi Aktif mi?', BigInt(60 * 60 * 24 * 7)], // 7 days
         account,
     });
 

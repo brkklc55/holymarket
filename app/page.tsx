@@ -4,19 +4,19 @@ const baseUrl = process.env.NEXT_PUBLIC_URL;
 
 const frameMetadata: Record<string, string> = {
   'fc:frame': 'vNext',
-  'fc:frame:image': 'https://placehold.co/600x400?text=FolyMarket',
+  'fc:frame:image': 'https://placehold.co/600x400?text=HolyMarket',
   'fc:frame:image:aspect_ratio': '1.91:1',
   ...(baseUrl ? { 'fc:frame:post_url': `${baseUrl}/api/frame` } : {}),
-  'fc:frame:button:1': 'Enter FolyMarket',
+  'fc:frame:button:1': 'Enter HolyMarket',
 };
 
 export const metadata: Metadata = {
-  title: 'FolyMarket',
+  title: 'HolyMarket',
   description: 'Prediction Market on Farcaster',
   openGraph: {
-    title: 'FolyMarket',
+    title: 'HolyMarket',
     description: 'Prediction Market on Farcaster',
-    images: ['https://placehold.co/600x400?text=FolyMarket'],
+    images: ['https://placehold.co/600x400?text=HolyMarket'],
   },
   other: {
     ...frameMetadata,
