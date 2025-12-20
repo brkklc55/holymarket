@@ -1,0 +1,113 @@
+{
+  "_format": "hh-sol-cache-2",
+  "files": {
+    "C:\\Users\\brkkl\\.gemini\\antigravity\\scratch\\folymarket\\backend\\contracts\\PredictionMarket.sol": {
+      "lastModificationDate": 1766189276560,
+      "contentHash": "a8f09cd4a5f1fcc4f020a865df407228",
+      "sourceName": "contracts/PredictionMarket.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "PredictionMarket"
+      ]
+    },
+    "C:\\Users\\brkkl\\.gemini\\antigravity\\scratch\\folymarket\\backend\\contracts\\Simple.sol": {
+      "lastModificationDate": 1765531719475,
+      "contentHash": "7f975f6cbad59df8911cbead73bc9e8b",
+      "sourceName": "contracts/Simple.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "Simple"
+      ]
+    },
+    "C:\\Users\\brkkl\\.gemini\\antigravity\\scratch\\folymarket\\backend\\contracts\\SimplePredictionMarket.sol": {
+      "lastModificationDate": 1765539910222,
+      "contentHash": "6b141dbc039519f28f6a2509afb1af7b",
+      "sourceName": "contracts/SimplePredictionMarket.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "SimplePredictionMarket"
+      ]
+    }
+  }
+}

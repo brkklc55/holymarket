@@ -1,0 +1,77 @@
+{
+  "users": {
+    "0x33713b87bab352c46bba4953ab6cb11afe895d93": {
+      "points": 242,
+      "createdAt": "2025-12-19T19:57:24.076Z",
+      "updatedAt": "2025-12-20T02:13:54.814Z"
+    }
+  },
+  "devices": {
+    "1766178294799-bddf72e2bf36f8": {
+      "accounts": [
+        "0x33713b87bab352c46bba4953ab6cb11afe895d93"
+      ],
+      "firstSeenAt": "2025-12-19T23:34:04.615Z",
+      "lastSeenAt": "2025-12-20T02:13:54.813Z"
+    }
+  },
+  "admins": {
+    "0x33713b87bab352c46bba4953ab6cb11afe895d93": {
+      "role": "superadmin",
+      "createdAt": "2025-12-19T21:09:49.607Z",
+      "updatedAt": "2025-12-19T21:09:49.607Z"
+    },
+    "0x96a445dd060efd79ab27742de12128f24b4edaec": {
+      "role": "admin",
+      "createdAt": "2025-12-19T21:09:49.607Z",
+      "updatedAt": "2025-12-19T21:09:49.607Z"
+    }
+  },
+  "shareBoosts": {},
+  "giveaways": {
+    "11": {
+      "id": "11",
+      "title": "11",
+      "url": "22",
+      "tasks": [],
+      "requirements": {
+        "minPoints": 22,
+        "minBetVolumeBnb": 22
+      },
+      "enabled": true,
+      "createdAt": "2025-12-20T01:09:48.333Z",
+      "updatedAt": "2025-12-20T01:09:48.333Z"
+    },
+    ".": {
+      "id": ".",
+      "title": "....",
+      "url": "..",
+      "tasks": [
+        {
+          "label": "..",
+          "url": "..",
+          "required": true
+        }
+      ],
+      "enabled": false,
+      "createdAt": "2025-12-20T01:08:59.938Z",
+      "updatedAt": "2025-12-20T01:08:59.938Z"
+    }
+  },
+  "giveawayJoins": {},
+  "tasks": [
+    {
+      "id": "task_1766196853968_4852fdc3fc3e98",
+      "type": "link",
+      "title": "test",
+      "description": "test",
+      "url": "https://x.com/MPoopybuttho1e",
+      "points": 50,
+      "active": true,
+      "createdAt": "2025-12-20T02:14:13.968Z",
+      "updatedAt": "2025-12-20T02:14:13.968Z"
+    }
+  ],
+  "taskCompletions": {},
+  "taskClaims": {}
+}

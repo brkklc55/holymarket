@@ -1,0 +1,13 @@
+{
+  "/_not-found/page": "/_not-found",
+  "/_global-error/page": "/_global-error",
+  "/api/frame/route": "/api/frame",
+  "/.well-known/farcaster.json/route": "/.well-known/farcaster.json",
+  "/api/markets/resolve/route": "/api/markets/resolve",
+  "/api/markets/route": "/api/markets",
+  "/api/tx/route": "/api/tx",
+  "/favicon.ico/route": "/favicon.ico",
+  "/api/points/route": "/api/points",
+  "/page": "/",
+  "/api/og/route": "/api/og"
+}
