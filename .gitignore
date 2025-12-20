@@ -42,3 +42,17 @@ yarn-error.log*
 next-env.d.ts
 
 .vercel
+
+# local netlify state
+.netlify
+
+# local debug outputs
+build_output.txt
+dev_output.txt
+
+# netlify debug utilities (one-off)
+netlify-*.cjs
+netlify-*.json
+
+# hardhat cache/artifacts (backend)
+backend/cache
