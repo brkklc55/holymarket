@@ -11,7 +11,7 @@ export async function GET() {
         },
         frame: {
             version: "1",
-            name: "FolyMarket",
+            name: "HolyMarket",
             iconUrl: `${appUrl}/logo.png`,
             homeUrl: appUrl,
         }
