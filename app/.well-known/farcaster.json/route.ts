@@ -1,14 +1,23 @@
 import { NextResponse } from 'next/server';
 
 export async function GET() {
-    const appUrl = process.env.NEXT_PUBLIC_URL || 'https://cas-peterson-july-kissing.trycloudflare.com';
+    const appUrl = process.env.NEXT_PUBLIC_URL || 'http://localhost:3000';
+
+    const accountAssociationHeader = process.env.FARCASTER_ACCOUNT_ASSOCIATION_HEADER;
+    const accountAssociationPayload = process.env.FARCASTER_ACCOUNT_ASSOCIATION_PAYLOAD;
+    const accountAssociationSignature = process.env.FARCASTER_ACCOUNT_ASSOCIATION_SIGNATURE;
+
+    const accountAssociation =
+        accountAssociationHeader && accountAssociationPayload && accountAssociationSignature
+            ? {
+                  header: accountAssociationHeader,
+                  payload: accountAssociationPayload,
+                  signature: accountAssociationSignature,
+              }
+            : undefined;
 
     const config = {
-        accountAssociation: {
-            header: "eyJmaWQiOjEzOTU5NjEsInR5cGUiOiJjdXN0b2R5Iiwia2V5IjoiMHgzREYzYjFDNUE3N0ZmODVGRjI1NzI3RTU0Njg1YjE3MTcxQ0MyNTI2In0",
-            payload: "eyJkb21haW4iOiJjYXMtcGV0ZXJzb24tanVseS1raXNzaW5nLnRyeWNsb3VkZmxhcmUuY29tIn0",
-            signature: "IN3kWg0iJctJyNOumnTixu6v8s+jUrw8n8sLSGMDwcow4TqADvtKDYr/wbvfj4irbGzPmuwwuXNdjTXQeuaOQBw="
-        },
+        ...(accountAssociation ? { accountAssociation } : {}),
         frame: {
             version: "1",
             name: "HolyMarket",
