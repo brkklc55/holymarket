@@ -1,7 +1,15 @@
 import { NextResponse } from 'next/server';
 
-export async function GET() {
-    const appUrl = process.env.NEXT_PUBLIC_URL || 'http://localhost:3000';
+export async function GET(req: Request) {
+    const origin = (() => {
+        try {
+            return new URL(req.url).origin;
+        } catch {
+            return undefined;
+        }
+    })();
+
+    const appUrl = process.env.NEXT_PUBLIC_URL || origin || 'http://localhost:3000';
 
     const accountAssociationHeader = process.env.FARCASTER_ACCOUNT_ASSOCIATION_HEADER;
     const accountAssociationPayload = process.env.FARCASTER_ACCOUNT_ASSOCIATION_PAYLOAD;
