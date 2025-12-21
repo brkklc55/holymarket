@@ -157,13 +157,9 @@ async function ensureAdminsSeededSupabase() {
     if (supabaseAdminSeeded) return;
     const supabase = getSupabaseClient();
     if (!USE_SUPABASE || !supabase) return;
-
-    const now = nowIso();
     const rows = ADMIN_ADDRESSES.map((a, idx) => ({
         address: normalizeAddress(a),
         role: idx === 0 ? "superadmin" : "admin",
-        created_at: now,
-        updated_at: now,
     }));
 
     const { error } = await supabase.from("admins").upsert(rows, { onConflict: "address" });
