@@ -258,6 +258,52 @@ async function countFollowClaimsFromSupabase(params: { user: string; tasks: Task
     return count || 0;
 }
 
+async function ensureUserExistsSupabase(addressRaw: string) {
+    const supabase = getSupabaseClient();
+    if (!USE_SUPABASE || !supabase) return;
+    const address = normalizeAddress(addressRaw);
+    await supabase.from("users").upsert({ address }, { onConflict: "address" });
+}
+
+async function trackDeviceAccountSupabase(params: { deviceId: string; address: string }): Promise<{ accountsCount: number } | null> {
+    const supabase = getSupabaseClient();
+    if (!USE_SUPABASE || !supabase) return null;
+    const deviceId = (params.deviceId || "unknown").slice(0, 128);
+    const address = normalizeAddress(params.address);
+    const now = nowIso();
+
+    await ensureUserExistsSupabase(address);
+    await supabase.from("devices").upsert({ device_id: deviceId, last_seen_at: now }, { onConflict: "device_id" });
+    await supabase.from("device_accounts").upsert({ device_id: deviceId, address, last_seen_at: now }, { onConflict: "device_id,address" });
+
+    const { count } = await supabase
+        .from("device_accounts")
+        .select("address", { count: "exact", head: true })
+        .eq("device_id", deviceId);
+
+    return { accountsCount: count || 0 };
+}
+
+async function incrementUserSupabase(params: { address: string; pointsDelta?: number; volumeDelta?: number }) {
+    const supabase = getSupabaseClient();
+    if (!USE_SUPABASE || !supabase) return null;
+    const address = normalizeAddress(params.address);
+    const pointsDelta = Math.floor(Number(params.pointsDelta || 0));
+    const volumeDelta = Number(params.volumeDelta || 0);
+
+    await ensureUserExistsSupabase(address);
+    const current = await getUserFromSupabase(address);
+    const nextPoints = Math.max(0, Math.floor(Number(current?.points || 0) + pointsDelta));
+    const nextVol = Number(current?.volumeBnb || 0) + (Number.isFinite(volumeDelta) && volumeDelta > 0 ? volumeDelta : 0);
+
+    await supabase
+        .from("users")
+        .update({ points: nextPoints, volume_eth: nextVol, updated_at: nowIso() })
+        .eq("address", address);
+
+    return { points: nextPoints, volumeBnb: nextVol, referrer: current?.referrer || null };
+}
+
 async function validateShareBoostTx(params: { txHash: string; user: string }) {
     const nowSec = Math.floor(Date.now() / 1000);
     const user = normalizeAddress(params.user);
@@ -598,6 +644,31 @@ export async function POST(req: NextRequest) {
         const referrer = normalizeAddress(referrerRaw);
         if (user === referrer) return NextResponse.json({ ok: true, skipped: true });
 
+        const supaDevice = await trackDeviceAccountSupabase({ deviceId, address: user });
+        if (supaDevice) {
+            // Beta rule: max 3 accounts per device
+            if (supaDevice.accountsCount > 3) {
+                return NextResponse.json({ error: "Device account limit reached" }, { status: 403 });
+            }
+
+            await ensureUserExistsSupabase(referrer);
+            const supabase = getSupabaseClient();
+            const existing = await getUserFromSupabase(user);
+            if (existing?.referrer) {
+                return NextResponse.json({ ok: true, skipped: true, reason: "already_bound" });
+            }
+
+            if (!USE_SUPABASE || !supabase) {
+                return NextResponse.json({ error: "Supabase not configured" }, { status: 500 });
+            }
+
+            await supabase.from("users").update({ referrer_address: referrer, updated_at: nowIso() }).eq("address", user);
+            await incrementUserSupabase({ address: user, pointsDelta: 50 });
+            await incrementUserSupabase({ address: referrer, pointsDelta: 50 });
+
+            return NextResponse.json({ ok: true, awarded: 50 });
+        }
+
         // Track device and limit multi-account referral abuse
         const deviceEntry = trackDeviceAccount(db, deviceId, user);
         // Beta rule: max 3 accounts per device
@@ -633,6 +704,43 @@ export async function POST(req: NextRequest) {
         if (!userRaw) return NextResponse.json({ error: "Missing user" }, { status: 400 });
 
         const user = normalizeAddress(userRaw);
+
+        const supaDevice = await trackDeviceAccountSupabase({ deviceId, address: user });
+        if (supaDevice) {
+            if (supaDevice.accountsCount > 3) {
+                return NextResponse.json({ error: "Device account limit reached" }, { status: 403 });
+            }
+
+            let usdAmount: number | null = null;
+            if (amountUsdRaw !== undefined && amountUsdRaw !== null) {
+                const n = Number(amountUsdRaw);
+                usdAmount = Number.isFinite(n) && n > 0 ? n : null;
+            } else if (amountBnbRaw !== undefined && amountBnbRaw !== null) {
+                const bnb = Number(amountBnbRaw);
+                if (Number.isFinite(bnb) && bnb > 0) {
+                    usdAmount = bnb * getBnbUsdRate();
+                }
+            }
+            if (!usdAmount) return NextResponse.json({ error: "Missing/invalid amountUsd or amountBnb" }, { status: 400 });
+
+            const earned = Math.floor(usdAmount * 10);
+            if (earned <= 0) return NextResponse.json({ ok: true, earned: 0, bonus: 0 });
+
+            const volume = amountBnbRaw !== undefined && amountBnbRaw !== null ? Number(amountBnbRaw) : 0;
+            const updated = await incrementUserSupabase({ address: user, pointsDelta: earned, volumeDelta: volume });
+
+            let bonus = 0;
+            if (updated?.referrer) {
+                bonus = Math.floor(earned * 0.1);
+                if (bonus > 0) {
+                    await incrementUserSupabase({ address: updated.referrer, pointsDelta: bonus });
+                }
+            }
+
+            const leaderboard = await getLeaderboardFromSupabase();
+            return NextResponse.json({ ok: true, earned, bonus, leaderboard: leaderboard || [] });
+        }
+
         const deviceEntry = trackDeviceAccount(db, deviceId, user);
         if (deviceEntry.accounts.length > 3) {
             await saveDb(db);
