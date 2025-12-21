@@ -1147,13 +1147,13 @@ export default function MarketView() {
                 <div className="premium-card p-1.5 bg-slate-900/50 overflow-x-auto no-scrollbar">
                     <div className="flex gap-1 min-w-max">
                     {[
-                        { id: "market", label: "Overview", icon: <TrendingUp size={14} /> },
-                        { id: "leaderboard", label: "Leaderboard", icon: <TrendingUp size={14} /> },
-                        { id: "activity", label: "Live", icon: <History size={14} /> },
-                        { id: "airdrop", label: "Airdrop", icon: <Info size={14} />, disabled: true, badge: "SOON" },
-                        { id: "tasks", label: "Tasks", icon: <Info size={14} /> },
-                        { id: "profile", label: "Profile", icon: <User size={14} /> },
-                        { id: "admin", label: "Admin", icon: <Info size={14} /> }
+                        { id: "market", label: "Market" },
+                        { id: "leaderboard", label: "Leaderboard" },
+                        { id: "activity", label: "Activity" },
+                        { id: "airdrop", label: "Airdrop", disabled: true, badge: "SOON" },
+                        { id: "tasks", label: "Tasks" },
+                        { id: "profile", label: "Profile" },
+                        { id: "admin", label: "Admin" }
                     ].map((tab) => (
                         (tab.id !== "admin" || isAdmin) && (
                             <button
@@ -1165,8 +1165,7 @@ export default function MarketView() {
                                 }}
                                 className={`flex-none px-3 py-2 rounded-xl text-[10px] font-bold transition-all flex items-center justify-center gap-2 whitespace-nowrap ${(tab as any).disabled ? "opacity-60 cursor-not-allowed" : ""} ${activeTab === tab.id ? "bg-sky-500 text-white shadow-lg shadow-sky-500/20" : "text-slate-400 hover:text-white hover:bg-slate-800"}`}
                             >
-                                {tab.icon}
-                                <span className="hidden sm:inline">{tab.label}</span>
+                                <span>{tab.label}</span>
                                 {(tab as any).badge && (
                                     <span className="ml-1 px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 text-[8px] font-black border border-slate-700">
                                         {(tab as any).badge}
@@ -1291,7 +1290,7 @@ export default function MarketView() {
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                        <div className="grid grid-cols-2 gap-4 mb-8">
                             <div className="p-4 rounded-2xl bg-emerald-500/5 border border-emerald-500/10 flex flex-col">
                                 <span className="text-[10px] font-bold text-emerald-500 mb-2 uppercase tracking-tighter">YES Pool ({calculateMultiplier(true)}x)</span>
                                 <div className="flex items-baseline gap-1">
