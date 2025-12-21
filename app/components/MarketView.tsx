@@ -1141,10 +1141,11 @@ export default function MarketView() {
     }
 
     return (
-        <div className="w-full max-w-2xl mx-auto space-y-6">
+        <div className="w-full max-w-2xl lg:max-w-4xl mx-auto space-y-6">
             {/* Header & Wallet */}
-            <div className="flex justify-between items-center gap-4">
-                <div className="flex-1 premium-card p-1.5 flex gap-1 bg-slate-900/50">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                <div className="premium-card p-1.5 bg-slate-900/50 overflow-x-auto no-scrollbar">
+                    <div className="flex gap-1 min-w-max">
                     {[
                         { id: "market", label: "Overview", icon: <TrendingUp size={14} /> },
                         { id: "leaderboard", label: "Leaderboard", icon: <TrendingUp size={14} /> },
@@ -1162,7 +1163,7 @@ export default function MarketView() {
                                     if ((tab as any).disabled) return;
                                     setActiveTab(tab.id as any);
                                 }}
-                                className={`flex-1 py-2.5 rounded-xl text-[10px] font-bold transition-all flex items-center justify-center gap-2 ${(tab as any).disabled ? "opacity-60 cursor-not-allowed" : ""} ${activeTab === tab.id ? "bg-sky-500 text-white shadow-lg shadow-sky-500/20" : "text-slate-400 hover:text-white hover:bg-slate-800"}`}
+                                className={`flex-none px-3 py-2 rounded-xl text-[10px] font-bold transition-all flex items-center justify-center gap-2 whitespace-nowrap ${(tab as any).disabled ? "opacity-60 cursor-not-allowed" : ""} ${activeTab === tab.id ? "bg-sky-500 text-white shadow-lg shadow-sky-500/20" : "text-slate-400 hover:text-white hover:bg-slate-800"}`}
                             >
                                 {tab.icon}
                                 <span className="hidden sm:inline">{tab.label}</span>
@@ -1174,8 +1175,11 @@ export default function MarketView() {
                             </button>
                         )
                     ))}
+                    </div>
                 </div>
-                <ConnectButton accountStatus="avatar" chainStatus="icon" showBalance={false} />
+                <div className="flex justify-end">
+                    <ConnectButton accountStatus="avatar" chainStatus="icon" showBalance={false} />
+                </div>
             </div>
 
             <div className="premium-card p-4 bg-slate-900/30 border border-slate-800">
@@ -1259,17 +1263,17 @@ export default function MarketView() {
                                 </button>
                             ))}
                         </div>
-                        <div className="flex justify-between items-start mb-6">
-                            <div className="flex-1">
-                                <div className="flex items-center gap-2 mb-2">
+                        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-6">
+                            <div className="flex-1 min-w-0">
+                                <div className="flex flex-wrap items-center gap-2 mb-2">
                                     <span className="px-2 py-0.5 bg-sky-500/10 text-sky-500 rounded text-[10px] font-extrabold uppercase border border-sky-500/20">Market #{selectedMarketId.toString()}</span>
                                     <span className={`px-2 py-0.5 rounded text-[10px] font-extrabold border ${timeLeft === "ENDED" ? "bg-red-500/10 text-red-500 border-red-500/20" : "bg-amber-500/10 text-amber-500 border-amber-500/20"}`}>
                                         {timeLeft === "ENDED" ? "EXPIRED" : timeLeft}
                                     </span>
                                 </div>
-                                <h2 className="text-2xl font-extrabold text-white leading-tight">{market.question}</h2>
+                                <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-white leading-tight break-words">{market.question}</h2>
                             </div>
-                            <div className="flex gap-2">
+                            <div className="flex gap-2 md:pt-1">
                                 <button
                                     onClick={() => window.open(`https://warpcast.com/~/compose?text=Predicting on HolyMarket: ${market.question}&embeds[]=${window.location.href}`)}
                                     className="p-2.5 rounded-xl bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 transition-all"
@@ -1288,30 +1292,26 @@ export default function MarketView() {
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-                            <div className="space-y-4 md:space-y-0 md:grid md:grid-cols-1 md:gap-4">
-                                <div className="p-5 rounded-2xl bg-emerald-500/5 border border-emerald-500/10 flex flex-col">
-                                    <span className="text-[10px] font-bold text-emerald-500 mb-3 uppercase tracking-tighter">YES Pool ({calculateMultiplier(true)}x)</span>
-                                    <div className="flex items-baseline gap-1">
-                                        <span className="text-2xl font-black text-white">{(Number(market.yesPool) / 1e18).toFixed(3)}</span>
-                                        <span className="text-xs text-slate-500 font-bold">BNB</span>
-                                    </div>
-                                    <div className="mt-4 pt-4 border-t border-emerald-500/10">
-                                        <span className="text-[10px] text-slate-500 block mb-1">Potential Payout</span>
-                                        <span className="text-xs font-bold text-emerald-400">{calculatePotentialProfit(true)} BNB</span>
-                                    </div>
+                            <div className="p-4 rounded-2xl bg-emerald-500/5 border border-emerald-500/10 flex flex-col">
+                                <span className="text-[10px] font-bold text-emerald-500 mb-2 uppercase tracking-tighter">YES Pool ({calculateMultiplier(true)}x)</span>
+                                <div className="flex items-baseline gap-1">
+                                    <span className="text-2xl font-black text-white">{(Number(market.yesPool) / 1e18).toFixed(3)}</span>
+                                    <span className="text-xs text-slate-500 font-bold">BNB</span>
+                                </div>
+                                <div className="mt-3 pt-3 border-t border-emerald-500/10">
+                                    <span className="text-[10px] text-slate-500 block mb-1">Potential Payout</span>
+                                    <span className="text-xs font-bold text-emerald-400">{calculatePotentialProfit(true)} BNB</span>
                                 </div>
                             </div>
-                            <div className="space-y-4">
-                                <div className="p-5 rounded-2xl bg-rose-500/5 border border-rose-500/10 flex flex-col">
-                                    <span className="text-[10px] font-bold text-rose-500 mb-3 uppercase tracking-tighter">NO Pool ({calculateMultiplier(false)}x)</span>
-                                    <div className="flex items-baseline gap-1">
-                                        <span className="text-2xl font-black text-white">{(Number(market.noPool) / 1e18).toFixed(3)}</span>
-                                        <span className="text-xs text-slate-500 font-bold">BNB</span>
-                                    </div>
-                                    <div className="mt-4 pt-4 border-t border-rose-500/10">
-                                        <span className="text-[10px] text-slate-500 block mb-1">Potential Payout</span>
-                                        <span className="text-xs font-bold text-rose-400">{calculatePotentialProfit(false)} BNB</span>
-                                    </div>
+                            <div className="p-4 rounded-2xl bg-rose-500/5 border border-rose-500/10 flex flex-col">
+                                <span className="text-[10px] font-bold text-rose-500 mb-2 uppercase tracking-tighter">NO Pool ({calculateMultiplier(false)}x)</span>
+                                <div className="flex items-baseline gap-1">
+                                    <span className="text-2xl font-black text-white">{(Number(market.noPool) / 1e18).toFixed(3)}</span>
+                                    <span className="text-xs text-slate-500 font-bold">BNB</span>
+                                </div>
+                                <div className="mt-3 pt-3 border-t border-rose-500/10">
+                                    <span className="text-[10px] text-slate-500 block mb-1">Potential Payout</span>
+                                    <span className="text-xs font-bold text-rose-400">{calculatePotentialProfit(false)} BNB</span>
                                 </div>
                             </div>
                         </div>
