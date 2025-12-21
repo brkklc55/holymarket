@@ -211,6 +211,110 @@ async function listTasksFromSupabase(): Promise<Task[] | null> {
     })) as Task[];
 }
 
+async function getTaskFromSupabase(taskIdRaw: string): Promise<Task | null> {
+    const supabase = getSupabaseClient();
+    if (!USE_SUPABASE || !supabase) return null;
+    const id = String(taskIdRaw).slice(0, 64);
+    const { data, error } = await supabase
+        .from("tasks")
+        .select("id,type,repeat,title,description,url,points,active,start_at,end_at,requirements,created_at,updated_at")
+        .eq("id", id)
+        .maybeSingle();
+    if (error || !data) return null;
+    return {
+        id: String(data.id),
+        type: (data as any).type,
+        repeat: (data as any).repeat,
+        title: (data as any).title,
+        description: (data as any).description || undefined,
+        url: (data as any).url,
+        points: Number((data as any).points || 0),
+        active: Boolean((data as any).active),
+        startAt: (data as any).start_at ? new Date((data as any).start_at).toISOString() : undefined,
+        endAt: (data as any).end_at ? new Date((data as any).end_at).toISOString() : undefined,
+        requirements: (data as any).requirements || undefined,
+        createdAt: (data as any).created_at ? new Date((data as any).created_at).toISOString() : nowIso(),
+        updatedAt: (data as any).updated_at ? new Date((data as any).updated_at).toISOString() : nowIso(),
+    } as Task;
+}
+
+async function hasTaskClaimSupabase(params: { address: string; taskId: string; repeat: TaskRepeat; dayKey: string }) {
+    const supabase = getSupabaseClient();
+    if (!USE_SUPABASE || !supabase) return null;
+    const address = normalizeAddress(params.address);
+    const taskId = String(params.taskId).slice(0, 64);
+    const q = supabase
+        .from("task_claims")
+        .select("task_id", { head: true, count: "exact" })
+        .eq("address", address)
+        .eq("task_id", taskId);
+    const { count, error } = params.repeat === "daily" ? await q.eq("day_key", params.dayKey) : await q.is("day_key", null);
+    if (error) throw error;
+    return Boolean((count || 0) > 0);
+}
+
+async function insertTaskClaimSupabase(params: { address: string; taskId: string; repeat: TaskRepeat; dayKey: string; points: number }) {
+    const supabase = getSupabaseClient();
+    if (!USE_SUPABASE || !supabase) return null;
+    const address = normalizeAddress(params.address);
+    const taskId = String(params.taskId).slice(0, 64);
+    const points = Math.max(0, Math.floor(Number(params.points) || 0));
+    const payload: any = {
+        task_id: taskId,
+        address,
+        claimed_at: nowIso(),
+        points_awarded: points,
+        day_key: params.repeat === "daily" ? String(params.dayKey) : null,
+    };
+
+    const { error } = await supabase.from("task_claims").insert(payload);
+    if (error) throw error;
+    return { ok: true as const };
+}
+
+async function checkRequirementsSupabase(params: { user: string; req?: TaskRequirements; tasks?: Task[] }) {
+    const req = params.req;
+    if (!req) return { ok: true as const };
+
+    const u = normalizeAddress(params.user);
+    const uRow = await getUserFromSupabase(u);
+
+    if (req.minPoints !== undefined && (uRow?.points || 0) < req.minPoints) {
+        return { ok: false as const, error: `Requires at least ${req.minPoints} points` };
+    }
+    const volume = Number(uRow?.volumeBnb || 0);
+    if (req.minVolumeBnb !== undefined && volume < req.minVolumeBnb) {
+        return { ok: false as const, error: `Requires at least ${req.minVolumeBnb} BNB volume` };
+    }
+    if (req.minFollowTasks !== undefined) {
+        const tasks = params.tasks || (await listTasksFromSupabase()) || [];
+        const followCount = await countFollowClaimsFromSupabase({ user: u, tasks });
+        if ((followCount || 0) < req.minFollowTasks) {
+            return { ok: false as const, error: `Requires completing ${req.minFollowTasks} follow tasks` };
+        }
+    }
+
+    return { ok: true as const };
+}
+
+async function getAdminRoleFromSupabase(addr?: string | null): Promise<"admin" | "superadmin" | null> {
+    const supabase = getSupabaseClient();
+    if (!USE_SUPABASE || !supabase) return null;
+    if (!addr) return null;
+    const address = normalizeAddress(addr);
+    const { data, error } = await supabase.from("admins").select("role").eq("address", address).maybeSingle();
+    if (error || !data) return null;
+    const role = (data as any).role;
+    return role === "superadmin" ? "superadmin" : role === "admin" ? "admin" : null;
+}
+
+async function requireAdminSupabase(addr?: string | null, minimum: "admin" | "superadmin" = "admin") {
+    const role = await getAdminRoleFromSupabase(addr);
+    if (!role) return { ok: false as const, role: null as null };
+    if (minimum === "superadmin" && role !== "superadmin") return { ok: false as const, role };
+    return { ok: true as const, role };
+}
+
 async function getClaimsMapFromSupabase(params: { user: string; tasks: Task[]; nowMs: number }): Promise<Record<string, boolean> | null> {
     const supabase = getSupabaseClient();
     if (!USE_SUPABASE || !supabase) return null;
@@ -893,6 +997,46 @@ export async function POST(req: NextRequest) {
         const user = normalizeAddress(userRaw);
         const taskId = String(taskIdRaw).slice(0, 64);
 
+        try {
+            const supaDevice = await trackDeviceAccountSupabase({ deviceId, address: user });
+            if (supaDevice) {
+                if (supaDevice.accountsCount > 3) {
+                    return NextResponse.json({ error: "Device account limit reached" }, { status: 403 });
+                }
+
+                const task = await getTaskFromSupabase(taskId);
+                if (!task) return NextResponse.json({ error: "Task not found" }, { status: 404 });
+                if (!task.active) return NextResponse.json({ error: "Task inactive" }, { status: 400 });
+
+                const windowCheck = isWithinTaskWindow(task, Date.now());
+                if (!windowCheck.ok) {
+                    return NextResponse.json({ error: windowCheck.reason === "not_started" ? "Task not started" : "Task ended" }, { status: 400 });
+                }
+
+                const reqCheck = await checkRequirementsSupabase({ user, req: task.requirements, tasks: undefined });
+                if (!reqCheck.ok) return NextResponse.json({ error: reqCheck.error }, { status: 400 });
+
+                const repeat: TaskRepeat = task.repeat === "daily" ? "daily" : "none";
+                const dayKey = utcDayKey(Date.now());
+                const already = await hasTaskClaimSupabase({ address: user, taskId: task.id, repeat, dayKey });
+                if (already) {
+                    return NextResponse.json({ ok: true, skipped: true, reason: repeat === "daily" ? "already_claimed_today" : "already_claimed" });
+                }
+
+                await ensureUserExistsSupabase(user);
+                const pointsAwarded = Math.max(0, Math.floor(Number(task.points) || 0));
+                await insertTaskClaimSupabase({ address: user, taskId: task.id, repeat, dayKey, points: pointsAwarded });
+                await incrementUserSupabase({ address: user, pointsDelta: pointsAwarded });
+
+                const leaderboard = await getLeaderboardFromSupabase();
+                return NextResponse.json({ ok: true, awarded: pointsAwarded, leaderboard: leaderboard || [], storage: "supabase" });
+            }
+        } catch (e: any) {
+            if (USE_SUPABASE && getSupabaseClient()) {
+                return NextResponse.json({ error: "Supabase write failed", detail: String(e?.message || e) }, { status: 500 });
+            }
+        }
+
         const deviceEntry = trackDeviceAccount(db, deviceId, user);
         if (deviceEntry.accounts.length > 3) {
             await saveDb(db);
@@ -946,16 +1090,24 @@ export async function POST(req: NextRequest) {
 
     if (action === "adminTaskList") {
         const adminAddress = body?.adminAddress;
+        const supaAuth = await requireAdminSupabase(adminAddress, "admin");
+        if (supaAuth.ok) {
+            const tasks = (await listTasksFromSupabase()) || [];
+            return NextResponse.json({ ok: true, tasks, storage: "supabase" });
+        }
         const auth = requireAdmin(db, adminAddress, "admin");
         if (!auth.ok) return NextResponse.json({ error: "Not authorized" }, { status: 403 });
         const tasks = (db.tasks || []).slice().sort((a, b) => b.createdAt.localeCompare(a.createdAt));
-        return NextResponse.json({ ok: true, tasks });
+        return NextResponse.json({ ok: true, tasks, storage: "fallback" });
     }
 
     if (action === "adminTaskUpsert") {
         const adminAddress = body?.adminAddress;
-        const auth = requireAdmin(db, adminAddress, "admin");
-        if (!auth.ok) return NextResponse.json({ error: "Not authorized" }, { status: 403 });
+        const supaAuth = await requireAdminSupabase(adminAddress, "admin");
+        if (!supaAuth.ok) {
+            const auth = requireAdmin(db, adminAddress, "admin");
+            if (!auth.ok) return NextResponse.json({ error: "Not authorized" }, { status: 403 });
+        }
 
         const idRaw = body?.id;
         const typeRaw = body?.type;
@@ -1007,21 +1159,65 @@ export async function POST(req: NextRequest) {
         };
         if (existingIdx >= 0) db.tasks[existingIdx] = entry;
         else db.tasks.unshift(entry);
+        if (supaAuth.ok) {
+            try {
+                const supabase = getSupabaseClient();
+                if (!supabase) return NextResponse.json({ error: "Supabase not configured" }, { status: 500 });
+                const payload: any = {
+                    id: entry.id,
+                    type: entry.type,
+                    repeat: entry.repeat,
+                    title: entry.title,
+                    description: entry.description || "",
+                    url: entry.url,
+                    points: entry.points,
+                    active: entry.active,
+                    start_at: entry.startAt ? new Date(entry.startAt).toISOString() : null,
+                    end_at: entry.endAt ? new Date(entry.endAt).toISOString() : null,
+                    requirements: entry.requirements || null,
+                    updated_at: nowIso(),
+                };
+                const { error } = await supabase.from("tasks").upsert(payload, { onConflict: "id" });
+                if (error) throw error;
+                const fresh = await getTaskFromSupabase(entry.id);
+                return NextResponse.json({ ok: true, task: fresh || entry, storage: "supabase" });
+            } catch (e: any) {
+                return NextResponse.json({ error: "Supabase write failed", detail: String(e?.message || e) }, { status: 500 });
+            }
+        }
+
         await saveDb(db);
-        return NextResponse.json({ ok: true, task: entry });
+        return NextResponse.json({ ok: true, task: entry, storage: "fallback" });
     }
 
     if (action === "adminTaskRemove") {
         const adminAddress = body?.adminAddress;
-        const auth = requireAdmin(db, adminAddress, "admin");
-        if (!auth.ok) return NextResponse.json({ error: "Not authorized" }, { status: 403 });
+        const supaAuth = await requireAdminSupabase(adminAddress, "admin");
+        if (!supaAuth.ok) {
+            const auth = requireAdmin(db, adminAddress, "admin");
+            if (!auth.ok) return NextResponse.json({ error: "Not authorized" }, { status: 403 });
+        }
         const idRaw = body?.id;
         if (!idRaw) return NextResponse.json({ error: "Missing id" }, { status: 400 });
         const id = String(idRaw).slice(0, 64);
+        if (supaAuth.ok) {
+            try {
+                const supabase = getSupabaseClient();
+                if (!supabase) return NextResponse.json({ error: "Supabase not configured" }, { status: 500 });
+                const delClaims = await supabase.from("task_claims").delete().eq("task_id", id);
+                if (delClaims.error) throw delClaims.error;
+                const delTask = await supabase.from("tasks").delete().eq("id", id);
+                if (delTask.error) throw delTask.error;
+                return NextResponse.json({ ok: true, storage: "supabase" });
+            } catch (e: any) {
+                return NextResponse.json({ error: "Supabase write failed", detail: String(e?.message || e) }, { status: 500 });
+            }
+        }
+
         db.tasks = (db.tasks || []).filter((t) => t.id !== id);
         if (db.taskClaims) delete db.taskClaims[id];
         await saveDb(db);
-        return NextResponse.json({ ok: true });
+        return NextResponse.json({ ok: true, storage: "fallback" });
     }
 
     if (action === "adminResetAll") {
