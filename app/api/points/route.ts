@@ -156,6 +156,108 @@ const basePublicClient = createPublicClient({
     transport: http(process.env.BASE_SEPOLIA_RPC_URL || "https://sepolia.base.org"),
 });
 
+async function getUserFromSupabase(addr: string): Promise<{ user: string; points: number; referrer: string | null; volumeBnb: number } | null> {
+    const supabase = getSupabaseClient();
+    if (!USE_SUPABASE || !supabase) return null;
+    const address = normalizeAddress(addr);
+    const { data, error } = await supabase
+        .from("users")
+        .select("address,points,referrer_address,volume_eth")
+        .eq("address", address)
+        .maybeSingle();
+    if (error || !data) return null;
+    return {
+        user: String(data.address),
+        points: Number(data.points || 0),
+        referrer: (data as any).referrer_address ? String((data as any).referrer_address) : null,
+        volumeBnb: Number((data as any).volume_eth || 0),
+    };
+}
+
+async function getLeaderboardFromSupabase(): Promise<Array<{ user: string; points: number }> | null> {
+    const supabase = getSupabaseClient();
+    if (!USE_SUPABASE || !supabase) return null;
+    const { data, error } = await supabase
+        .from("users")
+        .select("address,points")
+        .order("points", { ascending: false })
+        .limit(50);
+    if (error || !data) return null;
+    return data.map((r: any) => ({ user: String(r.address), points: Number(r.points || 0) }));
+}
+
+async function listTasksFromSupabase(): Promise<Task[] | null> {
+    const supabase = getSupabaseClient();
+    if (!USE_SUPABASE || !supabase) return null;
+    const { data, error } = await supabase
+        .from("tasks")
+        .select("id,type,repeat,title,description,url,points,active,start_at,end_at,requirements,created_at,updated_at")
+        .order("created_at", { ascending: false });
+    if (error || !data) return null;
+    return data.map((t: any) => ({
+        id: String(t.id),
+        type: t.type,
+        repeat: t.repeat,
+        title: t.title,
+        description: t.description || undefined,
+        url: t.url,
+        points: Number(t.points || 0),
+        active: Boolean(t.active),
+        startAt: t.start_at ? new Date(t.start_at).toISOString() : undefined,
+        endAt: t.end_at ? new Date(t.end_at).toISOString() : undefined,
+        requirements: t.requirements || undefined,
+        createdAt: t.created_at ? new Date(t.created_at).toISOString() : nowIso(),
+        updatedAt: t.updated_at ? new Date(t.updated_at).toISOString() : nowIso(),
+    })) as Task[];
+}
+
+async function getClaimsMapFromSupabase(params: { user: string; tasks: Task[]; nowMs: number }): Promise<Record<string, boolean> | null> {
+    const supabase = getSupabaseClient();
+    if (!USE_SUPABASE || !supabase) return null;
+    const u = normalizeAddress(params.user);
+    const todayKey = utcDayKey(params.nowMs);
+    const ids = params.tasks.map((t) => t.id);
+    if (ids.length === 0) return {};
+
+    const { data, error } = await supabase
+        .from("task_claims")
+        .select("task_id,day_key")
+        .eq("address", u)
+        .in("task_id", ids);
+    if (error) return null;
+
+    const hasNone = new Set<string>();
+    const hasDailyToday = new Set<string>();
+    (data || []).forEach((r: any) => {
+        const tid = String(r.task_id);
+        if (r.day_key === null) hasNone.add(tid);
+        if (String(r.day_key) === todayKey) hasDailyToday.add(tid);
+    });
+
+    return Object.fromEntries(
+        params.tasks.map((t) => {
+            if (t.repeat === "daily") return [t.id, hasDailyToday.has(t.id)];
+            return [t.id, hasNone.has(t.id)];
+        })
+    );
+}
+
+async function countFollowClaimsFromSupabase(params: { user: string; tasks: Task[] }): Promise<number | null> {
+    const supabase = getSupabaseClient();
+    if (!USE_SUPABASE || !supabase) return null;
+    const u = normalizeAddress(params.user);
+    const followIds = params.tasks.filter((t) => t.type === "follow").map((t) => t.id);
+    if (followIds.length === 0) return 0;
+    const { count, error } = await supabase
+        .from("task_claims")
+        .select("task_id", { count: "exact", head: true })
+        .eq("address", u)
+        .in("task_id", followIds)
+        .is("day_key", null);
+    if (error) return null;
+    return count || 0;
+}
+
 async function validateShareBoostTx(params: { txHash: string; user: string }) {
     const nowSec = Math.floor(Date.now() / 1000);
     const user = normalizeAddress(params.user);
@@ -384,19 +486,31 @@ function getBnbUsdRate() {
 }
 
 export async function GET(req: NextRequest) {
-    const db = await loadDb();
     const url = new URL(req.url);
     const user = url.searchParams.get("user");
     const whoami = url.searchParams.get("whoami");
     const tasks = url.searchParams.get("tasks");
 
     if (whoami) {
+        const db = await loadDb();
         const role = getAdminRole(db, whoami);
         return NextResponse.json({ role });
     }
 
     if (tasks) {
         const u = user ? normalizeAddress(user) : null;
+        const supaTasks = await listTasksFromSupabase();
+        if (supaTasks) {
+            const claims = u ? await getClaimsMapFromSupabase({ user: u, tasks: supaTasks, nowMs: Date.now() }) : {};
+            const uRow = u ? await getUserFromSupabase(u) : null;
+            const followCount = u ? await countFollowClaimsFromSupabase({ user: u, tasks: supaTasks }) : null;
+            const stats = u
+                ? { points: uRow?.points || 0, volumeBnb: uRow?.volumeBnb || 0, followTasks: followCount || 0 }
+                : null;
+            return NextResponse.json({ tasks: supaTasks, claims: claims || {}, stats });
+        }
+
+        const db = await loadDb();
         const list = (db.tasks || []).slice().sort((a, b) => b.createdAt.localeCompare(a.createdAt));
         const claims = db.taskClaims || {};
         const todayKey = utcDayKey(Date.now());
@@ -418,6 +532,16 @@ export async function GET(req: NextRequest) {
 
     if (user) {
         const addr = normalizeAddress(user);
+        const supaUser = await getUserFromSupabase(addr);
+        const supaLb = await getLeaderboardFromSupabase();
+        if (supaUser || supaLb) {
+            return NextResponse.json({
+                user: supaUser ? { user: supaUser.user, points: supaUser.points, referrer: supaUser.referrer } : null,
+                leaderboard: supaLb || [],
+            });
+        }
+
+        const db = await loadDb();
         const u = db.users[addr];
         return NextResponse.json({
             user: u ? { user: addr, points: u.points, referrer: u.referrer || null } : null,
@@ -425,6 +549,10 @@ export async function GET(req: NextRequest) {
         });
     }
 
+    const supaLb = await getLeaderboardFromSupabase();
+    if (supaLb) return NextResponse.json({ leaderboard: supaLb });
+
+    const db = await loadDb();
     return NextResponse.json({ leaderboard: computeLeaderboard(db) });
 }
 
