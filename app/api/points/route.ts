@@ -666,7 +666,7 @@ export async function POST(req: NextRequest) {
             await incrementUserSupabase({ address: user, pointsDelta: 50 });
             await incrementUserSupabase({ address: referrer, pointsDelta: 50 });
 
-            return NextResponse.json({ ok: true, awarded: 50 });
+            return NextResponse.json({ ok: true, awarded: 50, storage: "supabase" });
         }
 
         // Track device and limit multi-account referral abuse
@@ -693,7 +693,7 @@ export async function POST(req: NextRequest) {
         r.updatedAt = nowIso();
 
         await saveDb(db);
-        return NextResponse.json({ ok: true, awarded: 50 });
+        return NextResponse.json({ ok: true, awarded: 50, storage: "fallback" });
     }
 
     if (action === "earn") {
@@ -738,7 +738,7 @@ export async function POST(req: NextRequest) {
             }
 
             const leaderboard = await getLeaderboardFromSupabase();
-            return NextResponse.json({ ok: true, earned, bonus, leaderboard: leaderboard || [] });
+            return NextResponse.json({ ok: true, earned, bonus, leaderboard: leaderboard || [], storage: "supabase" });
         }
 
         const deviceEntry = trackDeviceAccount(db, deviceId, user);
@@ -786,7 +786,7 @@ export async function POST(req: NextRequest) {
         }
 
         await saveDb(db);
-        return NextResponse.json({ ok: true, earned, bonus, leaderboard: computeLeaderboard(db) });
+        return NextResponse.json({ ok: true, earned, bonus, leaderboard: computeLeaderboard(db), storage: "fallback" });
     }
 
     if (action === "shareBoost") {
