@@ -42,6 +42,8 @@ export default function MarketView() {
     const [claimableAmount, setClaimableAmount] = useState("0");
     const [historyUserBets, setHistoryUserBets] = useState<Record<string, { yesAmount: bigint; noAmount: bigint; claimed: boolean }>>({});
 
+    const marketAddress = (process.env.NEXT_PUBLIC_PREDICTION_MARKET_ADDRESS || PREDICTION_MARKET_ADDRESS) as `0x${string}`;
+
     const [userPoints, setUserPoints] = useState<number>(0);
     const [pointsLeaderboard, setPointsLeaderboard] = useState<Array<{ user: string; points: number }>>([]);
 
@@ -563,7 +565,7 @@ export default function MarketView() {
         if (!userAddress || !selectedMarketId) return;
         try {
             const data: any = await publicClient.readContract({
-                address: PREDICTION_MARKET_ADDRESS as `0x${string}`,
+                address: marketAddress,
                 abi: PREDICTION_MARKET_ABI,
                 functionName: "getUserBet",
                 args: [selectedMarketId, userAddress as `0x${string}`],
@@ -640,7 +642,7 @@ export default function MarketView() {
             const currentBlock = await publicClient.getBlockNumber();
             const fromBlock = currentBlock - 20000n; // Last ~3 days on BSC
             const logs = await publicClient.getContractEvents({
-                address: PREDICTION_MARKET_ADDRESS as `0x${string}`,
+                address: marketAddress,
                 abi: PREDICTION_MARKET_ABI,
                 eventName: "BetPlaced",
                 args: { user: userAddress as `0x${string}` },
@@ -671,7 +673,7 @@ export default function MarketView() {
                 if (id > resetAfter) continue;
                 try {
                     const res = await publicClient.readContract({
-                        address: PREDICTION_MARKET_ADDRESS as `0x${string}`,
+                        address: marketAddress,
                         abi: PREDICTION_MARKET_ABI,
                         functionName: "getUserBet",
                         args: [id, userAddress as `0x${string}`],
@@ -695,12 +697,12 @@ export default function MarketView() {
     const fetchMarketCount = async () => {
         try {
             const resetAfter = (await publicClient.readContract({
-                address: PREDICTION_MARKET_ADDRESS as `0x${string}`,
+                address: marketAddress,
                 abi: PREDICTION_MARKET_ABI,
                 functionName: "resetAfterMarketId",
             })) as bigint;
             const count = await publicClient.readContract({
-                address: PREDICTION_MARKET_ADDRESS as `0x${string}`,
+                address: marketAddress,
                 abi: PREDICTION_MARKET_ABI,
                 functionName: "marketCount",
             });
@@ -735,7 +737,7 @@ export default function MarketView() {
             }
             for (let i = count; i >= effectiveStart; i--) {
                 const data: any = await publicClient.readContract({
-                    address: PREDICTION_MARKET_ADDRESS as `0x${string}`,
+                    address: marketAddress,
                     abi: PREDICTION_MARKET_ABI,
                     functionName: "markets",
                     args: [i],
@@ -818,7 +820,7 @@ export default function MarketView() {
         setLoading(true);
         try {
             const data: any = await publicClient.readContract({
-                address: PREDICTION_MARKET_ADDRESS as `0x${string}`,
+                address: marketAddress,
                 abi: PREDICTION_MARKET_ABI,
                 functionName: "markets",
                 args: [selectedMarketId],
@@ -852,7 +854,7 @@ export default function MarketView() {
             const [address] = await walletClient.requestAddresses();
 
             const hash = await walletClient.writeContract({
-                address: PREDICTION_MARKET_ADDRESS as `0x${string}`,
+                address: marketAddress,
                 abi: PREDICTION_MARKET_ABI,
                 functionName: "createMarket",
                 args: [newQuestion, BigInt(newDuration)],
@@ -874,7 +876,7 @@ export default function MarketView() {
             const currentBlock = await publicClient.getBlockNumber();
             const fromBlock = currentBlock - 10000n;
             const logs = await publicClient.getContractEvents({
-                address: PREDICTION_MARKET_ADDRESS as `0x${string}`,
+                address: marketAddress,
                 abi: PREDICTION_MARKET_ABI,
                 eventName: "BetPlaced",
                 args: { marketId: selectedMarketId },
@@ -901,7 +903,7 @@ export default function MarketView() {
             const currentBlock = await publicClient.getBlockNumber();
             const fromBlock = currentBlock - 10000n;
             const logs = await publicClient.getContractEvents({
-                address: PREDICTION_MARKET_ADDRESS as `0x${string}`,
+                address: marketAddress,
                 abi: PREDICTION_MARKET_ABI,
                 eventName: "BetPlaced",
                 args: { marketId: selectedMarketId },
@@ -929,7 +931,7 @@ export default function MarketView() {
             const walletClient = createWalletClient({ chain: baseSepolia, transport: custom((window as any).ethereum) });
             const [address] = await walletClient.requestAddresses();
             const hash = await walletClient.writeContract({
-                address: PREDICTION_MARKET_ADDRESS as `0x${string}`,
+                address: marketAddress,
                 abi: PREDICTION_MARKET_ABI,
                 functionName: "bet",
                 args: [selectedMarketId, outcome],
@@ -971,7 +973,7 @@ export default function MarketView() {
             const walletClient = createWalletClient({ chain: baseSepolia, transport: custom((window as any).ethereum) });
             const [address] = await walletClient.requestAddresses();
             const hash = await walletClient.writeContract({
-                address: PREDICTION_MARKET_ADDRESS as `0x${string}`,
+                address: marketAddress,
                 abi: PREDICTION_MARKET_ABI,
                 functionName: "claim",
                 args: [selectedMarketId],
@@ -998,7 +1000,7 @@ export default function MarketView() {
             const walletClient = createWalletClient({ chain: baseSepolia, transport: custom((window as any).ethereum) });
             const [address] = await walletClient.requestAddresses();
             const hash = await walletClient.writeContract({
-                address: PREDICTION_MARKET_ADDRESS as `0x${string}`,
+                address: marketAddress,
                 abi: PREDICTION_MARKET_ABI,
                 functionName: "resolveMarket",
                 args: [selectedMarketId, outcome],
@@ -1024,7 +1026,7 @@ export default function MarketView() {
             });
             const [address] = await walletClient.getAddresses();
             const hash = await walletClient.writeContract({
-                address: PREDICTION_MARKET_ADDRESS as `0x${string}`,
+                address: marketAddress,
                 abi: PREDICTION_MARKET_ABI,
                 functionName: "emergencyReset",
                 account: address,
@@ -1056,7 +1058,7 @@ export default function MarketView() {
             });
             const [address] = await walletClient.getAddresses();
             const hash = await walletClient.writeContract({
-                address: PREDICTION_MARKET_ADDRESS as `0x${string}`,
+                address: marketAddress,
                 abi: PREDICTION_MARKET_ABI,
                 functionName: "emergencyWithdraw",
                 args: [marketId],
@@ -1133,7 +1135,7 @@ export default function MarketView() {
                 <h2 className="text-xl font-bold text-white mb-2">Market Not Found</h2>
                 <p className="text-slate-400 text-sm mb-6">Failed to fetch prediction data. Please ensure you are connected to Base Sepolia.</p>
                 <div className="p-3 bg-slate-800/50 rounded-lg border border-slate-700 font-mono text-[10px] text-slate-500 mb-6 break-all">
-                    {PREDICTION_MARKET_ADDRESS}
+                    {marketAddress}
                 </div>
                 <button onClick={() => window.location.reload()} className="w-full premium-btn">Try Again</button>
             </div>

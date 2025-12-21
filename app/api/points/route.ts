@@ -160,10 +160,13 @@ async function validateShareBoostTx(params: { txHash: string; user: string }) {
     const nowSec = Math.floor(Date.now() / 1000);
     const user = normalizeAddress(params.user);
     const txHash = params.txHash as `0x${string}`;
+    const marketAddress = normalizeAddress(
+        (process.env.PREDICTION_MARKET_ADDRESS || process.env.NEXT_PUBLIC_PREDICTION_MARKET_ADDRESS || PREDICTION_MARKET_ADDRESS) as string
+    );
 
     const tx = await basePublicClient.getTransaction({ hash: txHash });
     if (!tx.to) return { ok: false as const, error: "Invalid tx" };
-    if (normalizeAddress(tx.to) !== normalizeAddress(PREDICTION_MARKET_ADDRESS)) {
+    if (normalizeAddress(tx.to) !== marketAddress) {
         return { ok: false as const, error: "Tx not sent to market contract" };
     }
     if (normalizeAddress(tx.from) !== user) {

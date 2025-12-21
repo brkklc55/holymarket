@@ -1,4 +1,4 @@
-export const PREDICTION_MARKET_ADDRESS = "0xd62a41360a66f748ae3777a27a86b47b84a80a08";
+export const PREDICTION_MARKET_ADDRESS = "0x825fdbcd46fadb3dcffdcfc8840274ba047b01cf";
 
 export const PREDICTION_MARKET_ABI = [
   {

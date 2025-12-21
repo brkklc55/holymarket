@@ -113,7 +113,7 @@ contract PredictionMarket {
 
         // Pay user the net reward
         (bool success, ) = msg.sender.call{value: netReward}("");
-        require(success, "BNB transfer failed");
+        require(success, "Native token transfer failed");
         
         emit WinningsClaimed(_marketId, msg.sender, netReward);
     }
@@ -135,7 +135,7 @@ contract PredictionMarket {
 
         // Interaction
         (bool success, ) = msg.sender.call{value: amount}("");
-        require(success, "BNB transfer failed");
+        require(success, "Native token transfer failed");
 
         emit EmergencyWithdrawn(_marketId, msg.sender, amount);
     }
