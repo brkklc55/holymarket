@@ -70,6 +70,8 @@ const ADMIN_ADDRESSES = [
     "0x96a445dd060efd79ab27742de12128f24b4edaec",
 ];
 
+let supabaseAdminSeeded = false;
+
 // In-memory rate limiter (good enough for beta; resets on server restart)
 const rateState: Map<string, { count: number; resetAt: number }> = new Map();
 
@@ -149,6 +151,23 @@ function getSupabaseClient() {
     return createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
         auth: { persistSession: false, autoRefreshToken: false },
     });
+}
+
+async function ensureAdminsSeededSupabase() {
+    if (supabaseAdminSeeded) return;
+    const supabase = getSupabaseClient();
+    if (!USE_SUPABASE || !supabase) return;
+
+    const now = nowIso();
+    const rows = ADMIN_ADDRESSES.map((a, idx) => ({
+        address: normalizeAddress(a),
+        role: idx === 0 ? "superadmin" : "admin",
+        created_at: now,
+        updated_at: now,
+    }));
+
+    const { error } = await supabase.from("admins").upsert(rows, { onConflict: "address" });
+    if (!error) supabaseAdminSeeded = true;
 }
 
 const basePublicClient = createPublicClient({
@@ -301,6 +320,7 @@ async function getAdminRoleFromSupabase(addr?: string | null): Promise<"admin" |
     const supabase = getSupabaseClient();
     if (!USE_SUPABASE || !supabase) return null;
     if (!addr) return null;
+    await ensureAdminsSeededSupabase();
     const address = normalizeAddress(addr);
     const { data, error } = await supabase.from("admins").select("role").eq("address", address).maybeSingle();
     if (error || !data) return null;
