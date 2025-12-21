@@ -54,7 +54,9 @@ type PointsDb = {
     taskClaims?: Record<string, Record<Address, any>>;
 };
 
-const DATA_FILE = path.join(process.cwd(), "data", "points.json");
+const DATA_FILE = process.env.VERCEL
+    ? path.join("/tmp", "points.json")
+    : path.join(process.cwd(), "data", "points.json");
 
 const ADMIN_ADDRESSES = [
     "0x33713b87bab352c46bba4953ab6cb11afe895d93",
