@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { encodeFunctionData, parseEther } from 'viem';
-import { bscTestnet } from 'viem/chains';
+import { baseSepolia } from 'viem/chains';
 import { PREDICTION_MARKET_ABI, PREDICTION_MARKET_ADDRESS } from '../../constants';
 
 
@@ -17,7 +17,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     });
 
     const txData = {
-        chainId: `eip155:${bscTestnet.id}`,
+        chainId: `eip155:${baseSepolia.id}`,
         method: 'eth_sendTransaction',
         params: {
             abi: PREDICTION_MARKET_ABI.filter((item) => item.type === 'function' && item.name === 'bet'),

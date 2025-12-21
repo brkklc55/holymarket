@@ -8,10 +8,10 @@ module.exports = {
         enabled: false,
     },
     networks: {
-        bscTestnet: {
-            url: "https://data-seed-prebsc-1-s1.binance.org:8545",
+        baseSepolia: {
+            url: process.env.BASE_SEPOLIA_RPC_URL || "https://sepolia.base.org",
             accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
-            chainId: 97
+            chainId: 84532
         }
     },
 };

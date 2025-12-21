@@ -3,7 +3,7 @@ import fs from "fs";
 import path from "path";
 import { createClient } from "@supabase/supabase-js";
 import { createPublicClient, http, decodeFunctionData, formatEther } from "viem";
-import { bscTestnet } from "viem/chains";
+import { baseSepolia } from "viem/chains";
 import { PREDICTION_MARKET_ABI, PREDICTION_MARKET_ADDRESS } from "../../constants";
 
 export const runtime = "nodejs";
@@ -151,9 +151,9 @@ function getSupabaseClient() {
     });
 }
 
-const bscPublicClient = createPublicClient({
-    chain: bscTestnet,
-    transport: http(process.env.BSC_RPC_URL || "https://data-seed-prebsc-1-s1.binance.org:8545"),
+const basePublicClient = createPublicClient({
+    chain: baseSepolia,
+    transport: http(process.env.BASE_SEPOLIA_RPC_URL || "https://sepolia.base.org"),
 });
 
 async function validateShareBoostTx(params: { txHash: string; user: string }) {
@@ -161,7 +161,7 @@ async function validateShareBoostTx(params: { txHash: string; user: string }) {
     const user = normalizeAddress(params.user);
     const txHash = params.txHash as `0x${string}`;
 
-    const tx = await bscPublicClient.getTransaction({ hash: txHash });
+    const tx = await basePublicClient.getTransaction({ hash: txHash });
     if (!tx.to) return { ok: false as const, error: "Invalid tx" };
     if (normalizeAddress(tx.to) !== normalizeAddress(PREDICTION_MARKET_ADDRESS)) {
         return { ok: false as const, error: "Tx not sent to market contract" };
@@ -187,8 +187,8 @@ async function validateShareBoostTx(params: { txHash: string; user: string }) {
     }
 
     // Require tx is recent (last 10 minutes)
-    const receipt = await bscPublicClient.getTransactionReceipt({ hash: txHash });
-    const block = await bscPublicClient.getBlock({ blockNumber: receipt.blockNumber });
+    const receipt = await basePublicClient.getTransactionReceipt({ hash: txHash });
+    const block = await basePublicClient.getBlock({ blockNumber: receipt.blockNumber });
     const ageSec = nowSec - Number(block.timestamp);
     if (ageSec > 10 * 60) {
         return { ok: false as const, error: "Bet is too old to claim a boost" };

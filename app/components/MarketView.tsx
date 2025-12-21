@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createPublicClient, http, parseEther, createWalletClient, custom, formatEther } from "viem";
-import { bscTestnet } from "viem/chains";
+import { baseSepolia } from "viem/chains";
 import { useAccount, useChainId } from "wagmi";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { User, History, TrendingUp, Share2, Twitter, Info } from "lucide-react";
@@ -73,7 +73,7 @@ export default function MarketView() {
     const [newQuestion, setNewQuestion] = useState("");
     const [newDuration, setNewDuration] = useState("3600"); // 1 hour default
 
-    const needsNetworkSwitch = isConnected && chainId !== bscTestnet.id;
+    const needsNetworkSwitch = isConnected && chainId !== baseSepolia.id;
 
     const getDeviceId = () => {
         try {
@@ -529,8 +529,8 @@ export default function MarketView() {
     };
 
     const publicClient = createPublicClient({
-        chain: bscTestnet,
-        transport: http("https://bsc-testnet-rpc.publicnode.com"),
+        chain: baseSepolia,
+        transport: http(process.env.NEXT_PUBLIC_BASE_SEPOLIA_RPC_URL || "https://sepolia.base.org"),
     });
 
     useEffect(() => {
@@ -778,11 +778,11 @@ export default function MarketView() {
         if (typeof window !== "undefined" && (window as any).ethereum) {
             try {
                 const chainId = await (window as any).ethereum.request({ method: 'eth_chainId' });
-                if (chainId !== "0x61") { // 97 in hex (BSC Testnet)
+                if (chainId !== "0x14a34") { // 84532 in hex (Base Sepolia)
                     try {
                         await (window as any).ethereum.request({
                             method: 'wallet_switchEthereumChain',
-                            params: [{ chainId: '0x61' }],
+                            params: [{ chainId: '0x14a34' }],
                         });
                     } catch (switchError: any) {
                         if (switchError.code === 4902) {
@@ -790,15 +790,15 @@ export default function MarketView() {
                                 method: 'wallet_addEthereumChain',
                                 params: [
                                     {
-                                        chainId: '0x61',
-                                        chainName: 'BNB Smart Chain Testnet',
+                                        chainId: '0x14a34',
+                                        chainName: 'Base Sepolia',
                                         nativeCurrency: {
-                                            name: 'BNB',
-                                            symbol: 'tBNB',
+                                            name: 'Ether',
+                                            symbol: 'ETH',
                                             decimals: 18,
                                         },
-                                        rpcUrls: ['https://data-seed-prebsc-1-s1.binance.org:8545'],
-                                        blockExplorerUrls: ['https://testnet.bscscan.com'],
+                                        rpcUrls: ['https://sepolia.base.org'],
+                                        blockExplorerUrls: ['https://sepolia.basescan.org'],
                                     },
                                 ],
                             });
@@ -809,7 +809,7 @@ export default function MarketView() {
                 }
             } catch (error) {
                 console.error("Failed to switch network:", error);
-                throw new Error("Please switch to BNB Testnet");
+                throw new Error("Please switch to Base Sepolia");
             }
         }
     };
@@ -848,7 +848,7 @@ export default function MarketView() {
         setBetting(true);
         try {
             await checkAndSwitchNetwork();
-            const walletClient = createWalletClient({ chain: bscTestnet, transport: custom((window as any).ethereum) });
+            const walletClient = createWalletClient({ chain: baseSepolia, transport: custom((window as any).ethereum) });
             const [address] = await walletClient.requestAddresses();
 
             const hash = await walletClient.writeContract({
@@ -926,7 +926,7 @@ export default function MarketView() {
         setBetting(true);
         try {
             await checkAndSwitchNetwork();
-            const walletClient = createWalletClient({ chain: bscTestnet, transport: custom((window as any).ethereum) });
+            const walletClient = createWalletClient({ chain: baseSepolia, transport: custom((window as any).ethereum) });
             const [address] = await walletClient.requestAddresses();
             const hash = await walletClient.writeContract({
                 address: PREDICTION_MARKET_ADDRESS as `0x${string}`,
@@ -968,7 +968,7 @@ export default function MarketView() {
         setBetting(true);
         try {
             await checkAndSwitchNetwork();
-            const walletClient = createWalletClient({ chain: bscTestnet, transport: custom((window as any).ethereum) });
+            const walletClient = createWalletClient({ chain: baseSepolia, transport: custom((window as any).ethereum) });
             const [address] = await walletClient.requestAddresses();
             const hash = await walletClient.writeContract({
                 address: PREDICTION_MARKET_ADDRESS as `0x${string}`,
@@ -995,7 +995,7 @@ export default function MarketView() {
         setBetting(true);
         try {
             await checkAndSwitchNetwork();
-            const walletClient = createWalletClient({ chain: bscTestnet, transport: custom((window as any).ethereum) });
+            const walletClient = createWalletClient({ chain: baseSepolia, transport: custom((window as any).ethereum) });
             const [address] = await walletClient.requestAddresses();
             const hash = await walletClient.writeContract({
                 address: PREDICTION_MARKET_ADDRESS as `0x${string}`,
@@ -1019,7 +1019,7 @@ export default function MarketView() {
         setBetting(true);
         try {
             const walletClient = createWalletClient({
-                chain: bscTestnet,
+                chain: baseSepolia,
                 transport: custom((window as any).ethereum),
             });
             const [address] = await walletClient.getAddresses();
@@ -1045,13 +1045,13 @@ export default function MarketView() {
             return;
         }
         if (needsNetworkSwitch) {
-            toast({ title: "Wrong network", message: "Switch to BNB Testnet to withdraw.", variant: "warning" });
+            toast({ title: "Wrong network", message: "Switch to Base Sepolia to withdraw.", variant: "warning" });
             return;
         }
         setBetting(true);
         try {
             const walletClient = createWalletClient({
-                chain: bscTestnet,
+                chain: baseSepolia,
                 transport: custom((window as any).ethereum),
             });
             const [address] = await walletClient.getAddresses();
@@ -1131,7 +1131,7 @@ export default function MarketView() {
                     <span className="text-2xl">⚠️</span>
                 </div>
                 <h2 className="text-xl font-bold text-white mb-2">Market Not Found</h2>
-                <p className="text-slate-400 text-sm mb-6">Failed to fetch prediction data. Please ensure you are connected to BNB Testnet.</p>
+                <p className="text-slate-400 text-sm mb-6">Failed to fetch prediction data. Please ensure you are connected to Base Sepolia.</p>
                 <div className="p-3 bg-slate-800/50 rounded-lg border border-slate-700 font-mono text-[10px] text-slate-500 mb-6 break-all">
                     {PREDICTION_MARKET_ADDRESS}
                 </div>
@@ -1210,7 +1210,7 @@ export default function MarketView() {
                             <div>
                                 <div className="text-sm font-extrabold text-white">Wrong network</div>
                                 <div className="text-xs text-slate-400 mt-1">
-                                    This dApp runs on <span className="font-bold text-slate-200">BNB Smart Chain Testnet</span>. Switch your wallet network to continue.
+                                    This dApp runs on <span className="font-bold text-slate-200">Base Sepolia</span>. Switch your wallet network to continue.
                                 </div>
                             </div>
                         </div>
@@ -1244,7 +1244,7 @@ export default function MarketView() {
                                     </div>
                                     <p className="text-[10px] font-bold text-slate-200 truncate mb-2">{m.question}</p>
                                     <div className="text-[9px] font-black text-sky-400">
-                                        {(Number(m.yesPool + m.noPool) / 1e18).toFixed(3)} BNB
+                                        {(Number(m.yesPool + m.noPool) / 1e18).toFixed(3)} ETH
                                     </div>
                                     <div className="mt-1 flex justify-between text-[9px] font-bold text-slate-500">
                                         <span>YES {(Number(m.yesPool) / 1e18).toFixed(3)}</span>
@@ -1295,22 +1295,22 @@ export default function MarketView() {
                                 <span className="text-[10px] font-bold text-emerald-500 mb-2 uppercase tracking-tighter">YES Pool ({calculateMultiplier(true)}x)</span>
                                 <div className="flex items-baseline gap-1">
                                     <span className="text-2xl font-black text-white">{(Number(market.yesPool) / 1e18).toFixed(3)}</span>
-                                    <span className="text-xs text-slate-500 font-bold">BNB</span>
+                                    <span className="text-xs text-slate-500 font-bold">ETH</span>
                                 </div>
                                 <div className="mt-3 pt-3 border-t border-emerald-500/10">
                                     <span className="text-[10px] text-slate-500 block mb-1">Potential Payout</span>
-                                    <span className="text-xs font-bold text-emerald-400">{calculatePotentialProfit(true)} BNB</span>
+                                    <span className="text-xs font-bold text-emerald-400">{calculatePotentialProfit(true)} ETH</span>
                                 </div>
                             </div>
                             <div className="p-4 rounded-2xl bg-rose-500/5 border border-rose-500/10 flex flex-col">
                                 <span className="text-[10px] font-bold text-rose-500 mb-2 uppercase tracking-tighter">NO Pool ({calculateMultiplier(false)}x)</span>
                                 <div className="flex items-baseline gap-1">
                                     <span className="text-2xl font-black text-white">{(Number(market.noPool) / 1e18).toFixed(3)}</span>
-                                    <span className="text-xs text-slate-500 font-bold">BNB</span>
+                                    <span className="text-xs text-slate-500 font-bold">ETH</span>
                                 </div>
                                 <div className="mt-3 pt-3 border-t border-rose-500/10">
                                     <span className="text-[10px] text-slate-500 block mb-1">Potential Payout</span>
-                                    <span className="text-xs font-bold text-rose-400">{calculatePotentialProfit(false)} BNB</span>
+                                    <span className="text-xs font-bold text-rose-400">{calculatePotentialProfit(false)} ETH</span>
                                 </div>
                             </div>
                         </div>
@@ -1326,8 +1326,8 @@ export default function MarketView() {
                                     <div className="w-full p-4 rounded-2xl bg-slate-900/40 border border-slate-800 text-left mb-4">
                                         <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Your bet</div>
                                         <div className="mt-2 flex justify-between gap-4">
-                                            <div className="text-xs font-bold text-emerald-400">YES: {userBet ? Number(formatEther(userBet.yesAmount)).toFixed(4) : "0.0000"} BNB</div>
-                                            <div className="text-xs font-bold text-rose-400">NO: {userBet ? Number(formatEther(userBet.noAmount)).toFixed(4) : "0.0000"} BNB</div>
+                                            <div className="text-xs font-bold text-emerald-400">YES: {userBet ? Number(formatEther(userBet.yesAmount)).toFixed(4) : "0.0000"} ETH</div>
+                                            <div className="text-xs font-bold text-rose-400">NO: {userBet ? Number(formatEther(userBet.noAmount)).toFixed(4) : "0.0000"} ETH</div>
                                         </div>
                                     </div>
 
@@ -1349,12 +1349,12 @@ export default function MarketView() {
                                         disabled={betting || needsNetworkSwitch || !isConnected || parseFloat(claimableAmount) <= 0}
                                         className="w-full premium-btn py-4 bg-white text-slate-900 hover:bg-slate-100 disabled:opacity-60 disabled:cursor-not-allowed"
                                     >
-                                        {betting ? "Processing..." : `Claim ${Number(claimableAmount).toFixed(4)} BNB Reward`}
+                                        {betting ? "Processing..." : `Claim ${Number(claimableAmount).toFixed(4)} ETH Reward`}
                                     </button>
                                     )}
                                     {(!isConnected || needsNetworkSwitch) && (
                                         <div className="mt-3 text-[11px] text-slate-500">
-                                            Connect your wallet and switch to BNB Testnet to claim.
+                                            Connect your wallet and switch to Base Sepolia to claim.
                                         </div>
                                     )}
                                 </div>
@@ -1367,7 +1367,7 @@ export default function MarketView() {
                                                 {walletBalanceLoading ? (
                                                     <span className="text-[10px] font-bold text-slate-500">Loading...</span>
                                                 ) : walletBalance !== null ? (
-                                                    <span className="text-[10px] font-bold text-slate-500">Available: {Number(formatEther(walletBalance)).toFixed(4)} BNB</span>
+                                                    <span className="text-[10px] font-bold text-slate-500">Available: {Number(formatEther(walletBalance)).toFixed(4)} ETH</span>
                                                 ) : (
                                                     <span className="text-[10px] font-bold text-slate-600">Available: —</span>
                                                 )}
@@ -1379,7 +1379,7 @@ export default function MarketView() {
                                                         const reserve = parseEther("0.0002");
                                                         const max = walletBalance > reserve ? walletBalance - reserve : 0n;
                                                         if (max <= 0n) {
-                                                            toast({ title: "Insufficient balance", message: "Not enough BNB for a bet (after gas reserve).", variant: "warning" });
+                                                            toast({ title: "Insufficient balance", message: "Not enough ETH for a bet (after gas reserve).", variant: "warning" });
                                                             return;
                                                         }
                                                         const maxStr = formatEther(max);
@@ -1404,7 +1404,7 @@ export default function MarketView() {
                                                     onClick={() => setAmount(chip.value)}
                                                     className={`px-3 py-1.5 rounded-full text-[10px] font-extrabold border transition-all ${amount === chip.value ? "bg-sky-500/15 text-sky-300 border-sky-500/30" : "bg-slate-900/40 text-slate-400 border-slate-800 hover:border-slate-700 hover:text-slate-200"}`}
                                                 >
-                                                    {chip.label} BNB
+                                                    {chip.label} ETH
                                                 </button>
                                             ))}
                                         </div>
@@ -1415,7 +1415,7 @@ export default function MarketView() {
                                                 onChange={(e) => setAmount(e.target.value)}
                                                 className="w-full premium-input py-4 text-xl pr-16 bg-slate-900/80"
                                             />
-                                            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 font-bold">BNB</span>
+                                            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 font-bold">ETH</span>
                                         </div>
                                     </div>
                                     <div className="grid grid-cols-2 gap-4">
@@ -1467,7 +1467,7 @@ export default function MarketView() {
                                 </div>
                                 <div className="p-3 rounded-xl bg-slate-950/30 border border-slate-800">
                                     <div className="text-[10px] font-bold text-slate-500 uppercase">Volume</div>
-                                    <div className="mt-1 text-sm font-black text-slate-200">{taskStats ? `${Number(taskStats.volumeBnb).toFixed(4)} BNB` : "—"}</div>
+                                    <div className="mt-1 text-sm font-black text-slate-200">{taskStats ? `${Number(taskStats.volumeBnb).toFixed(4)} ETH` : "—"}</div>
                                 </div>
                                 <div className="p-3 rounded-xl bg-slate-950/30 border border-slate-800">
                                     <div className="text-[10px] font-bold text-slate-500 uppercase">Follow tasks</div>
@@ -1501,7 +1501,7 @@ export default function MarketView() {
                                     if (notStarted) missing.push("not started");
                                     if (ended) missing.push("ended");
                                     if (req.minPoints !== undefined && pts < Number(req.minPoints)) missing.push(`${Number(req.minPoints)} pts`);
-                                    if (req.minVolumeBnb !== undefined && vol < Number(req.minVolumeBnb)) missing.push(`${Number(req.minVolumeBnb)} BNB volume`);
+                                    if (req.minVolumeBnb !== undefined && vol < Number(req.minVolumeBnb)) missing.push(`${Number(req.minVolumeBnb)} ETH volume`);
                                     if (req.minFollowTasks !== undefined && follows < Number(req.minFollowTasks)) missing.push(`${Number(req.minFollowTasks)} follow tasks`);
                                     const eligible = userAddress && missing.length === 0;
                                     const requiresOpen = (t.type === "link" || t.type === "follow") && Boolean(t.url);
@@ -1509,7 +1509,7 @@ export default function MarketView() {
                                     const canClaim = Boolean(eligible && opened);
                                     const reqText = [
                                         req.minPoints !== undefined ? `min ${req.minPoints} pts` : null,
-                                        req.minVolumeBnb !== undefined ? `min ${req.minVolumeBnb} BNB volume` : null,
+                                        req.minVolumeBnb !== undefined ? `min ${req.minVolumeBnb} ETH volume` : null,
                                         req.minFollowTasks !== undefined ? `min ${req.minFollowTasks} follow tasks` : null,
                                     ].filter(Boolean).join(" • ");
                                     return (
@@ -1666,9 +1666,9 @@ export default function MarketView() {
                         <div className="p-5 rounded-2xl bg-slate-900/40 border border-slate-800">
                             <div className="flex items-start justify-between gap-4">
                                 <div>
-                                    <div className="text-xs font-extrabold text-white">BNB Testnet Faucet</div>
+                                    <div className="text-xs font-extrabold text-white">Base Sepolia Faucet</div>
                                     <div className="mt-1 text-[11px] text-slate-500">
-                                        Need test BNB to place bets? Use a faucet and fund your wallet.
+                                        Need test ETH to place bets? Use a faucet and fund your wallet.
                                     </div>
                                 </div>
                                 <span className="px-2 py-1 rounded-full bg-amber-500/10 text-amber-400 text-[10px] font-black border border-amber-500/20">
@@ -1678,24 +1678,24 @@ export default function MarketView() {
 
                             <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <a
-                                    href="https://testnet.binance.org/faucet-smart"
+                                    href="https://www.coinbase.com/faucets/base-ethereum-sepolia-faucet"
                                     target="_blank"
                                     rel="noreferrer"
                                     className="p-4 rounded-xl bg-slate-950/40 border border-slate-800 hover:border-slate-700 transition-all"
                                 >
                                     <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Official</div>
-                                    <div className="mt-1 text-sm font-black text-slate-200">BSC Testnet Faucet</div>
-                                    <div className="mt-1 text-[11px] text-slate-500">testnet.binance.org</div>
+                                    <div className="mt-1 text-sm font-black text-slate-200">Base Sepolia Faucet</div>
+                                    <div className="mt-1 text-[11px] text-slate-500">coinbase.com</div>
                                 </a>
                                 <a
-                                    href="https://faucet.quicknode.com/binance-smart-chain/bnb-testnet"
+                                    href="https://sepolia-faucet.base.org"
                                     target="_blank"
                                     rel="noreferrer"
                                     className="p-4 rounded-xl bg-slate-950/40 border border-slate-800 hover:border-slate-700 transition-all"
                                 >
                                     <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Alt</div>
-                                    <div className="mt-1 text-sm font-black text-slate-200">QuickNode Faucet</div>
-                                    <div className="mt-1 text-[11px] text-slate-500">faucet.quicknode.com</div>
+                                    <div className="mt-1 text-sm font-black text-slate-200">Base Sepolia Faucet</div>
+                                    <div className="mt-1 text-[11px] text-slate-500">sepolia-faucet.base.org</div>
                                 </a>
                             </div>
 
@@ -1723,7 +1723,7 @@ export default function MarketView() {
                                     </button>
                                 </div>
                                 <div className="mt-2 text-[11px] text-slate-500">
-                                    Make sure your wallet network is set to <span className="text-slate-200 font-bold">BNB Smart Chain Testnet</span>.
+                                    Make sure your wallet network is set to <span className="text-slate-200 font-bold">Base Sepolia</span>.
                                 </div>
                             </div>
                         </div>
@@ -1757,7 +1757,7 @@ export default function MarketView() {
                                             })()}
                                         </div>
                                         <div className="text-right">
-                                            <span className="text-sm font-black text-white">{Number(formatEther(bet.amount)).toFixed(4)} BNB</span>
+                                            <span className="text-sm font-black text-white">{Number(formatEther(bet.amount)).toFixed(4)} ETH</span>
                                             <span className="block text-[10px] text-slate-600">Block #{bet.blockNumber.toString()}</span>
                                         </div>
                                     </div>
@@ -1832,7 +1832,7 @@ export default function MarketView() {
                                         <span className="text-xs font-mono text-slate-400">{bet.user.slice(0, 6)}...</span>
                                     </div>
                                     <div className="text-right">
-                                        <span className="text-xs font-bold text-white">+{Number(formatEther(bet.amount)).toFixed(4)} BNB</span>
+                                        <span className="text-xs font-bold text-white">+{Number(formatEther(bet.amount)).toFixed(4)} ETH</span>
                                     </div>
                                 </div>
                             ))}
@@ -2047,7 +2047,7 @@ export default function MarketView() {
                                                         <input value={taskReqMinPoints} onChange={(e) => setTaskReqMinPoints(e.target.value)} placeholder="e.g. 500" className="w-full premium-input focus:bg-slate-900" />
                                                     </div>
                                                     <div className="space-y-1">
-                                                        <div className="text-[10px] font-bold text-slate-600 uppercase tracking-widest ml-1">Min volume (BNB)</div>
+                                                        <div className="text-[10px] font-bold text-slate-600 uppercase tracking-widest ml-1">Min volume (ETH)</div>
                                                         <input value={taskReqMinVolumeBnb} onChange={(e) => setTaskReqMinVolumeBnb(e.target.value)} placeholder="e.g. 0.25" className="w-full premium-input focus:bg-slate-900" />
                                                     </div>
                                                     <div className="space-y-1">
@@ -2172,7 +2172,7 @@ export default function MarketView() {
 
                                 {(!isConnected || needsNetworkSwitch) && (
                                     <div className="mt-4 text-[11px] text-slate-500">
-                                        Connect your wallet and switch to BNB Testnet to use admin actions.
+                                        Connect your wallet and switch to Base Sepolia to use admin actions.
                                     </div>
                                 )}
                                 {isConnected && !needsNetworkSwitch && adminRole !== "superadmin" && (

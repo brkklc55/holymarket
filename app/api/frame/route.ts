@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 import { createPublicClient, http } from 'viem';
-import { bscTestnet } from 'viem/chains';
+import { baseSepolia } from 'viem/chains';
 import { PREDICTION_MARKET_ABI, PREDICTION_MARKET_ADDRESS } from '../../constants';
 
-const rpcUrl = process.env.BSC_TESTNET_RPC_URL || bscTestnet.rpcUrls.default.http[0];
+const rpcUrl = process.env.BASE_SEPOLIA_RPC_URL || baseSepolia.rpcUrls.default.http[0];
 
 const client = createPublicClient({
-    chain: bscTestnet,
+    chain: baseSepolia,
     transport: http(rpcUrl),
 });
 
