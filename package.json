@@ -38,7 +38,7 @@
         "recharts": "^3.6.0",
         "solc": "^0.8.31",
         "viem": "^2.43.2",
-        "wagmi": "^3.1.0",
+        "wagmi": "^2.16.0",
         "why-is-node-running": "^2.3.0"
     },
     "devDependencies": {
