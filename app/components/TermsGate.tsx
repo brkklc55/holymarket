@@ -91,7 +91,7 @@ export default function TermsGate({ children }: Props) {
         <div className="fixed inset-0 z-[9999]">
             <div className="absolute inset-0 bg-slate-950/70 backdrop-blur-sm" />
             <div className="relative h-full w-full flex items-center justify-center p-6">
-                <div className="w-full max-w-2xl premium-card p-6 sm:p-8 bg-slate-950/90 border border-slate-800">
+                <div className="w-full max-w-2xl premium-card p-6 sm:p-8 bg-slate-950/90 border border-slate-800 flex flex-col max-h-[90vh] min-h-0">
                     <div className="flex items-start justify-between gap-4">
                         <div>
                             <div className="text-[10px] font-black text-sky-400 uppercase tracking-[0.25em]">BETA ACCESS</div>
@@ -101,7 +101,10 @@ export default function TermsGate({ children }: Props) {
                         <span className="px-2 py-1 rounded-full bg-amber-500/10 text-amber-400 text-[10px] font-black border border-amber-500/20">TESTNET</span>
                     </div>
 
-                    <div className="mt-6 max-h-[50vh] overflow-y-auto pr-2 custom-scrollbar">
+                    <div
+                        className="mt-6 flex-1 min-h-0 overflow-y-auto pr-2 custom-scrollbar overscroll-contain touch-pan-y"
+                        style={{ WebkitOverflowScrolling: "touch" }}
+                    >
                         <div className="space-y-4">
                             {disclaimerText.sections.map((s) => (
                                 <div key={s.title} className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800">

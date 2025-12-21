@@ -21,7 +21,7 @@ export async function GET() {
         frame: {
             version: "1",
             name: "HolyMarket",
-            iconUrl: `${appUrl}/logo.png`,
+            iconUrl: `${appUrl}/logo-premium.svg`,
             homeUrl: appUrl,
         }
     };

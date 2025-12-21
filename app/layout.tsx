@@ -2,12 +2,13 @@ import type { Metadata } from "next";
 import "./globals.css";
 import FarcasterProvider from "./components/FarcasterProvider";
 import TermsGate from "./components/TermsGate";
+import SplashGate from "./components/SplashGate";
 
 export const metadata: Metadata = {
   title: "HolyMarket - Prediction Markets",
   description: "Decentralized prediction markets on BNB Testnet",
   icons: {
-    icon: "/logo.png",
+    icon: "/logo-premium.svg",
   },
 };
 
@@ -23,7 +24,9 @@ export default function RootLayout({
       <body>
         <Providers>
           <FarcasterProvider>
-            <TermsGate>{children}</TermsGate>
+            <SplashGate>
+              <TermsGate>{children}</TermsGate>
+            </SplashGate>
           </FarcasterProvider>
         </Providers>
       </body>
