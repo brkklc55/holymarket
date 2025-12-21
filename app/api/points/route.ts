@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
+import { createClient } from "@supabase/supabase-js";
 import { createPublicClient, http, decodeFunctionData, formatEther } from "viem";
 import { bscTestnet } from "viem/chains";
 import { PREDICTION_MARKET_ABI, PREDICTION_MARKET_ADDRESS } from "../../constants";
@@ -57,6 +58,12 @@ type PointsDb = {
 const DATA_FILE = process.env.VERCEL
     ? path.join("/tmp", "points.json")
     : path.join(process.cwd(), "data", "points.json");
+
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const SUPABASE_TABLE = process.env.SUPABASE_KV_TABLE || "holymarket_kv";
+const SUPABASE_DB_KEY = process.env.SUPABASE_POINTS_KEY || "points_db_v1";
+const USE_SUPABASE = Boolean(SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY);
 
 const ADMIN_ADDRESSES = [
     "0x33713b87bab352c46bba4953ab6cb11afe895d93",
@@ -127,6 +134,23 @@ function normalizeAddress(addr: string) {
     return addr.trim().toLowerCase();
 }
 
+function makeInitialDb(): PointsDb {
+    const initial: PointsDb = { users: {}, devices: {}, admins: {}, shareBoosts: {}, tasks: [], taskClaims: {} };
+    // Bootstrap initial admins: first is superadmin, rest are admins
+    ADMIN_ADDRESSES.forEach((a, idx) => {
+        const addr = normalizeAddress(a);
+        initial.admins![addr] = { role: idx === 0 ? "superadmin" : "admin", createdAt: nowIso(), updatedAt: nowIso() };
+    });
+    return initial;
+}
+
+function getSupabaseClient() {
+    if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) return null;
+    return createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
+        auth: { persistSession: false, autoRefreshToken: false },
+    });
+}
+
 const bscPublicClient = createPublicClient({
     chain: bscTestnet,
     transport: http(process.env.BSC_RPC_URL || "https://data-seed-prebsc-1-s1.binance.org:8545"),
@@ -173,11 +197,11 @@ async function validateShareBoostTx(params: { txHash: string; user: string }) {
     return { ok: true as const, valueBnb: Number(formatEther(tx.value)), ageSec };
 }
 
-function ensureDb(): PointsDb {
-    if (process.env.VERCEL && !fs.existsSync(DATA_FILE)) {
+async function loadDbFromFile(): Promise<PointsDb> {
+    if (process.env.VERCEL) {
         try {
             const seedFile = path.join(process.cwd(), "data", "points.json");
-            if (fs.existsSync(seedFile)) {
+            if (!fs.existsSync(DATA_FILE) && fs.existsSync(seedFile)) {
                 fs.mkdirSync(path.dirname(DATA_FILE), { recursive: true });
                 fs.copyFileSync(seedFile, DATA_FILE);
             }
@@ -188,34 +212,74 @@ function ensureDb(): PointsDb {
 
     if (!fs.existsSync(DATA_FILE)) {
         fs.mkdirSync(path.dirname(DATA_FILE), { recursive: true });
-        const initial: PointsDb = { users: {}, devices: {}, admins: {}, shareBoosts: {}, tasks: [], taskClaims: {} };
-        // Bootstrap initial admins: first is superadmin, rest are admins
-        ADMIN_ADDRESSES.forEach((a, idx) => {
-            const addr = normalizeAddress(a);
-            initial.admins![addr] = { role: idx === 0 ? "superadmin" : "admin", createdAt: nowIso(), updatedAt: nowIso() };
-        });
+        const initial = makeInitialDb();
         fs.writeFileSync(DATA_FILE, JSON.stringify(initial, null, 2));
         return initial;
     }
+
     const parsed = JSON.parse(fs.readFileSync(DATA_FILE, "utf8"));
     if (!parsed.devices || typeof parsed.devices !== "object" || Array.isArray(parsed.devices)) parsed.devices = {};
     if (!parsed.admins || typeof parsed.admins !== "object" || Array.isArray(parsed.admins)) parsed.admins = {};
     if (!parsed.shareBoosts || typeof parsed.shareBoosts !== "object" || Array.isArray(parsed.shareBoosts)) parsed.shareBoosts = {};
     if (!Array.isArray(parsed.tasks)) parsed.tasks = [];
     if (!parsed.taskClaims || typeof parsed.taskClaims !== "object" || Array.isArray(parsed.taskClaims)) parsed.taskClaims = {};
-    // Ensure bootstrap admins exist even if file pre-dates this feature
+
     if (Object.keys(parsed.admins).length === 0 && ADMIN_ADDRESSES.length > 0) {
-        ADMIN_ADDRESSES.forEach((a: string, idx: number) => {
-            const addr = normalizeAddress(a);
-            parsed.admins[addr] = { role: idx === 0 ? "superadmin" : "admin", createdAt: nowIso(), updatedAt: nowIso() };
-        });
-        writeDb(parsed);
+        const seeded = makeInitialDb();
+        parsed.admins = seeded.admins;
+        fs.writeFileSync(DATA_FILE, JSON.stringify(parsed, null, 2));
     }
     return parsed;
 }
 
-function writeDb(db: PointsDb) {
+async function saveDbToFile(db: PointsDb) {
+    fs.mkdirSync(path.dirname(DATA_FILE), { recursive: true });
     fs.writeFileSync(DATA_FILE, JSON.stringify(db, null, 2));
+}
+
+async function loadDb(): Promise<PointsDb> {
+    if (!USE_SUPABASE) return loadDbFromFile();
+
+    const supabase = getSupabaseClient();
+    if (!supabase) return loadDbFromFile();
+
+    const { data, error } = await supabase
+        .from(SUPABASE_TABLE)
+        .select("value")
+        .eq("key", SUPABASE_DB_KEY)
+        .maybeSingle();
+
+    if (error) {
+        return loadDbFromFile();
+    }
+
+    if (!data?.value) {
+        const initial = makeInitialDb();
+        await supabase.from(SUPABASE_TABLE).upsert({ key: SUPABASE_DB_KEY, value: initial });
+        return initial;
+    }
+
+    const parsed = data.value as any;
+    if (!parsed.devices || typeof parsed.devices !== "object" || Array.isArray(parsed.devices)) parsed.devices = {};
+    if (!parsed.admins || typeof parsed.admins !== "object" || Array.isArray(parsed.admins)) parsed.admins = {};
+    if (!parsed.shareBoosts || typeof parsed.shareBoosts !== "object" || Array.isArray(parsed.shareBoosts)) parsed.shareBoosts = {};
+    if (!Array.isArray(parsed.tasks)) parsed.tasks = [];
+    if (!parsed.taskClaims || typeof parsed.taskClaims !== "object" || Array.isArray(parsed.taskClaims)) parsed.taskClaims = {};
+
+    if (Object.keys(parsed.admins).length === 0 && ADMIN_ADDRESSES.length > 0) {
+        const seeded = makeInitialDb();
+        parsed.admins = seeded.admins;
+        await supabase.from(SUPABASE_TABLE).upsert({ key: SUPABASE_DB_KEY, value: parsed });
+    }
+
+    return parsed as PointsDb;
+}
+
+async function saveDb(db: PointsDb) {
+    if (!USE_SUPABASE) return saveDbToFile(db);
+    const supabase = getSupabaseClient();
+    if (!supabase) return saveDbToFile(db);
+    await supabase.from(SUPABASE_TABLE).upsert({ key: SUPABASE_DB_KEY, value: db });
 }
 
 function getOrCreateUser(db: PointsDb, address: Address): PointsUser {
@@ -317,7 +381,7 @@ function getBnbUsdRate() {
 }
 
 export async function GET(req: NextRequest) {
-    const db = ensureDb();
+    const db = await loadDb();
     const url = new URL(req.url);
     const user = url.searchParams.get("user");
     const whoami = url.searchParams.get("whoami");
@@ -362,7 +426,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-    const db = ensureDb();
+    const db = await loadDb();
     const ip = getClientIp(req);
     const deviceId = getDeviceId(req);
 
@@ -407,7 +471,7 @@ export async function POST(req: NextRequest) {
         const deviceEntry = trackDeviceAccount(db, deviceId, user);
         // Beta rule: max 3 accounts per device
         if (deviceEntry.accounts.length > 3) {
-            writeDb(db);
+            await saveDb(db);
             return NextResponse.json({ error: "Device account limit reached" }, { status: 403 });
         }
 
@@ -426,7 +490,7 @@ export async function POST(req: NextRequest) {
         r.points += 50;
         r.updatedAt = nowIso();
 
-        writeDb(db);
+        await saveDb(db);
         return NextResponse.json({ ok: true, awarded: 50 });
     }
 
@@ -440,7 +504,7 @@ export async function POST(req: NextRequest) {
         const user = normalizeAddress(userRaw);
         const deviceEntry = trackDeviceAccount(db, deviceId, user);
         if (deviceEntry.accounts.length > 3) {
-            writeDb(db);
+            await saveDb(db);
             return NextResponse.json({ error: "Device account limit reached" }, { status: 403 });
         }
         const u = getOrCreateUser(db, user);
@@ -482,7 +546,7 @@ export async function POST(req: NextRequest) {
             }
         }
 
-        writeDb(db);
+        await saveDb(db);
         return NextResponse.json({ ok: true, earned, bonus, leaderboard: computeLeaderboard(db) });
     }
 
@@ -516,7 +580,7 @@ export async function POST(req: NextRequest) {
 
         const deviceEntry = trackDeviceAccount(db, deviceId, user);
         if (deviceEntry.accounts.length > 3) {
-            writeDb(db);
+            await saveDb(db);
             return NextResponse.json({ error: "Device account limit reached" }, { status: 403 });
         }
 
@@ -552,7 +616,7 @@ export async function POST(req: NextRequest) {
         u.updatedAt = nowIso();
 
         db.shareBoosts[txHash] = { user, extra, createdAt: nowIso() };
-        writeDb(db);
+        await saveDb(db);
 
         return NextResponse.json({ ok: true, extra, leaderboard: computeLeaderboard(db) });
     }
@@ -566,7 +630,7 @@ export async function POST(req: NextRequest) {
 
         const deviceEntry = trackDeviceAccount(db, deviceId, user);
         if (deviceEntry.accounts.length > 3) {
-            writeDb(db);
+            await saveDb(db);
             return NextResponse.json({ error: "Device account limit reached" }, { status: 403 });
         }
 
@@ -610,7 +674,7 @@ export async function POST(req: NextRequest) {
         } else {
             db.taskClaims[taskId][user] = claimEntry;
         }
-        writeDb(db);
+        await saveDb(db);
 
         return NextResponse.json({ ok: true, awarded: Math.max(0, Math.floor(Number(task.points) || 0)), leaderboard: computeLeaderboard(db) });
     }
@@ -678,7 +742,7 @@ export async function POST(req: NextRequest) {
         };
         if (existingIdx >= 0) db.tasks[existingIdx] = entry;
         else db.tasks.unshift(entry);
-        writeDb(db);
+        await saveDb(db);
         return NextResponse.json({ ok: true, task: entry });
     }
 
@@ -691,7 +755,7 @@ export async function POST(req: NextRequest) {
         const id = String(idRaw).slice(0, 64);
         db.tasks = (db.tasks || []).filter((t) => t.id !== id);
         if (db.taskClaims) delete db.taskClaims[id];
-        writeDb(db);
+        await saveDb(db);
         return NextResponse.json({ ok: true });
     }
 
@@ -702,7 +766,7 @@ export async function POST(req: NextRequest) {
 
         db.users = {};
         db.devices = {};
-        writeDb(db);
+        await saveDb(db);
         return NextResponse.json({ ok: true });
     }
 
@@ -724,7 +788,7 @@ export async function POST(req: NextRequest) {
         const u = getOrCreateUser(db, user);
         u.points = Math.max(0, Math.floor(u.points + delta));
         u.updatedAt = nowIso();
-        writeDb(db);
+        await saveDb(db);
         return NextResponse.json({ ok: true, user: { user, points: u.points }, leaderboard: computeLeaderboard(db) });
     }
 
@@ -757,7 +821,7 @@ export async function POST(req: NextRequest) {
             createdAt: existing?.createdAt || now,
             updatedAt: now,
         };
-        writeDb(db);
+        await saveDb(db);
         return NextResponse.json({ ok: true });
     }
 
@@ -781,7 +845,7 @@ export async function POST(req: NextRequest) {
         }
 
         delete db.admins![target];
-        writeDb(db);
+        await saveDb(db);
         return NextResponse.json({ ok: true });
     }
 
