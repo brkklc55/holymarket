@@ -14,8 +14,13 @@
   <rect x="24" y="24" width="208" height="208" rx="48" fill="url(#r)" opacity="0.8"/>
   <rect x="24.5" y="24.5" width="207" height="207" rx="47.5" stroke="#1E293B"/>
 
-  <path d="M128 56L155.5 96.5L203 108L171 141.5L176.5 189L128 170.5L79.5 189L85 141.5L53 108L100.5 96.5L128 56Z" fill="url(#g)"/>
+  <circle cx="128" cy="78" r="18" stroke="#FBBF24" stroke-opacity="0.9" stroke-width="6" fill="none"/>
 
-  <path d="M96 152c16 16 48 16 64 0" stroke="#E2E8F0" stroke-opacity="0.9" stroke-width="10" stroke-linecap="round"/>
-  <path d="M92 118h72" stroke="#E2E8F0" stroke-opacity="0.35" stroke-width="10" stroke-linecap="round"/>
+  <path d="M78 176V96" stroke="url(#g)" stroke-width="18" stroke-linecap="round"/>
+  <path d="M128 176V96" stroke="url(#g)" stroke-width="18" stroke-linecap="round"/>
+  <path d="M78 136H128" stroke="url(#g)" stroke-width="18" stroke-linecap="round"/>
+
+  <path d="M144 176V96" stroke="url(#g)" stroke-width="18" stroke-linecap="round"/>
+  <path d="M144 96L178 140L212 96" stroke="url(#g)" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <path d="M212 176V96" stroke="url(#g)" stroke-width="18" stroke-linecap="round"/>
 </svg>
