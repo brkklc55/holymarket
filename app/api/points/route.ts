@@ -262,7 +262,9 @@ async function ensureUserExistsSupabase(addressRaw: string) {
     const supabase = getSupabaseClient();
     if (!USE_SUPABASE || !supabase) return;
     const address = normalizeAddress(addressRaw);
-    await supabase.from("users").upsert({ address }, { onConflict: "address" });
+
+    const { error } = await supabase.from("users").upsert({ address }, { onConflict: "address" });
+    if (error) throw error;
 }
 
 async function trackDeviceAccountSupabase(params: { deviceId: string; address: string }): Promise<{ accountsCount: number } | null> {
@@ -273,13 +275,21 @@ async function trackDeviceAccountSupabase(params: { deviceId: string; address: s
     const now = nowIso();
 
     await ensureUserExistsSupabase(address);
-    await supabase.from("devices").upsert({ device_id: deviceId, last_seen_at: now }, { onConflict: "device_id" });
-    await supabase.from("device_accounts").upsert({ device_id: deviceId, address, last_seen_at: now }, { onConflict: "device_id,address" });
 
-    const { count } = await supabase
+    const upsertDevice = await supabase.from("devices").upsert({ device_id: deviceId, last_seen_at: now }, { onConflict: "device_id" });
+    if (upsertDevice.error) throw upsertDevice.error;
+
+    const upsertDeviceAccount = await supabase
+        .from("device_accounts")
+        .upsert({ device_id: deviceId, address, last_seen_at: now }, { onConflict: "device_id,address" });
+    if (upsertDeviceAccount.error) throw upsertDeviceAccount.error;
+
+    const { count, error } = await supabase
         .from("device_accounts")
         .select("address", { count: "exact", head: true })
         .eq("device_id", deviceId);
+
+    if (error) throw error;
 
     return { accountsCount: count || 0 };
 }
@@ -296,10 +306,12 @@ async function incrementUserSupabase(params: { address: string; pointsDelta?: nu
     const nextPoints = Math.max(0, Math.floor(Number(current?.points || 0) + pointsDelta));
     const nextVol = Number(current?.volumeBnb || 0) + (Number.isFinite(volumeDelta) && volumeDelta > 0 ? volumeDelta : 0);
 
-    await supabase
+    const { error } = await supabase
         .from("users")
         .update({ points: nextPoints, volume_eth: nextVol, updated_at: nowIso() })
         .eq("address", address);
+
+    if (error) throw error;
 
     return { points: nextPoints, volumeBnb: nextVol, referrer: current?.referrer || null };
 }
@@ -652,21 +664,28 @@ export async function POST(req: NextRequest) {
             }
 
             await ensureUserExistsSupabase(referrer);
-            const supabase = getSupabaseClient();
-            const existing = await getUserFromSupabase(user);
-            if (existing?.referrer) {
-                return NextResponse.json({ ok: true, skipped: true, reason: "already_bound" });
+            try {
+                const supabase = getSupabaseClient();
+                if (!USE_SUPABASE || !supabase) {
+                    return NextResponse.json({ error: "Supabase not configured" }, { status: 500 });
+                }
+
+                const { error: refErr } = await supabase
+                    .from("users")
+                    .update({ referrer_address: referrer, updated_at: nowIso() })
+                    .eq("address", user);
+                if (refErr) throw refErr;
+
+                await incrementUserSupabase({ address: user, pointsDelta: 50 });
+                await incrementUserSupabase({ address: referrer, pointsDelta: 50 });
+
+                return NextResponse.json({ ok: true, awarded: 50, storage: "supabase" });
+            } catch (e: any) {
+                return NextResponse.json(
+                    { error: "Supabase write failed", detail: String(e?.message || e) },
+                    { status: 500 }
+                );
             }
-
-            if (!USE_SUPABASE || !supabase) {
-                return NextResponse.json({ error: "Supabase not configured" }, { status: 500 });
-            }
-
-            await supabase.from("users").update({ referrer_address: referrer, updated_at: nowIso() }).eq("address", user);
-            await incrementUserSupabase({ address: user, pointsDelta: 50 });
-            await incrementUserSupabase({ address: referrer, pointsDelta: 50 });
-
-            return NextResponse.json({ ok: true, awarded: 50, storage: "supabase" });
         }
 
         // Track device and limit multi-account referral abuse
@@ -723,22 +742,29 @@ export async function POST(req: NextRequest) {
             }
             if (!usdAmount) return NextResponse.json({ error: "Missing/invalid amountUsd or amountBnb" }, { status: 400 });
 
-            const earned = Math.floor(usdAmount * 10);
-            if (earned <= 0) return NextResponse.json({ ok: true, earned: 0, bonus: 0 });
+            try {
+                const earned = Math.floor(usdAmount * 10);
+                if (earned <= 0) return NextResponse.json({ ok: true, earned: 0, bonus: 0 });
 
-            const volume = amountBnbRaw !== undefined && amountBnbRaw !== null ? Number(amountBnbRaw) : 0;
-            const updated = await incrementUserSupabase({ address: user, pointsDelta: earned, volumeDelta: volume });
+                const volume = amountBnbRaw !== undefined && amountBnbRaw !== null ? Number(amountBnbRaw) : 0;
+                const updated = await incrementUserSupabase({ address: user, pointsDelta: earned, volumeDelta: volume });
 
-            let bonus = 0;
-            if (updated?.referrer) {
-                bonus = Math.floor(earned * 0.1);
-                if (bonus > 0) {
-                    await incrementUserSupabase({ address: updated.referrer, pointsDelta: bonus });
+                let bonus = 0;
+                if (updated?.referrer) {
+                    bonus = Math.floor(earned * 0.1);
+                    if (bonus > 0) {
+                        await incrementUserSupabase({ address: updated.referrer, pointsDelta: bonus });
+                    }
                 }
-            }
 
-            const leaderboard = await getLeaderboardFromSupabase();
-            return NextResponse.json({ ok: true, earned, bonus, leaderboard: leaderboard || [], storage: "supabase" });
+                const leaderboard = await getLeaderboardFromSupabase();
+                return NextResponse.json({ ok: true, earned, bonus, leaderboard: leaderboard || [], storage: "supabase" });
+            } catch (e: any) {
+                return NextResponse.json(
+                    { error: "Supabase write failed", detail: String(e?.message || e) },
+                    { status: 500 }
+                );
+            }
         }
 
         const deviceEntry = trackDeviceAccount(db, deviceId, user);
