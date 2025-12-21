@@ -7,7 +7,7 @@ import {
     darkTheme,
 } from '@rainbow-me/rainbowkit';
 import { WagmiProvider } from 'wagmi';
-import { bscTestnet } from 'wagmi/chains';
+import { baseSepolia } from 'wagmi/chains';
 import {
     QueryClientProvider,
     QueryClient,
@@ -20,7 +20,7 @@ import '@rainbow-me/rainbowkit/styles.css';
 const config = getDefaultConfig({
     appName: 'HolyMarket',
     projectId: 'YOUR_PROJECT_ID', // Optional for local dev/test
-    chains: [bscTestnet],
+    chains: [baseSepolia],
     ssr: false,
 });
 

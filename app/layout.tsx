@@ -6,7 +6,7 @@ import SplashGate from "./components/SplashGate";
 
 export const metadata: Metadata = {
   title: "HolyMarket - Prediction Markets",
-  description: "Decentralized prediction markets on BNB Testnet",
+  description: "Decentralized prediction markets on Base Sepolia",
   icons: {
     icon: "/logo-premium.svg",
   },

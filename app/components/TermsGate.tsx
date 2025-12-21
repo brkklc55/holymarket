@@ -43,7 +43,7 @@ export default function TermsGate({ children }: Props) {
             sections: [
                 {
                     title: "Beta / Testnet",
-                    body: "HolyMarket is a beta test running on BNB Smart Chain Testnet. The app, smart contracts, points system and UI may change or break at any time.",
+                    body: "HolyMarket is a beta test running on Base Sepolia. The app, smart contracts, points system and UI may change or break at any time.",
                 },
                 {
                     title: "No financial advice",
@@ -126,22 +126,22 @@ export default function TermsGate({ children }: Props) {
                         </label>
                         <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <a
-                                href="https://testnet.bscscan.com"
+                                href="https://sepolia.basescan.org"
                                 target="_blank"
                                 rel="noreferrer"
                                 className="p-3 rounded-xl bg-slate-950/30 border border-slate-800 hover:border-slate-700 transition-all text-center"
                             >
                                 <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Explorer</div>
-                                <div className="mt-1 text-sm font-black text-slate-200">BscScan Testnet</div>
+                                <div className="mt-1 text-sm font-black text-slate-200">BaseScan (Sepolia)</div>
                             </a>
                             <a
-                                href="https://testnet.binance.org/faucet-smart"
+                                href="https://portal.cdp.coinbase.com/products/faucet"
                                 target="_blank"
                                 rel="noreferrer"
                                 className="p-3 rounded-xl bg-slate-950/30 border border-slate-800 hover:border-slate-700 transition-all text-center"
                             >
                                 <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Faucet</div>
-                                <div className="mt-1 text-sm font-black text-slate-200">Get Test BNB</div>
+                                <div className="mt-1 text-sm font-black text-slate-200">Get Test ETH</div>
                             </a>
                         </div>
                     </div>

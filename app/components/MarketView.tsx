@@ -1680,24 +1680,24 @@ export default function MarketView() {
 
                             <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <a
-                                    href="https://www.coinbase.com/faucets/base-ethereum-sepolia-faucet"
+                                    href="https://portal.cdp.coinbase.com/products/faucet"
                                     target="_blank"
                                     rel="noreferrer"
                                     className="p-4 rounded-xl bg-slate-950/40 border border-slate-800 hover:border-slate-700 transition-all"
                                 >
                                     <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Official</div>
                                     <div className="mt-1 text-sm font-black text-slate-200">Base Sepolia Faucet</div>
-                                    <div className="mt-1 text-[11px] text-slate-500">coinbase.com</div>
+                                    <div className="mt-1 text-[11px] text-slate-500">portal.cdp.coinbase.com</div>
                                 </a>
                                 <a
-                                    href="https://sepolia-faucet.base.org"
+                                    href="https://thirdweb.com/base-sepolia-testnet"
                                     target="_blank"
                                     rel="noreferrer"
                                     className="p-4 rounded-xl bg-slate-950/40 border border-slate-800 hover:border-slate-700 transition-all"
                                 >
                                     <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Alt</div>
                                     <div className="mt-1 text-sm font-black text-slate-200">Base Sepolia Faucet</div>
-                                    <div className="mt-1 text-[11px] text-slate-500">sepolia-faucet.base.org</div>
+                                    <div className="mt-1 text-[11px] text-slate-500">thirdweb.com</div>
                                 </a>
                             </div>
 

@@ -25,7 +25,7 @@ export default function SplashGate({ children }: Props) {
                 <div className="mt-6 text-3xl font-black tracking-tight text-white">
                     HOLY<span className="text-gradient">MARKET</span>
                 </div>
-                <div className="mt-2 text-sm text-slate-400">Prediction markets on BNB Testnet</div>
+                <div className="mt-2 text-sm text-slate-400">Prediction markets on Base Sepolia</div>
                 <div className="mt-6 flex items-center justify-center">
                     <div className="w-12 h-12 border-4 border-sky-500 border-t-transparent rounded-full animate-spin" />
                 </div>
