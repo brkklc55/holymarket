@@ -174,6 +174,18 @@ async function validateShareBoostTx(params: { txHash: string; user: string }) {
 }
 
 function ensureDb(): PointsDb {
+    if (process.env.VERCEL && !fs.existsSync(DATA_FILE)) {
+        try {
+            const seedFile = path.join(process.cwd(), "data", "points.json");
+            if (fs.existsSync(seedFile)) {
+                fs.mkdirSync(path.dirname(DATA_FILE), { recursive: true });
+                fs.copyFileSync(seedFile, DATA_FILE);
+            }
+        } catch {
+            // ignore bootstrap failures
+        }
+    }
+
     if (!fs.existsSync(DATA_FILE)) {
         fs.mkdirSync(path.dirname(DATA_FILE), { recursive: true });
         const initial: PointsDb = { users: {}, devices: {}, admins: {}, shareBoosts: {}, tasks: [], taskClaims: {} };
