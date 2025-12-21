@@ -90,9 +90,9 @@ export default function TermsGate({ children }: Props) {
     return (
         <div className="fixed inset-0 z-[9999]">
             <div className="absolute inset-0 bg-slate-950/70 backdrop-blur-sm" />
-            <div className="relative w-full min-h-[100dvh] overflow-y-auto overscroll-contain">
-                <div className="w-full min-h-[100dvh] flex items-start justify-center p-6">
-                    <div className="w-full max-w-2xl premium-card p-6 sm:p-8 bg-slate-950/90 border border-slate-800 flex flex-col h-[calc(100dvh-3rem)] min-h-0 overflow-hidden">
+            <div className="relative h-full w-full overflow-y-auto overscroll-contain">
+                <div className="w-full min-h-full flex items-start justify-center p-6">
+                    <div className="w-full max-w-2xl premium-card p-6 sm:p-8 bg-slate-950/90 border border-slate-800 flex flex-col h-[90vh] max-h-[90vh] min-h-0 overflow-hidden">
                         <div className="flex items-start justify-between gap-4">
                             <div>
                                 <div className="text-[10px] font-black text-sky-400 uppercase tracking-[0.25em]">BETA ACCESS</div>
