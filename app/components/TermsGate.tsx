@@ -90,78 +90,80 @@ export default function TermsGate({ children }: Props) {
     return (
         <div className="fixed inset-0 z-[9999]">
             <div className="absolute inset-0 bg-slate-950/70 backdrop-blur-sm" />
-            <div className="relative h-full w-full flex items-center justify-center p-6">
-                <div className="w-full max-w-2xl premium-card p-6 sm:p-8 bg-slate-950/90 border border-slate-800 flex flex-col max-h-[90vh] min-h-0">
-                    <div className="flex items-start justify-between gap-4">
-                        <div>
-                            <div className="text-[10px] font-black text-sky-400 uppercase tracking-[0.25em]">BETA ACCESS</div>
-                            <h2 className="mt-2 text-2xl font-black text-white">{disclaimerText.title}</h2>
-                            <p className="mt-2 text-sm text-slate-400">{disclaimerText.subtitle}</p>
-                        </div>
-                        <span className="px-2 py-1 rounded-full bg-amber-500/10 text-amber-400 text-[10px] font-black border border-amber-500/20">TESTNET</span>
-                    </div>
-
-                    <div
-                        className="mt-6 flex-1 min-h-0 overflow-y-auto pr-2 custom-scrollbar overscroll-contain touch-pan-y"
-                        style={{ WebkitOverflowScrolling: "touch" }}
-                    >
-                        <div className="space-y-4">
-                            {disclaimerText.sections.map((s) => (
-                                <div key={s.title} className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800">
-                                    <div className="text-sm font-extrabold text-white">{s.title}</div>
-                                    <div className="mt-1 text-[12px] leading-relaxed text-slate-400">{s.body}</div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
-                    <div className="mt-6 p-4 rounded-2xl bg-slate-900/40 border border-slate-800">
-                        <label className="flex items-start gap-3 cursor-pointer">
-                            <input
-                                type="checkbox"
-                                checked={checked}
-                                onChange={(e) => setChecked(e.target.checked)}
-                                className="mt-1 h-4 w-4"
-                            />
-                            <div className="text-[12px] text-slate-300">
-                                I have read and understand the disclaimer. I agree to the terms and acknowledge the risks.
+            <div className="relative w-full min-h-[100dvh] overflow-y-auto overscroll-contain">
+                <div className="w-full min-h-[100dvh] flex items-start justify-center p-6">
+                    <div className="w-full max-w-2xl premium-card p-6 sm:p-8 bg-slate-950/90 border border-slate-800 flex flex-col max-h-[calc(100dvh-3rem)] min-h-0">
+                        <div className="flex items-start justify-between gap-4">
+                            <div>
+                                <div className="text-[10px] font-black text-sky-400 uppercase tracking-[0.25em]">BETA ACCESS</div>
+                                <h2 className="mt-2 text-2xl font-black text-white">{disclaimerText.title}</h2>
+                                <p className="mt-2 text-sm text-slate-400">{disclaimerText.subtitle}</p>
                             </div>
-                        </label>
-                        <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <a
-                                href="https://testnet.bscscan.com"
-                                target="_blank"
-                                rel="noreferrer"
-                                className="p-3 rounded-xl bg-slate-950/30 border border-slate-800 hover:border-slate-700 transition-all text-center"
-                            >
-                                <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Explorer</div>
-                                <div className="mt-1 text-sm font-black text-slate-200">BscScan Testnet</div>
-                            </a>
-                            <a
-                                href="https://testnet.binance.org/faucet-smart"
-                                target="_blank"
-                                rel="noreferrer"
-                                className="p-3 rounded-xl bg-slate-950/30 border border-slate-800 hover:border-slate-700 transition-all text-center"
-                            >
-                                <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Faucet</div>
-                                <div className="mt-1 text-sm font-black text-slate-200">Get Test BNB</div>
-                            </a>
+                            <span className="px-2 py-1 rounded-full bg-amber-500/10 text-amber-400 text-[10px] font-black border border-amber-500/20">TESTNET</span>
                         </div>
-                    </div>
 
-                    <div className="mt-6 flex flex-col sm:flex-row gap-3 sm:justify-end">
-                        <button
-                            type="button"
-                            disabled={!checked}
-                            onClick={onAccept}
-                            className="premium-btn py-3 px-5 disabled:opacity-60 disabled:cursor-not-allowed"
+                        <div
+                            className="mt-6 flex-1 min-h-0 overflow-y-auto pr-2 custom-scrollbar overscroll-contain touch-pan-y"
+                            style={{ WebkitOverflowScrolling: "touch" }}
                         >
-                            Accept & Continue
-                        </button>
-                    </div>
+                            <div className="space-y-4">
+                                {disclaimerText.sections.map((s) => (
+                                    <div key={s.title} className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800">
+                                        <div className="text-sm font-extrabold text-white">{s.title}</div>
+                                        <div className="mt-1 text-[12px] leading-relaxed text-slate-400">{s.body}</div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
 
-                    <div className="mt-4 text-[11px] text-slate-600">
-                        By continuing you confirm you are using the beta version on testnet and accept the disclaimer.
+                        <div className="mt-6 p-4 rounded-2xl bg-slate-900/40 border border-slate-800">
+                            <label className="flex items-start gap-3 cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    checked={checked}
+                                    onChange={(e) => setChecked(e.target.checked)}
+                                    className="mt-1 h-4 w-4"
+                                />
+                                <div className="text-[12px] text-slate-300">
+                                    I have read and understand the disclaimer. I agree to the terms and acknowledge the risks.
+                                </div>
+                            </label>
+                            <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <a
+                                    href="https://testnet.bscscan.com"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="p-3 rounded-xl bg-slate-950/30 border border-slate-800 hover:border-slate-700 transition-all text-center"
+                                >
+                                    <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Explorer</div>
+                                    <div className="mt-1 text-sm font-black text-slate-200">BscScan Testnet</div>
+                                </a>
+                                <a
+                                    href="https://testnet.binance.org/faucet-smart"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="p-3 rounded-xl bg-slate-950/30 border border-slate-800 hover:border-slate-700 transition-all text-center"
+                                >
+                                    <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Faucet</div>
+                                    <div className="mt-1 text-sm font-black text-slate-200">Get Test BNB</div>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div className="mt-6 flex flex-col sm:flex-row gap-3 sm:justify-end">
+                            <button
+                                type="button"
+                                disabled={!checked}
+                                onClick={onAccept}
+                                className="premium-btn py-3 px-5 disabled:opacity-60 disabled:cursor-not-allowed"
+                            >
+                                Accept & Continue
+                            </button>
+                        </div>
+
+                        <div className="mt-4 text-[11px] text-slate-600">
+                            By continuing you confirm you are using the beta version on testnet and accept the disclaimer.
+                        </div>
                     </div>
                 </div>
             </div>
