@@ -41,6 +41,9 @@ export default function MarketView() {
     const [claimableAmount, setClaimableAmount] = useState("0");
     const [historyUserBets, setHistoryUserBets] = useState<Record<string, { yesAmount: bigint; noAmount: bigint; claimed: boolean }>>({});
     const [historyCancelled, setHistoryCancelled] = useState<Record<string, boolean>>({});
+    const [marketSearch, setMarketSearch] = useState("");
+    const [marketFilter, setMarketFilter] = useState<"all" | "live" | "ended" | "cancelled">("all");
+    const [marketSort, setMarketSort] = useState<"newest" | "ending" | "volume">("newest");
 
     const formatTimeLeft = (totalSeconds: number) => {
         if (!Number.isFinite(totalSeconds) || totalSeconds <= 0) return "ENDED";
@@ -982,47 +985,144 @@ export default function MarketView() {
                 {activeTab === "market" && market && (
                     <div className="animate-in fade-in duration-500 flex flex-col h-full">
                         {/* Horizontal Market List */}
-                        <div className="flex gap-3 overflow-x-auto pb-6 mb-6 custom-scrollbar no-scrollbar">
-                            {allMarkets.map((m) => (
-                                <button
-                                    key={m.id.toString()}
-                                    onClick={() => setSelectedMarketId(m.id)}
-                                    className={`flex-shrink-0 w-48 p-3 rounded-xl border transition-all text-left ${selectedMarketId === m.id ? "border-sky-500 bg-sky-500/10" : "border-slate-800 bg-slate-900/40 hover:border-slate-700"}`}
-                                >
-                                    <div className="flex justify-between items-center mb-1">
-                                        <span
-                                            className={`text-[8px] font-black px-1.5 py-0.5 rounded border ${
-                                                m.cancelled
-                                                    ? "bg-amber-500/10 text-amber-400 border-amber-500/20"
-                                                    : m.resolved
-                                                        ? "bg-slate-900/60 text-slate-400 border-slate-800"
-                                                        : "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
-                                            }`}
-                                        >
-                                            {m.cancelled ? "CANCELLED" : m.resolved ? `ENDED • ${m.outcome ? "YES" : "NO"}` : "LIVE"}
-                                        </span>
-                                        <span className="text-[8px] font-mono text-slate-600">#{m.id.toString()}</span>
+                        {(() => {
+                            const nowSec = Math.floor(Date.now() / 1000);
+                            const q = marketSearch.trim().toLowerCase();
+                            const statusOf = (m: any) => {
+                                if (m.cancelled) return "cancelled" as const;
+                                if (m.resolved) return "ended" as const;
+                                const end = Number(m.endTime);
+                                if (Number.isFinite(end) && nowSec >= end) return "ended" as const;
+                                return "live" as const;
+                            };
+
+                            const filtered = allMarkets
+                                .filter((m) => {
+                                    if (q && !String(m.question || "").toLowerCase().includes(q)) return false;
+                                    if (marketFilter === "all") return true;
+                                    return statusOf(m) === marketFilter;
+                                })
+                                .sort((a, b) => {
+                                    if (marketSort === "volume") {
+                                        const av = Number(a.yesPool + a.noPool);
+                                        const bv = Number(b.yesPool + b.noPool);
+                                        return bv - av;
+                                    }
+                                    if (marketSort === "ending") {
+                                        const ae = Number(a.endTime);
+                                        const be = Number(b.endTime);
+                                        if (!Number.isFinite(ae) && !Number.isFinite(be)) return 0;
+                                        if (!Number.isFinite(ae)) return 1;
+                                        if (!Number.isFinite(be)) return -1;
+                                        return ae - be;
+                                    }
+                                    return Number(b.id - a.id);
+                                });
+
+                            return (
+                                <>
+                                    <div className="flex flex-col md:flex-row md:items-center gap-3 mb-4">
+                                        <div className="flex-1">
+                                            <input
+                                                value={marketSearch}
+                                                onChange={(e) => setMarketSearch(e.target.value)}
+                                                placeholder="Search markets"
+                                                className="w-full px-3 py-2 rounded-xl bg-slate-900/40 border border-slate-800 text-xs text-slate-200 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-sky-500/30"
+                                            />
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <button
+                                                type="button"
+                                                onClick={() => setMarketFilter("all")}
+                                                className={`px-3 py-2 rounded-xl text-[10px] font-black border transition-all ${marketFilter === "all" ? "bg-sky-500/10 text-sky-400 border-sky-500/20" : "bg-slate-900/40 text-slate-400 border-slate-800 hover:border-slate-700 hover:text-white"}`}
+                                            >
+                                                ALL
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => setMarketFilter("live")}
+                                                className={`px-3 py-2 rounded-xl text-[10px] font-black border transition-all ${marketFilter === "live" ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" : "bg-slate-900/40 text-slate-400 border-slate-800 hover:border-slate-700 hover:text-white"}`}
+                                            >
+                                                LIVE
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => setMarketFilter("ended")}
+                                                className={`px-3 py-2 rounded-xl text-[10px] font-black border transition-all ${marketFilter === "ended" ? "bg-slate-900/60 text-slate-300 border-slate-800" : "bg-slate-900/40 text-slate-400 border-slate-800 hover:border-slate-700 hover:text-white"}`}
+                                            >
+                                                ENDED
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => setMarketFilter("cancelled")}
+                                                className={`px-3 py-2 rounded-xl text-[10px] font-black border transition-all ${marketFilter === "cancelled" ? "bg-amber-500/10 text-amber-400 border-amber-500/20" : "bg-slate-900/40 text-slate-400 border-slate-800 hover:border-slate-700 hover:text-white"}`}
+                                            >
+                                                CANCELLED
+                                            </button>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <select
+                                                value={marketSort}
+                                                onChange={(e) => setMarketSort(e.target.value as any)}
+                                                className="px-3 py-2 rounded-xl bg-slate-900/40 border border-slate-800 text-[10px] font-black text-slate-200 focus:outline-none"
+                                            >
+                                                <option value="newest">Newest</option>
+                                                <option value="ending">Ending soon</option>
+                                                <option value="volume">Top volume</option>
+                                            </select>
+                                        </div>
                                     </div>
-                                    <p className="text-[10px] font-bold text-slate-200 truncate mb-2">{m.question}</p>
-                                    <div className="text-[9px] font-black text-sky-400">
-                                        {(Number(m.yesPool + m.noPool) / 1e18).toFixed(3)} ETH
+
+                                    <div className="flex gap-3 overflow-x-auto pb-6 mb-6 custom-scrollbar no-scrollbar">
+                                        {filtered.map((m) => (
+                                            <button
+                                                key={m.id.toString()}
+                                                onClick={() => setSelectedMarketId(m.id)}
+                                                className={`flex-shrink-0 w-48 p-3 rounded-xl border transition-all text-left ${selectedMarketId === m.id ? "border-sky-500 bg-sky-500/10" : "border-slate-800 bg-slate-900/40 hover:border-slate-700"}`}
+                                            >
+                                                <div className="flex justify-between items-center mb-1">
+                                                    <span
+                                                        className={`text-[8px] font-black px-1.5 py-0.5 rounded border ${
+                                                            m.cancelled
+                                                                ? "bg-amber-500/10 text-amber-400 border-amber-500/20"
+                                                                : m.resolved
+                                                                    ? "bg-slate-900/60 text-slate-400 border-slate-800"
+                                                                    : "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                                                        }`}
+                                                    >
+                                                        {m.cancelled ? "CANCELLED" : m.resolved ? `ENDED • ${m.outcome ? "YES" : "NO"}` : "LIVE"}
+                                                    </span>
+                                                    <span className="text-[8px] font-mono text-slate-600">#{m.id.toString()}</span>
+                                                </div>
+                                                <p className="text-[10px] font-bold text-slate-200 truncate mb-2">{m.question}</p>
+                                                <div className="text-[9px] font-black text-sky-400">
+                                                    {(Number(m.yesPool + m.noPool) / 1e18).toFixed(3)} ETH
+                                                </div>
+                                                <div className="mt-1 flex justify-between text-[9px] font-bold text-slate-500">
+                                                    <span>YES {(Number(m.yesPool) / 1e18).toFixed(3)}</span>
+                                                    <span>NO {(Number(m.noPool) / 1e18).toFixed(3)}</span>
+                                                </div>
+                                                <div className="mt-2 h-1.5 w-full rounded-full bg-slate-800 overflow-hidden">
+                                                    {(() => {
+                                                        const y = Number(m.yesPool);
+                                                        const n = Number(m.noPool);
+                                                        const total = y + n;
+                                                        const pct = total > 0 ? Math.max(4, Math.min(96, (y / total) * 100)) : 50;
+                                                        return <div className="h-full bg-emerald-500/70" style={{ width: `${pct}%` }} />;
+                                                    })()}
+                                                </div>
+                                            </button>
+                                        ))}
+                                        {filtered.length === 0 && (
+                                            <div className="flex-shrink-0 w-full p-6 rounded-2xl bg-slate-900/30 border border-dashed border-slate-800 text-center">
+                                                <div className="text-sm font-black text-slate-200">No markets found</div>
+                                                <div className="mt-1 text-xs text-slate-500">Try clearing filters or search.</div>
+                                            </div>
+                                        )}
                                     </div>
-                                    <div className="mt-1 flex justify-between text-[9px] font-bold text-slate-500">
-                                        <span>YES {(Number(m.yesPool) / 1e18).toFixed(3)}</span>
-                                        <span>NO {(Number(m.noPool) / 1e18).toFixed(3)}</span>
-                                    </div>
-                                    <div className="mt-2 h-1.5 w-full rounded-full bg-slate-800 overflow-hidden">
-                                        {(() => {
-                                            const y = Number(m.yesPool);
-                                            const n = Number(m.noPool);
-                                            const total = y + n;
-                                            const pct = total > 0 ? Math.max(4, Math.min(96, (y / total) * 100)) : 50;
-                                            return <div className="h-full bg-emerald-500/70" style={{ width: `${pct}%` }} />;
-                                        })()}
-                                    </div>
-                                </button>
-                            ))}
-                        </div>
+                                </>
+                            );
+                        })()}
                         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-6">
                             <div className="flex-1 min-w-0">
                                 <div className="flex flex-wrap items-center gap-2 mb-2">
