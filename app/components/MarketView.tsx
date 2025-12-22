@@ -344,12 +344,12 @@ export default function MarketView() {
                 const isMiniApp = await sdk.isInMiniApp().catch(() => false);
                 if (!isMiniApp) return;
 
-                // Avoid re-prompting if the user stays in the app
-                window.sessionStorage.setItem(key, "1");
-
                 // Give the UI a moment to settle before prompting
                 await new Promise((r) => setTimeout(r, 600));
                 await sdk.actions.addMiniApp();
+
+                // Avoid re-prompting if the user stays in the app
+                window.sessionStorage.setItem(key, "1");
             } catch {
                 // If it fails, don't spam retries.
                 try {
@@ -362,6 +362,47 @@ export default function MarketView() {
 
         run();
     }, []);
+
+    const handleResetNotificationPrompt = async () => {
+        try {
+            if (typeof window !== "undefined") {
+                try {
+                    window.sessionStorage.removeItem("holymarket_prompt_addminiapp_v1");
+                } catch {
+                    // ignore
+                }
+            }
+
+            await sdk.actions.ready();
+
+            let isMiniApp = false;
+            try {
+                isMiniApp = await sdk.isInMiniApp();
+            } catch {
+                isMiniApp = false;
+            }
+
+            if (!isMiniApp) {
+                toast({
+                    title: "Not in Warpcast Mini App",
+                    message: "Open HolyMarket inside Warpcast mobile Mini Apps.",
+                    variant: "warning",
+                });
+                return;
+            }
+
+            await sdk.actions.addMiniApp();
+            toast({ title: "Requested", message: "Check the Warpcast prompt.", variant: "success" });
+        } catch (e: any) {
+            const name = String(e?.name || "");
+            const msg = String(e?.shortMessage || e?.message || e || "Could not open Warpcast prompt.");
+            toast({
+                title: "Reset prompt failed",
+                message: `${name ? `${name}: ` : ""}${msg}`,
+                variant: "error",
+            });
+        }
+    };
 
     useEffect(() => {
         const total = computeDurationSeconds(durationDays, durationHours, durationMinutes);
@@ -1273,6 +1314,13 @@ export default function MarketView() {
                                     title="Enable Warpcast notifications"
                                 >
                                     Enable notifications
+                                </button>
+                                <button
+                                    onClick={handleResetNotificationPrompt}
+                                    className="px-3 py-2.5 rounded-xl bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 transition-all text-xs font-bold"
+                                    title="Reset and re-open Warpcast add prompt"
+                                >
+                                    Reset prompt
                                 </button>
                                 <button
                                     onClick={() => window.open(`https://warpcast.com/~/compose?text=Predicting on HolyMarket: ${market.question}&embeds[]=${window.location.href}`)}
