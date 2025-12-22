@@ -263,6 +263,7 @@ export default function MarketView() {
     };
 
     const fetchPoints = async () => {
+        setLeaderboardLoading(true);
         try {
             const url = userAddress
                 ? `/api/points?user=${encodeURIComponent(userAddress)}&page=1&limit=${leaderboardLimit}`
@@ -283,39 +284,32 @@ export default function MarketView() {
             }
         } catch (e) {
             console.error("Failed to fetch points:", e);
+        } finally {
+            setLeaderboardLoading(false);
         }
     };
 
-    const loadMoreLeaderboard = async () => {
-        if (leaderboardLoading || !leaderboardHasMore) return;
+    const fetchLeaderboardPage = async (page: number) => {
+        const p = Math.max(1, Math.floor(page));
         setLeaderboardLoading(true);
         try {
-            const nextPage = leaderboardPage + 1;
             const url = userAddress
-                ? `/api/points?user=${encodeURIComponent(userAddress)}&page=${nextPage}&limit=${leaderboardLimit}`
-                : `/api/points?page=${nextPage}&limit=${leaderboardLimit}`;
+                ? `/api/points?user=${encodeURIComponent(userAddress)}&page=${p}&limit=${leaderboardLimit}`
+                : `/api/points?page=${p}&limit=${leaderboardLimit}`;
             const res = await fetch(url, {
                 cache: "no-store",
                 headers: typeof window !== "undefined" ? { "x-device-id": getDeviceId() } : undefined,
             });
             if (!res.ok) return;
             const json = await res.json();
-            const next = Array.isArray(json?.leaderboard) ? json.leaderboard : [];
-            setPointsLeaderboard((prev) => {
-                const seen = new Set(prev.map((e) => e.user.toLowerCase()));
-                const merged = [...prev];
-                for (const e of next) {
-                    const k = String(e.user).toLowerCase();
-                    if (seen.has(k)) continue;
-                    seen.add(k);
-                    merged.push(e);
-                }
-                return merged;
-            });
-            setLeaderboardPage(nextPage);
+            setPointsLeaderboard(json.leaderboard || []);
+            setLeaderboardPage(p);
             setLeaderboardHasMore(Boolean(json?.hasMore));
+            if (json.user?.points !== undefined && json.user?.points !== null) {
+                setUserPoints(Number(json.user.points) || 0);
+            }
         } catch (e) {
-            console.error("Failed to load more leaderboard:", e);
+            console.error("Failed to fetch leaderboard page:", e);
         } finally {
             setLeaderboardLoading(false);
         }
@@ -1718,6 +1712,7 @@ export default function MarketView() {
                             <button
                                 type="button"
                                 onClick={() => fetchPoints()}
+                                disabled={leaderboardLoading}
                                 className="px-3 py-1.5 rounded-full bg-slate-900/40 border border-slate-800 text-[10px] font-extrabold text-slate-400 hover:text-white hover:border-slate-700 transition-all"
                             >
                                 Refresh
@@ -1747,16 +1742,27 @@ export default function MarketView() {
                                 </div>
                             )}
                         </div>
-                        {pointsLeaderboard.length > 0 && leaderboardHasMore && (
+                        <div className="flex items-center justify-between gap-3">
                             <button
                                 type="button"
-                                onClick={loadMoreLeaderboard}
-                                disabled={leaderboardLoading}
-                                className="w-full py-3 rounded-xl bg-slate-900/40 border border-slate-800 text-xs font-bold text-slate-300 hover:border-slate-700 hover:text-white transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                                onClick={() => fetchLeaderboardPage(leaderboardPage - 1)}
+                                disabled={leaderboardLoading || leaderboardPage <= 1}
+                                className="flex-1 py-3 rounded-xl bg-slate-900/40 border border-slate-800 text-xs font-bold text-slate-300 hover:border-slate-700 hover:text-white transition-all disabled:opacity-60 disabled:cursor-not-allowed"
                             >
-                                {leaderboardLoading ? "Loading..." : "Load more"}
+                                Prev
                             </button>
-                        )}
+                            <div className="px-3 py-2 rounded-xl bg-slate-900/30 border border-slate-800 text-xs font-bold text-slate-400">
+                                Page {leaderboardPage}
+                            </div>
+                            <button
+                                type="button"
+                                onClick={() => fetchLeaderboardPage(leaderboardPage + 1)}
+                                disabled={leaderboardLoading || !leaderboardHasMore}
+                                className="flex-1 py-3 rounded-xl bg-slate-900/40 border border-slate-800 text-xs font-bold text-slate-300 hover:border-slate-700 hover:text-white transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                            >
+                                Next
+                            </button>
+                        </div>
                     </div>
                 )}
 
