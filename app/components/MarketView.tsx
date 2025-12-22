@@ -5,7 +5,7 @@ import { createPublicClient, http, parseEther, createWalletClient, custom, forma
 import { baseSepolia } from "viem/chains";
 import { useAccount, useChainId } from "wagmi";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { User, History, TrendingUp, Share2, Twitter, Info } from "lucide-react";
+import { TrendingUp, Share2, Twitter, Info } from "lucide-react";
 import { PREDICTION_MARKET_ADDRESS, PREDICTION_MARKET_ABI } from "../constants";
 import { useToast } from "./ui/ToastProvider";
 
@@ -15,7 +15,6 @@ export default function MarketView() {
     const { toast } = useToast();
     const [selectedMarketId, setSelectedMarketId] = useState<bigint>(1n);
     const [marketCount, setMarketCount] = useState<bigint>(0n);
-    const [resetAfterMarketId, setResetAfterMarketId] = useState<bigint>(0n);
     const [market, setMarket] = useState<any>(null);
     const [allMarkets, setAllMarkets] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
@@ -23,7 +22,7 @@ export default function MarketView() {
     const [amount, setAmount] = useState("0.001");
     const [walletBalance, setWalletBalance] = useState<bigint | null>(null);
     const [walletBalanceLoading, setWalletBalanceLoading] = useState(false);
-    const [activeTab, setActiveTab] = useState<"market" | "leaderboard" | "activity" | "airdrop" | "tasks" | "admin" | "list" | "profile">("market");
+    const [activeTab, setActiveTab] = useState<"market" | "leaderboard" | "activity" | "airdrop" | "admin" | "list" | "profile">("market");
     const [leaderboard, setLeaderboard] = useState<any[]>([]);
     const [recentBets, setRecentBets] = useState<any[]>([]);
     const [userHistory, setUserHistory] = useState<any[]>([]);
@@ -41,35 +40,13 @@ export default function MarketView() {
     const [userBet, setUserBet] = useState<{ yesAmount: bigint; noAmount: bigint; claimed: boolean } | null>(null);
     const [claimableAmount, setClaimableAmount] = useState("0");
     const [historyUserBets, setHistoryUserBets] = useState<Record<string, { yesAmount: bigint; noAmount: bigint; claimed: boolean }>>({});
+    const [historyCancelled, setHistoryCancelled] = useState<Record<string, boolean>>({});
 
     const marketAddress = (process.env.NEXT_PUBLIC_PREDICTION_MARKET_ADDRESS || PREDICTION_MARKET_ADDRESS) as `0x${string}`;
 
     const [userPoints, setUserPoints] = useState<number>(0);
     const [pointsLeaderboard, setPointsLeaderboard] = useState<Array<{ user: string; points: number }>>([]);
 
-    const [tasks, setTasks] = useState<any[]>([]);
-    const [taskClaims, setTaskClaims] = useState<Record<string, boolean>>({});
-    const [taskStats, setTaskStats] = useState<{ points: number; volumeBnb: number; followTasks: number } | null>(null);
-    const [tasksLoading, setTasksLoading] = useState(false);
-    const [taskClaimBusy, setTaskClaimBusy] = useState<Record<string, boolean>>({});
-    const [taskOpened, setTaskOpened] = useState<Record<string, boolean>>({});
-
-    // Admin Task Creation State
-    const [adminTasks, setAdminTasks] = useState<any[]>([]);
-    const [taskFormId, setTaskFormId] = useState("");
-    const [taskFormType, setTaskFormType] = useState<"link" | "follow" | "checkin">("link");
-    const [taskFormRepeat, setTaskFormRepeat] = useState<"none" | "daily">("none");
-    const [taskFormTitle, setTaskFormTitle] = useState("");
-    const [taskFormDescription, setTaskFormDescription] = useState("");
-    const [taskFormUrl, setTaskFormUrl] = useState("");
-    const [taskFormPoints, setTaskFormPoints] = useState("50");
-    const [taskFormActive, setTaskFormActive] = useState(true);
-    const [taskFormStartAt, setTaskFormStartAt] = useState("");
-    const [taskFormEndAt, setTaskFormEndAt] = useState("");
-    const [taskReqMinPoints, setTaskReqMinPoints] = useState("");
-    const [taskReqMinVolumeBnb, setTaskReqMinVolumeBnb] = useState("");
-    const [taskReqMinFollowTasks, setTaskReqMinFollowTasks] = useState("");
-    const [adminTaskBusy, setAdminTaskBusy] = useState(false);
 
     // Admin Creation State
     const [newQuestion, setNewQuestion] = useState("");
@@ -90,30 +67,6 @@ export default function MarketView() {
         }
     };
 
-    const toLocalDateTimeInput = (iso?: string | null) => {
-        if (!iso) return "";
-        const d = new Date(iso);
-        if (Number.isNaN(d.getTime())) return "";
-        const pad = (n: number) => String(n).padStart(2, "0");
-        const y = d.getFullYear();
-        const m = pad(d.getMonth() + 1);
-        const day = pad(d.getDate());
-        const hh = pad(d.getHours());
-        const mm = pad(d.getMinutes());
-        return `${y}-${m}-${day}T${hh}:${mm}`;
-    };
-
-    const normalizeDateInputToIso = (value: string) => {
-        const v = value.trim();
-        if (!v) return undefined;
-        // If user pasted an ISO string with timezone, keep it.
-        if (v.endsWith("Z") || /[+-]\d\d:\d\d$/.test(v)) return v;
-        // datetime-local (no timezone) => interpret as local time and convert to UTC ISO
-        const d = new Date(v);
-        if (Number.isNaN(d.getTime())) return undefined;
-        return d.toISOString();
-    };
-
     const fetchWalletBalance = async () => {
         if (!userAddress || !isConnected || needsNetworkSwitch) {
             setWalletBalance(null);
@@ -130,212 +83,6 @@ export default function MarketView() {
         }
     };
 
-    const fetchTasks = async () => {
-        setTasksLoading(true);
-        try {
-            const params = new URLSearchParams({ tasks: "1" });
-            if (userAddress) params.set("user", userAddress);
-            const res = await fetch(`/api/points?${params.toString()}`, {
-                cache: "no-store",
-                headers: { "x-device-id": getDeviceId() },
-            });
-            const json = await res.json().catch(() => null);
-            if (!res.ok) {
-                toast({ title: "Failed to load tasks", message: json?.error || "Unknown error", variant: "error" });
-                return;
-            }
-            setTasks(Array.isArray(json?.tasks) ? json.tasks : []);
-            setTaskClaims(json?.claims && typeof json.claims === "object" ? json.claims : {});
-            setTaskStats(json?.stats || null);
-        } catch (e: any) {
-            toast({ title: "Failed to load tasks", message: e?.message || "Unknown error", variant: "error" });
-        } finally {
-            setTasksLoading(false);
-        }
-    };
-
-    const taskOpenedKey = (addr: string) => `holymarket_tasks_opened_v1_${addr.toLowerCase()}`;
-
-    const loadTaskOpened = (addr?: string | null) => {
-        if (!addr) {
-            setTaskOpened({});
-            return;
-        }
-        try {
-            const raw = window.localStorage.getItem(taskOpenedKey(addr));
-            const parsed = raw ? JSON.parse(raw) : {};
-            if (parsed && typeof parsed === "object") {
-                const map: Record<string, boolean> = {};
-                for (const [k, v] of Object.entries(parsed)) {
-                    map[String(k)] = Boolean(v);
-                }
-                setTaskOpened(map);
-            } else {
-                setTaskOpened({});
-            }
-        } catch {
-            setTaskOpened({});
-        }
-    };
-
-    const markTaskOpened = (taskId: string) => {
-        if (!userAddress) return;
-        try {
-            const key = taskOpenedKey(userAddress);
-            const raw = window.localStorage.getItem(key);
-            const parsed = raw ? JSON.parse(raw) : {};
-            const next = { ...(parsed && typeof parsed === "object" ? parsed : {}), [taskId]: true };
-            window.localStorage.setItem(key, JSON.stringify(next));
-            setTaskOpened((p) => ({ ...p, [taskId]: true }));
-        } catch {
-            setTaskOpened((p) => ({ ...p, [taskId]: true }));
-        }
-    };
-
-    const claimTask = async (taskId: string) => {
-        if (!userAddress) {
-            toast({ title: "Wallet not connected", message: "Connect your wallet to claim tasks.", variant: "warning" });
-            return;
-        }
-        setTaskClaimBusy((p) => ({ ...p, [taskId]: true }));
-        try {
-            const res = await fetch("/api/points", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "x-device-id": getDeviceId(),
-                },
-                body: JSON.stringify({ action: "taskClaim", user: userAddress, taskId }),
-            });
-            const json = await res.json().catch(() => null);
-            if (!res.ok) {
-                toast({ title: "Task claim failed", message: json?.error || "Unknown error", variant: "error" });
-                return;
-            }
-            if (json?.skipped) {
-                toast({ title: "Already claimed", message: "You already claimed this task.", variant: "warning" });
-            } else {
-                toast({ title: "Task claimed", message: `+${json?.awarded ?? ""} points awarded.`, variant: "success" });
-            }
-            await fetchTasks();
-            await fetchPoints();
-        } catch (e: any) {
-            toast({ title: "Task claim failed", message: e?.message || "Unknown error", variant: "error" });
-        } finally {
-            setTaskClaimBusy((p) => ({ ...p, [taskId]: false }));
-        }
-    };
-
-    const fetchAdminTasks = async () => {
-        if (!userAddress || !adminRole) return;
-        try {
-            const res = await fetch("/api/points", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "x-device-id": getDeviceId(),
-                },
-                body: JSON.stringify({ action: "adminTaskList", adminAddress: userAddress }),
-            });
-            const json = await res.json().catch(() => null);
-            if (!res.ok) return;
-            setAdminTasks(Array.isArray(json?.tasks) ? json.tasks : []);
-        } catch {
-            // ignore
-        }
-    };
-
-    const adminTaskUpsert = async () => {
-        if (!userAddress || !adminRole) {
-            toast({ title: "Not authorized", message: "Admin role required.", variant: "error" });
-            return;
-        }
-        setAdminTaskBusy(true);
-        try {
-            const requirements: any = {};
-            if (taskReqMinPoints.trim()) requirements.minPoints = Number(taskReqMinPoints);
-            if (taskReqMinVolumeBnb.trim()) requirements.minVolumeBnb = Number(taskReqMinVolumeBnb);
-            if (taskReqMinFollowTasks.trim()) requirements.minFollowTasks = Number(taskReqMinFollowTasks);
-            const res = await fetch("/api/points", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "x-device-id": getDeviceId(),
-                },
-                body: JSON.stringify({
-                    action: "adminTaskUpsert",
-                    adminAddress: userAddress,
-                    id: taskFormId.trim() || undefined,
-                    type: taskFormType,
-                    repeat: taskFormRepeat,
-                    title: taskFormTitle,
-                    description: taskFormDescription,
-                    url: taskFormUrl,
-                    points: Number(taskFormPoints),
-                    active: taskFormActive,
-                    startAt: normalizeDateInputToIso(taskFormStartAt),
-                    endAt: normalizeDateInputToIso(taskFormEndAt),
-                    requirements,
-                }),
-            });
-            const text = await res.text();
-            const json = (() => {
-                try {
-                    return text ? JSON.parse(text) : null;
-                } catch {
-                    return null;
-                }
-            })();
-            if (!res.ok) {
-                const msg = json?.error || (text ? text.slice(0, 160) : `HTTP ${res.status}`);
-                toast({ title: "Task save failed", message: msg, variant: "error" });
-                return;
-            }
-            toast({ title: "Task saved", message: "Task updated.", variant: "success" });
-            setTaskFormId("");
-            setTaskFormTitle("");
-            setTaskFormDescription("");
-            setTaskFormUrl("");
-            setTaskFormPoints("50");
-            setTaskFormActive(true);
-            setTaskFormRepeat("none");
-            setTaskFormStartAt("");
-            setTaskFormEndAt("");
-            setTaskReqMinPoints("");
-            setTaskReqMinVolumeBnb("");
-            setTaskReqMinFollowTasks("");
-            await fetchAdminTasks();
-        } catch (e: any) {
-            toast({ title: "Task save failed", message: e?.message || "Unknown error", variant: "error" });
-        } finally {
-            setAdminTaskBusy(false);
-        }
-    };
-
-    const adminTaskRemove = async (id: string) => {
-        if (!userAddress || !adminRole) return;
-        if (!confirm("Remove this task?")) return;
-        setAdminTaskBusy(true);
-        try {
-            const res = await fetch("/api/points", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "x-device-id": getDeviceId(),
-                },
-                body: JSON.stringify({ action: "adminTaskRemove", adminAddress: userAddress, id }),
-            });
-            const json = await res.json().catch(() => null);
-            if (!res.ok) {
-                toast({ title: "Remove failed", message: json?.error || "Unknown error", variant: "error" });
-                return;
-            }
-            toast({ title: "Task removed", message: "Task deleted.", variant: "success" });
-            await fetchAdminTasks();
-        } finally {
-            setAdminTaskBusy(false);
-        }
-    };
 
     const claimShareBoost = async (txHash: string, amountBnb: string) => {
         if (!userAddress) return;
@@ -607,8 +354,8 @@ export default function MarketView() {
     }, [userAddress]);
 
     useEffect(() => {
-        fetchHistoryUserBets(userHistory as any[], resetAfterMarketId);
-    }, [userHistory, resetAfterMarketId, userAddress]);
+        fetchHistoryUserBets(userHistory as any[]);
+    }, [userHistory, userAddress]);
 
     useEffect(() => {
         fetchWalletBalance();
@@ -617,16 +364,8 @@ export default function MarketView() {
     useEffect(() => {
         if (activeTab === "admin" && userAddress && adminRole) {
             fetchAdmins();
-            fetchAdminTasks();
         }
     }, [activeTab, userAddress, adminRole]);
-
-    useEffect(() => {
-        if (activeTab === "tasks") {
-            fetchTasks();
-            loadTaskOpened(userAddress);
-        }
-    }, [activeTab, userAddress]);
 
     useEffect(() => {
         fetchPoints();
@@ -660,17 +399,18 @@ export default function MarketView() {
         }
     };
 
-    const fetchHistoryUserBets = async (history: any[], resetAfter: bigint) => {
+    const fetchHistoryUserBets = async (history: any[]) => {
         if (!userAddress || !history || history.length === 0) {
             setHistoryUserBets({});
+            setHistoryCancelled({});
             return;
         }
         try {
             const next: Record<string, { yesAmount: bigint; noAmount: bigint; claimed: boolean }> = {};
+            const nextCancelled: Record<string, boolean> = {};
             const ids = Array.from(new Set(history.map((h) => (h.marketId as bigint).toString())));
             for (const idStr of ids) {
                 const id = BigInt(idStr);
-                if (id > resetAfter) continue;
                 try {
                     const res = await publicClient.readContract({
                         address: marketAddress,
@@ -680,15 +420,26 @@ export default function MarketView() {
                     });
                     const [yesAmount, noAmount, claimed] = res as unknown as [bigint, bigint, boolean];
                     next[idStr] = { yesAmount, noAmount, claimed };
+
+                    try {
+                        const m: any = await publicClient.readContract({
+                            address: marketAddress,
+                            abi: PREDICTION_MARKET_ABI,
+                            functionName: "markets",
+                            args: [id],
+                        });
+                        // markets() now returns: question, endTime, yesPool, noPool, resolved, cancelled, outcome
+                        nextCancelled[idStr] = Boolean(m[5]);
+                    } catch {
+                        nextCancelled[idStr] = false;
+                    }
                 } catch (e: any) {
                     const msg = String(e?.shortMessage || e?.message || "");
-                    if (msg.toLowerCase().includes("market reset")) {
-                        continue;
-                    }
                     console.error("Failed to fetch getUserBet for market", idStr, e);
                 }
             }
             setHistoryUserBets(next);
+            setHistoryCancelled(nextCancelled);
         } catch (e) {
             console.error("Failed to fetch history user bets:", e);
         }
@@ -696,46 +447,32 @@ export default function MarketView() {
 
     const fetchMarketCount = async () => {
         try {
-            const resetAfter = (await publicClient.readContract({
-                address: marketAddress,
-                abi: PREDICTION_MARKET_ABI,
-                functionName: "resetAfterMarketId",
-            })) as bigint;
             const count = await publicClient.readContract({
                 address: marketAddress,
                 abi: PREDICTION_MARKET_ABI,
                 functionName: "marketCount",
             });
             const c = count as bigint;
-            setResetAfterMarketId(resetAfter);
             setMarketCount(c);
-
-            const firstActive = resetAfter + 1n;
             if (c > 0n) {
                 setSelectedMarketId((prev) => {
-                    if (!prev || prev <= resetAfter) return firstActive;
-                    if (prev > c) return firstActive;
+                    if (!prev) return 1n;
+                    if (prev > c) return 1n;
                     return prev;
                 });
             }
 
-            fetchAllMarkets(c, resetAfter);
+            fetchAllMarkets(c);
         } catch (e) {
             console.error("Failed to fetch market count:", e);
         }
     };
 
-    const fetchAllMarkets = async (count: bigint, resetAfter: bigint = resetAfterMarketId) => {
+    const fetchAllMarkets = async (count: bigint) => {
         try {
             const markets = [];
-            const firstActive = resetAfter + 1n;
             const start = count > 10n ? count - 9n : 1n;
-            const effectiveStart = start < firstActive ? firstActive : start;
-            if (effectiveStart > count) {
-                setAllMarkets([]);
-                return;
-            }
-            for (let i = count; i >= effectiveStart; i--) {
+            for (let i = count; i >= start; i--) {
                 const data: any = await publicClient.readContract({
                     address: marketAddress,
                     abi: PREDICTION_MARKET_ABI,
@@ -749,7 +486,8 @@ export default function MarketView() {
                     yesPool: data[2],
                     noPool: data[3],
                     resolved: data[4],
-                    outcome: data[5]
+                    cancelled: data[5],
+                    outcome: data[6]
                 });
             }
             setAllMarkets(markets);
@@ -831,7 +569,8 @@ export default function MarketView() {
                 yesPool: data[2],
                 noPool: data[3],
                 resolved: data[4],
-                outcome: data[5]
+                cancelled: data[5],
+                outcome: data[6]
             });
         } catch (e) {
             console.error("Failed to fetch market:", e);
@@ -951,8 +690,8 @@ export default function MarketView() {
             setSharePromptOpen(true);
         } catch (error: any) {
             const msg = String(error?.message || "Unknown error");
-            if (msg.toLowerCase().includes("market reset")) {
-                toast({ title: "Market was reset", message: "This market is no longer active. Please pick the latest market.", variant: "warning" });
+            if (msg.toLowerCase().includes("market cancelled")) {
+                toast({ title: "Market cancelled", message: "This market was cancelled. Please pick another market.", variant: "warning" });
                 await fetchMarketCount();
             } else {
                 toast({ title: "Bet failed", message: msg, variant: "error" });
@@ -1016,8 +755,8 @@ export default function MarketView() {
         }
     };
 
-    const handleEmergencyReset = async () => {
-        if (!confirm("Are you sure you want to reset all markets?")) return;
+    const handleEmergencyCancelMarket = async () => {
+        if (!confirm(`Are you sure you want to cancel market #${selectedMarketId.toString()}?`)) return;
         setBetting(true);
         try {
             const walletClient = createWalletClient({
@@ -1028,15 +767,16 @@ export default function MarketView() {
             const hash = await walletClient.writeContract({
                 address: marketAddress,
                 abi: PREDICTION_MARKET_ABI,
-                functionName: "emergencyReset",
+                functionName: "emergencyCancelMarket",
+                args: [selectedMarketId],
                 account: address,
             });
             await publicClient.waitForTransactionReceipt({ hash });
-            toast({ title: "Markets reset", message: "All markets were reset.", variant: "success" });
+            toast({ title: "Market cancelled", message: `Market #${selectedMarketId.toString()} was cancelled.`, variant: "success" });
             await fetchMarketCount();
             setActiveTab("market");
         } catch (e: any) {
-            toast({ title: "Reset failed", message: e?.message || "Unknown error", variant: "error" });
+            toast({ title: "Cancel failed", message: e?.message || "Unknown error", variant: "error" });
         }
         setBetting(false);
     };
@@ -1153,7 +893,6 @@ export default function MarketView() {
                         { id: "leaderboard", label: "Leaderboard" },
                         { id: "activity", label: "Activity" },
                         { id: "airdrop", label: "Airdrop", disabled: true, badge: "SOON" },
-                        { id: "tasks", label: "Tasks" },
                         { id: "profile", label: "Profile" },
                         { id: "admin", label: "Admin" }
                     ].map((tab) => (
@@ -1239,8 +978,16 @@ export default function MarketView() {
                                     className={`flex-shrink-0 w-48 p-3 rounded-xl border transition-all text-left ${selectedMarketId === m.id ? "border-sky-500 bg-sky-500/10" : "border-slate-800 bg-slate-900/40 hover:border-slate-700"}`}
                                 >
                                     <div className="flex justify-between items-center mb-1">
-                                        <span className={`text-[8px] font-black px-1.5 py-0.5 rounded border ${m.resolved ? "bg-slate-900/60 text-slate-400 border-slate-800" : "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"}`}>
-                                            {m.resolved ? `ENDED • ${m.outcome ? "YES" : "NO"}` : "LIVE"}
+                                        <span
+                                            className={`text-[8px] font-black px-1.5 py-0.5 rounded border ${
+                                                m.cancelled
+                                                    ? "bg-amber-500/10 text-amber-400 border-amber-500/20"
+                                                    : m.resolved
+                                                        ? "bg-slate-900/60 text-slate-400 border-slate-800"
+                                                        : "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                                            }`}
+                                        >
+                                            {m.cancelled ? "CANCELLED" : m.resolved ? `ENDED • ${m.outcome ? "YES" : "NO"}` : "LIVE"}
                                         </span>
                                         <span className="text-[8px] font-mono text-slate-600">#{m.id.toString()}</span>
                                     </div>
@@ -1447,161 +1194,6 @@ export default function MarketView() {
                     </div>
                 )}
 
-                {activeTab === "tasks" && (
-                    <div className="space-y-6 animate-in fade-in">
-                        <div className="flex justify-between items-center">
-                            <h3 className="text-lg font-bold text-white">Tasks</h3>
-                            <button
-                                type="button"
-                                onClick={() => fetchTasks()}
-                                className="px-3 py-1.5 rounded-full bg-slate-900/40 border border-slate-800 text-[10px] font-extrabold text-slate-400 hover:text-white hover:border-slate-700 transition-all"
-                            >
-                                Refresh
-                            </button>
-                        </div>
-
-                        <div className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800">
-                            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Eligibility</div>
-                            <div className="mt-2 grid grid-cols-1 sm:grid-cols-3 gap-3">
-                                <div className="p-3 rounded-xl bg-slate-950/30 border border-slate-800">
-                                    <div className="text-[10px] font-bold text-slate-500 uppercase">Points</div>
-                                    <div className="mt-1 text-sm font-black text-slate-200">{taskStats ? taskStats.points : "—"}</div>
-                                </div>
-                                <div className="p-3 rounded-xl bg-slate-950/30 border border-slate-800">
-                                    <div className="text-[10px] font-bold text-slate-500 uppercase">Volume</div>
-                                    <div className="mt-1 text-sm font-black text-slate-200">{taskStats ? `${Number(taskStats.volumeBnb).toFixed(4)} ETH` : "—"}</div>
-                                </div>
-                                <div className="p-3 rounded-xl bg-slate-950/30 border border-slate-800">
-                                    <div className="text-[10px] font-bold text-slate-500 uppercase">Follow tasks</div>
-                                    <div className="mt-1 text-sm font-black text-slate-200">{taskStats ? taskStats.followTasks : "—"}</div>
-                                </div>
-                            </div>
-                            {!userAddress && (
-                                <div className="mt-3 text-[11px] text-slate-500">
-                                    Connect your wallet to track eligibility and claim tasks.
-                                </div>
-                            )}
-                        </div>
-
-                        <div className="space-y-3">
-                            {tasksLoading ? (
-                                <div className="text-slate-500 text-sm">Loading tasks...</div>
-                            ) : (
-                                (tasks || []).filter((t) => t?.active !== false).map((t: any) => {
-                                    const claimed = Boolean(taskClaims?.[t.id]);
-                                    const busy = Boolean(taskClaimBusy?.[t.id]);
-                                    const req = t.requirements || {};
-                                    const missing: string[] = [];
-                                    const pts = Number(taskStats?.points ?? 0);
-                                    const vol = Number(taskStats?.volumeBnb ?? 0);
-                                    const follows = Number(taskStats?.followTasks ?? 0);
-                                    const nowMs = Date.now();
-                                    const startMs = t.startAt ? Date.parse(t.startAt) : NaN;
-                                    const endMs = t.endAt ? Date.parse(t.endAt) : NaN;
-                                    const notStarted = t.startAt && Number.isFinite(startMs) && nowMs < startMs;
-                                    const ended = t.endAt && Number.isFinite(endMs) && nowMs > endMs;
-                                    if (notStarted) missing.push("not started");
-                                    if (ended) missing.push("ended");
-                                    if (req.minPoints !== undefined && pts < Number(req.minPoints)) missing.push(`${Number(req.minPoints)} pts`);
-                                    if (req.minVolumeBnb !== undefined && vol < Number(req.minVolumeBnb)) missing.push(`${Number(req.minVolumeBnb)} ETH volume`);
-                                    if (req.minFollowTasks !== undefined && follows < Number(req.minFollowTasks)) missing.push(`${Number(req.minFollowTasks)} follow tasks`);
-                                    const eligible = userAddress && missing.length === 0;
-                                    const requiresOpen = (t.type === "link" || t.type === "follow") && Boolean(t.url);
-                                    const opened = requiresOpen ? Boolean(taskOpened?.[t.id]) : true;
-                                    const canClaim = Boolean(eligible && opened);
-                                    const reqText = [
-                                        req.minPoints !== undefined ? `min ${req.minPoints} pts` : null,
-                                        req.minVolumeBnb !== undefined ? `min ${req.minVolumeBnb} ETH volume` : null,
-                                        req.minFollowTasks !== undefined ? `min ${req.minFollowTasks} follow tasks` : null,
-                                    ].filter(Boolean).join(" • ");
-                                    return (
-                                        <div key={t.id} className="p-5 rounded-2xl bg-slate-900/50 border border-slate-800">
-                                            <div className="flex items-start justify-between gap-4">
-                                                <div className="min-w-0">
-                                                    <div className="flex items-center gap-2">
-                                                        <span className={`px-2 py-0.5 rounded text-[8px] font-black uppercase border ${t.type === "follow" ? "bg-sky-500/10 text-sky-400 border-sky-500/20" : "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"}`}>
-                                                            {t.type}
-                                                        </span>
-                                                        {t.repeat === "daily" && (
-                                                            <span className="px-2 py-0.5 rounded text-[8px] font-black uppercase border bg-purple-500/10 text-purple-300 border-purple-500/20">
-                                                                DAILY
-                                                            </span>
-                                                        )}
-                                                        {!claimed && userAddress && missing.length > 0 && (
-                                                            <span className="px-2 py-0.5 rounded text-[8px] font-black uppercase border bg-amber-500/10 text-amber-400 border-amber-500/20">
-                                                                LOCKED
-                                                            </span>
-                                                        )}
-                                                        <div className="text-sm font-black text-white truncate">{t.title}</div>
-                                                    </div>
-                                                    {t.description && (
-                                                        <div className="mt-1 text-[11px] text-slate-500">{t.description}</div>
-                                                    )}
-                                                    {reqText && (
-                                                        <div className="mt-2 text-[10px] font-bold text-slate-600 uppercase tracking-widest">Requires: {reqText}</div>
-                                                    )}
-                                                    {(t.startAt || t.endAt) && (
-                                                        <div className="mt-2 text-[11px] text-slate-500">
-                                                            {t.startAt ? `Starts: ${new Date(t.startAt).toLocaleString()}` : ""}
-                                                            {t.startAt && t.endAt ? " • " : ""}
-                                                            {t.endAt ? `Ends: ${new Date(t.endAt).toLocaleString()}` : ""}
-                                                        </div>
-                                                    )}
-                                                    {!claimed && userAddress && missing.length > 0 && (
-                                                        <div className="mt-2 text-[11px] text-amber-400 font-bold">
-                                                            Missing: {missing.join(" • ")}
-                                                        </div>
-                                                    )}
-                                                    {!claimed && userAddress && missing.length === 0 && requiresOpen && !opened && (
-                                                        <div className="mt-2 text-[11px] text-slate-500">
-                                                            Open the link to unlock claim.
-                                                        </div>
-                                                    )}
-                                                    {!userAddress && (
-                                                        <div className="mt-2 text-[11px] text-slate-500">
-                                                            Connect wallet to check eligibility.
-                                                        </div>
-                                                    )}
-                                                </div>
-                                                <div className="text-right">
-                                                    <div className="text-sm font-black text-sky-400">+{t.points} PTS</div>
-                                                    <div className="mt-2 flex gap-2 justify-end">
-                                                        {(t.url && (t.type === "link" || t.type === "follow")) && (
-                                                            <button
-                                                                type="button"
-                                                                onClick={() => {
-                                                                    window.open(t.url, "_blank");
-                                                                    markTaskOpened(t.id);
-                                                                }}
-                                                                className="px-3 py-2 rounded-lg bg-slate-900/40 border border-slate-800 text-[10px] font-extrabold text-slate-300 hover:text-white hover:border-slate-700 transition-all"
-                                                            >
-                                                                Open
-                                                            </button>
-                                                        )}
-                                                        <button
-                                                            type="button"
-                                                            disabled={claimed || busy || !canClaim}
-                                                            onClick={() => claimTask(t.id)}
-                                                            className="px-3 py-2 rounded-lg bg-white text-slate-900 text-[10px] font-extrabold hover:bg-slate-100 disabled:opacity-60 disabled:cursor-not-allowed"
-                                                        >
-                                                            {claimed ? "Claimed" : busy ? "Claiming..." : "Claim"}
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    );
-                                })
-                            )}
-                            {!tasksLoading && (!tasks || tasks.length === 0) && (
-                                <div className="text-center py-20 bg-slate-900/30 rounded-2xl border border-dashed border-slate-800">
-                                    <p className="text-slate-500 text-sm">No tasks yet.</p>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                )}
-
                 {activeTab === "airdrop" && (
                     <div className="animate-in fade-in duration-500 flex flex-col items-center justify-center min-h-[360px] text-center">
                         <div className="w-full max-w-md premium-card p-8 bg-slate-900/40">
@@ -1744,17 +1336,18 @@ export default function MarketView() {
                                                 const idStr = bet.marketId.toString();
                                                 const ub = historyUserBets[idStr];
                                                 const withdrawable = ub ? ub.yesAmount + ub.noAmount : 0n;
-                                                const show = bet.marketId <= resetAfterMarketId && ub && !ub.claimed && withdrawable > 0n;
+                                                const cancelled = Boolean(historyCancelled[idStr]);
+                                                const show = cancelled && ub && !ub.claimed && withdrawable > 0n;
                                                 if (!show) return null;
                                                 return (
-                                                <button
-                                                    type="button"
-                                                    disabled={betting || needsNetworkSwitch || !isConnected}
-                                                    onClick={() => handleEmergencyWithdraw(bet.marketId)}
-                                                    className="mt-2 inline-flex w-fit px-3 py-1.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[10px] font-extrabold hover:bg-amber-500/15 disabled:opacity-60 disabled:cursor-not-allowed"
-                                                >
-                                                    Emergency Withdraw
-                                                </button>
+                                                    <button
+                                                        type="button"
+                                                        disabled={betting || needsNetworkSwitch || !isConnected}
+                                                        onClick={() => handleEmergencyWithdraw(bet.marketId)}
+                                                        className="mt-2 inline-flex w-fit px-3 py-1.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[10px] font-extrabold hover:bg-amber-500/15 disabled:opacity-60 disabled:cursor-not-allowed"
+                                                    >
+                                                        Emergency Withdraw
+                                                    </button>
                                                 );
                                             })()}
                                         </div>
@@ -1860,7 +1453,6 @@ export default function MarketView() {
                                     onClick={() => {
                                         fetchAdminRole();
                                         fetchAdmins();
-                                        fetchAdminTasks();
                                     }}
                                     disabled={!userAddress || !adminRole}
                                     className="px-3 py-1.5 rounded-full bg-slate-900/40 border border-slate-800 text-[10px] font-extrabold text-slate-400 hover:text-white hover:border-slate-700 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
@@ -1962,178 +1554,6 @@ export default function MarketView() {
                             )}
                         </div>
 
-                        {adminRole && (
-                            <div className="p-6 rounded-2xl bg-slate-900/50 border border-slate-800">
-                                <div className="flex items-start justify-between gap-4">
-                                    <div>
-                                        <h3 className="text-sm font-bold text-slate-300 uppercase tracking-widest">Tasks</h3>
-                                        <div className="mt-1 text-[11px] text-slate-500">Create link or follow tasks with optional requirements.</div>
-                                    </div>
-                                    <button
-                                        type="button"
-                                        onClick={() => fetchAdminTasks()}
-                                        disabled={!userAddress || !adminRole || adminTaskBusy}
-                                        className="px-3 py-1.5 rounded-full bg-slate-900/40 border border-slate-800 text-[10px] font-extrabold text-slate-400 hover:text-white hover:border-slate-700 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
-                                    >
-                                        Refresh
-                                    </button>
-                                </div>
-
-                                <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-4">
-                                    <div className="p-4 rounded-xl bg-slate-900/30 border border-slate-800">
-                                        <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Create / Update Task</div>
-                                        <div className="mt-4 space-y-3">
-                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                                <select value={taskFormType} onChange={(e) => setTaskFormType(e.target.value as any)} className="w-full premium-input focus:bg-slate-900">
-                                                    <option value="link">link</option>
-                                                    <option value="follow">follow</option>
-                                                    <option value="checkin">checkin</option>
-                                                </select>
-                                                <select value={taskFormRepeat} onChange={(e) => setTaskFormRepeat(e.target.value as any)} className="w-full premium-input focus:bg-slate-900">
-                                                    <option value="none">one-time</option>
-                                                    <option value="daily">daily</option>
-                                                </select>
-                                                <label className="flex items-center gap-2 text-xs text-slate-300 font-bold">
-                                                    <input type="checkbox" checked={taskFormActive} onChange={(e) => setTaskFormActive(e.target.checked)} />
-                                                    Active
-                                                </label>
-                                            </div>
-                                            <input value={taskFormTitle} onChange={(e) => setTaskFormTitle(e.target.value)} placeholder="Task title" className="w-full premium-input focus:bg-slate-900" />
-                                            {taskFormType !== "checkin" && (
-                                                <input value={taskFormUrl} onChange={(e) => setTaskFormUrl(e.target.value)} placeholder="https://..." className="w-full premium-input focus:bg-slate-900" />
-                                            )}
-                                            <textarea value={taskFormDescription} onChange={(e) => setTaskFormDescription(e.target.value)} placeholder="Description (optional)" className="w-full premium-input focus:bg-slate-900" rows={3} />
-                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                                <div className="space-y-1">
-                                                    <div className="text-[10px] font-bold text-slate-600 uppercase tracking-widest ml-1">Reward points</div>
-                                                    <input value={taskFormPoints} onChange={(e) => setTaskFormPoints(e.target.value)} placeholder="e.g. 100" className="w-full premium-input focus:bg-slate-900" />
-                                                </div>
-                                                <div className="space-y-1">
-                                                    <div className="text-[10px] font-bold text-slate-600 uppercase tracking-widest ml-1">Task ID</div>
-                                                    <input value={taskFormId} onChange={(e) => setTaskFormId(e.target.value)} placeholder="e.g. x_follow_holymarket" className="w-full premium-input focus:bg-slate-900" />
-                                                </div>
-                                            </div>
-                                            <div className="text-[11px] text-slate-600">
-                                                Leave Task ID empty to auto-generate. Use a fixed ID to update the same task later.
-                                            </div>
-
-                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                                <div className="space-y-1">
-                                                    <div className="text-[10px] font-bold text-slate-600 uppercase tracking-widest ml-1">Start time (optional)</div>
-                                                    <input
-                                                        value={taskFormStartAt}
-                                                        onChange={(e) => setTaskFormStartAt(e.target.value)}
-                                                        type="datetime-local"
-                                                        className="w-full premium-input focus:bg-slate-900"
-                                                    />
-                                                </div>
-                                                <div className="space-y-1">
-                                                    <div className="text-[10px] font-bold text-slate-600 uppercase tracking-widest ml-1">End time (optional)</div>
-                                                    <input
-                                                        value={taskFormEndAt}
-                                                        onChange={(e) => setTaskFormEndAt(e.target.value)}
-                                                        type="datetime-local"
-                                                        className="w-full premium-input focus:bg-slate-900"
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div className="text-[11px] text-slate-600">
-                                                Times are entered in your local timezone and stored/enforced as UTC. Daily tasks reset at <span className="font-mono">00:00 UTC</span>.
-                                            </div>
-                                            <div className="p-3 rounded-xl bg-slate-950/30 border border-slate-800">
-                                                <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Optional requirements</div>
-                                                <div className="mt-1 text-[11px] text-slate-600">Set any of these to lock the task until the user qualifies.</div>
-                                                <div className="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-3">
-                                                    <div className="space-y-1">
-                                                        <div className="text-[10px] font-bold text-slate-600 uppercase tracking-widest ml-1">Min points</div>
-                                                        <input value={taskReqMinPoints} onChange={(e) => setTaskReqMinPoints(e.target.value)} placeholder="e.g. 500" className="w-full premium-input focus:bg-slate-900" />
-                                                    </div>
-                                                    <div className="space-y-1">
-                                                        <div className="text-[10px] font-bold text-slate-600 uppercase tracking-widest ml-1">Min volume (ETH)</div>
-                                                        <input value={taskReqMinVolumeBnb} onChange={(e) => setTaskReqMinVolumeBnb(e.target.value)} placeholder="e.g. 0.25" className="w-full premium-input focus:bg-slate-900" />
-                                                    </div>
-                                                    <div className="space-y-1">
-                                                        <div className="text-[10px] font-bold text-slate-600 uppercase tracking-widest ml-1">Min follow tasks</div>
-                                                        <input value={taskReqMinFollowTasks} onChange={(e) => setTaskReqMinFollowTasks(e.target.value)} placeholder="e.g. 3" className="w-full premium-input focus:bg-slate-900" />
-                                                    </div>
-                                                </div>
-                                                <div className="mt-2 text-[11px] text-slate-600">Leave blank to disable a specific requirement.</div>
-                                            </div>
-                                            <button type="button" disabled={adminTaskBusy || !taskFormTitle || !taskFormUrl} onClick={() => adminTaskUpsert()} className="w-full premium-btn py-3 disabled:opacity-60 disabled:cursor-not-allowed">
-                                                {adminTaskBusy ? "Saving..." : "Save Task"}
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    <div className="p-4 rounded-xl bg-slate-900/30 border border-slate-800">
-                                        <div className="flex items-center justify-between mb-3">
-                                            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Existing Tasks</div>
-                                            <div className="text-[10px] font-bold text-slate-600">{adminTasks.length}</div>
-                                        </div>
-                                        <div className="space-y-2 max-h-[340px] overflow-y-auto pr-2 custom-scrollbar">
-                                            {adminTasks.map((t: any) => (
-                                                <div key={t.id} className="p-3 rounded-lg bg-slate-900/40 border border-slate-800">
-                                                    <div className="flex items-start justify-between gap-3">
-                                                        <div className="min-w-0">
-                                                            <div className="text-xs font-black text-slate-200 truncate">{t.title}</div>
-                                                            <div className="mt-1 text-[10px] font-mono text-slate-500 truncate">{t.id}</div>
-                                                            <div className="mt-1 text-[10px] text-slate-600">{t.type} • {t.active ? "active" : "inactive"} • +{t.points} pts</div>
-                                                            {t.repeat === "daily" && (
-                                                                <div className="mt-1 text-[10px] text-slate-600">repeat: daily</div>
-                                                            )}
-                                                            {(t.startAt || t.endAt) && (
-                                                                <div className="mt-1 text-[10px] text-slate-600 truncate">
-                                                                    {t.startAt ? `start ${new Date(t.startAt).toLocaleString()}` : ""}
-                                                                    {t.startAt && t.endAt ? " • " : ""}
-                                                                    {t.endAt ? `end ${new Date(t.endAt).toLocaleString()}` : ""}
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                        <div className="flex gap-2">
-                                                            <button
-                                                                type="button"
-                                                                onClick={() => {
-                                                                    setTaskFormId(t.id || "");
-                                                                    setTaskFormType(t.type);
-                                                                    setTaskFormRepeat(t.repeat === "daily" ? "daily" : "none");
-                                                                    setTaskFormTitle(t.title || "");
-                                                                    setTaskFormDescription(t.description || "");
-                                                                    setTaskFormUrl(t.url || "");
-                                                                    setTaskFormPoints(String(t.points ?? ""));
-                                                                    setTaskFormActive(Boolean(t.active));
-                                                                    setTaskFormStartAt(toLocalDateTimeInput(t.startAt ? String(t.startAt) : ""));
-                                                                    setTaskFormEndAt(toLocalDateTimeInput(t.endAt ? String(t.endAt) : ""));
-                                                                    setTaskReqMinPoints(t.requirements?.minPoints !== undefined ? String(t.requirements.minPoints) : "");
-                                                                    setTaskReqMinVolumeBnb(t.requirements?.minVolumeBnb !== undefined ? String(t.requirements.minVolumeBnb) : "");
-                                                                    setTaskReqMinFollowTasks(t.requirements?.minFollowTasks !== undefined ? String(t.requirements.minFollowTasks) : "");
-                                                                }}
-                                                                className="px-3 py-2 rounded-lg bg-slate-900/40 border border-slate-800 text-[10px] font-extrabold text-slate-300 hover:text-white hover:border-slate-700"
-                                                            >
-                                                                Edit
-                                                            </button>
-                                                            <button
-                                                                type="button"
-                                                                disabled={adminTaskBusy}
-                                                                onClick={() => adminTaskRemove(t.id)}
-                                                                className="px-3 py-2 rounded-lg bg-rose-500/10 text-rose-500 border border-rose-500/20 text-[10px] font-extrabold hover:bg-rose-600 hover:text-white disabled:opacity-60 disabled:cursor-not-allowed"
-                                                            >
-                                                                Remove
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                            {adminTasks.length === 0 && (
-                                                <div className="text-center py-16 bg-slate-900/30 rounded-2xl border border-dashed border-slate-800">
-                                                    <p className="text-slate-500 text-sm">No tasks yet.</p>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-
                         <div className="p-6 rounded-2xl bg-sky-500/5 border border-sky-500/10">
                             <h3 className="text-lg font-bold text-white mb-6">New Discovery Market</h3>
                             <form onSubmit={handleCreateMarket} className="space-y-6">
@@ -2215,11 +1635,11 @@ export default function MarketView() {
                         <div className="p-6 rounded-2xl bg-rose-500/5 border border-rose-500/10">
                             <h3 className="text-sm font-bold text-rose-500 mb-4 uppercase tracking-widest">Protocol Safety</h3>
                             <button
-                                onClick={handleEmergencyReset}
+                                onClick={handleEmergencyCancelMarket}
                                 disabled={betting || needsNetworkSwitch || !isConnected || adminRole !== "superadmin"}
                                 className="w-full py-3 bg-rose-500/10 text-rose-500 border border-rose-500/20 rounded-xl text-xs font-bold hover:bg-rose-600 hover:text-white transition-all disabled:opacity-60 disabled:cursor-not-allowed"
                             >
-                                EMERGENCY GLOBAL RESET
+                                CANCEL SELECTED MARKET
                             </button>
                             {isConnected && !needsNetworkSwitch && adminRole !== "superadmin" && (
                                 <div className="mt-4 text-[11px] text-slate-500">

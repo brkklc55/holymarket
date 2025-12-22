@@ -18,41 +18,11 @@ type PointsUser = {
     updatedAt: string;
 };
 
-type TaskType = "link" | "follow" | "checkin";
-
-type TaskRepeat = "none" | "daily";
-
-type TaskRequirements = {
-    minPoints?: number;
-    minVolumeBnb?: number;
-    minFollowTasks?: number;
-};
-
-type Task = {
-    id: string;
-    type: TaskType;
-    repeat?: TaskRepeat;
-    title: string;
-    description?: string;
-    url: string;
-    points: number;
-    active: boolean;
-    startAt?: string;
-    endAt?: string;
-    requirements?: TaskRequirements;
-    createdAt: string;
-    updatedAt: string;
-};
-
 type PointsDb = {
     users: Record<Address, PointsUser>;
     devices?: Record<string, { accounts: Address[]; firstSeenAt: string; lastSeenAt: string }>;
     admins?: Record<Address, { role: "superadmin" | "admin"; createdAt: string; updatedAt: string }>;
     shareBoosts?: Record<string, { user: Address; extra: number; createdAt: string }>;
-    tasks?: Task[];
-    // For repeat="none": taskClaims[taskId][user] = { claimedAt, points }
-    // For repeat="daily": taskClaims[taskId][user] = { [utcDayKey]: { claimedAt, points } }
-    taskClaims?: Record<string, Record<Address, any>>;
 };
 
 const DATA_FILE = process.env.VERCEL
@@ -70,9 +40,6 @@ const ADMIN_ADDRESSES = [
     "0x96a445dd060efd79ab27742de12128f24b4edaec",
 ];
 
-let supabaseAdminSeeded = false;
-
-// In-memory rate limiter (good enough for beta; resets on server restart)
 const rateState: Map<string, { count: number; resetAt: number }> = new Map();
 
 function getClientIp(req: NextRequest) {
@@ -83,14 +50,6 @@ function getClientIp(req: NextRequest) {
     return "unknown";
 }
 
-function utcDayKey(nowMs: number) {
-    const d = new Date(nowMs);
-    const y = d.getUTCFullYear();
-    const m = String(d.getUTCMonth() + 1).padStart(2, "0");
-    const day = String(d.getUTCDate()).padStart(2, "0");
-    return `${y}-${m}-${day}`;
-}
-
 function sanitizeIsoDate(input: any): string | undefined {
     if (input === undefined || input === null || input === "") return undefined;
     if (typeof input !== "string") return undefined;
@@ -99,14 +58,6 @@ function sanitizeIsoDate(input: any): string | undefined {
     const t = Date.parse(s);
     if (!Number.isFinite(t)) return undefined;
     return new Date(t).toISOString();
-}
-
-function isWithinTaskWindow(task: Task, nowMs: number) {
-    const startMs = task.startAt ? Date.parse(task.startAt) : NaN;
-    const endMs = task.endAt ? Date.parse(task.endAt) : NaN;
-    if (task.startAt && Number.isFinite(startMs) && nowMs < startMs) return { ok: false as const, reason: "not_started" };
-    if (task.endAt && Number.isFinite(endMs) && nowMs > endMs) return { ok: false as const, reason: "ended" };
-    return { ok: true as const };
 }
 
 function getDeviceId(req: NextRequest) {
@@ -137,7 +88,7 @@ function normalizeAddress(addr: string) {
 }
 
 function makeInitialDb(): PointsDb {
-    const initial: PointsDb = { users: {}, devices: {}, admins: {}, shareBoosts: {}, tasks: [], taskClaims: {} };
+    const initial: PointsDb = { users: {}, devices: {}, admins: {}, shareBoosts: {} };
     // Bootstrap initial admins: first is superadmin, rest are admins
     ADMIN_ADDRESSES.forEach((a, idx) => {
         const addr = normalizeAddress(a);
@@ -151,19 +102,6 @@ function getSupabaseClient() {
     return createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
         auth: { persistSession: false, autoRefreshToken: false },
     });
-}
-
-async function ensureAdminsSeededSupabase() {
-    if (supabaseAdminSeeded) return;
-    const supabase = getSupabaseClient();
-    if (!USE_SUPABASE || !supabase) return;
-    const rows = ADMIN_ADDRESSES.map((a, idx) => ({
-        address: normalizeAddress(a),
-        role: idx === 0 ? "superadmin" : "admin",
-    }));
-
-    const { error } = await supabase.from("admins").upsert(rows, { onConflict: "address" });
-    if (!error) supabaseAdminSeeded = true;
 }
 
 const basePublicClient = createPublicClient({
@@ -199,183 +137,6 @@ async function getLeaderboardFromSupabase(): Promise<Array<{ user: string; point
         .limit(50);
     if (error || !data) return null;
     return data.map((r: any) => ({ user: String(r.address), points: Number(r.points || 0) }));
-}
-
-async function listTasksFromSupabase(): Promise<Task[] | null> {
-    const supabase = getSupabaseClient();
-    if (!USE_SUPABASE || !supabase) return null;
-    const { data, error } = await supabase
-        .from("tasks")
-        .select("id,type,repeat,title,description,url,points,active,start_at,end_at,requirements,created_at,updated_at")
-        .order("created_at", { ascending: false });
-    if (error || !data) return null;
-    return data.map((t: any) => ({
-        id: String(t.id),
-        type: t.type,
-        repeat: t.repeat,
-        title: t.title,
-        description: t.description || undefined,
-        url: t.url,
-        points: Number(t.points || 0),
-        active: Boolean(t.active),
-        startAt: t.start_at ? new Date(t.start_at).toISOString() : undefined,
-        endAt: t.end_at ? new Date(t.end_at).toISOString() : undefined,
-        requirements: t.requirements || undefined,
-        createdAt: t.created_at ? new Date(t.created_at).toISOString() : nowIso(),
-        updatedAt: t.updated_at ? new Date(t.updated_at).toISOString() : nowIso(),
-    })) as Task[];
-}
-
-async function getTaskFromSupabase(taskIdRaw: string): Promise<Task | null> {
-    const supabase = getSupabaseClient();
-    if (!USE_SUPABASE || !supabase) return null;
-    const id = String(taskIdRaw).slice(0, 64);
-    const { data, error } = await supabase
-        .from("tasks")
-        .select("id,type,repeat,title,description,url,points,active,start_at,end_at,requirements,created_at,updated_at")
-        .eq("id", id)
-        .maybeSingle();
-    if (error || !data) return null;
-    return {
-        id: String(data.id),
-        type: (data as any).type,
-        repeat: (data as any).repeat,
-        title: (data as any).title,
-        description: (data as any).description || undefined,
-        url: (data as any).url,
-        points: Number((data as any).points || 0),
-        active: Boolean((data as any).active),
-        startAt: (data as any).start_at ? new Date((data as any).start_at).toISOString() : undefined,
-        endAt: (data as any).end_at ? new Date((data as any).end_at).toISOString() : undefined,
-        requirements: (data as any).requirements || undefined,
-        createdAt: (data as any).created_at ? new Date((data as any).created_at).toISOString() : nowIso(),
-        updatedAt: (data as any).updated_at ? new Date((data as any).updated_at).toISOString() : nowIso(),
-    } as Task;
-}
-
-async function hasTaskClaimSupabase(params: { address: string; taskId: string; repeat: TaskRepeat; dayKey: string }) {
-    const supabase = getSupabaseClient();
-    if (!USE_SUPABASE || !supabase) return null;
-    const address = normalizeAddress(params.address);
-    const taskId = String(params.taskId).slice(0, 64);
-    const q = supabase
-        .from("task_claims")
-        .select("task_id", { head: true, count: "exact" })
-        .eq("address", address)
-        .eq("task_id", taskId);
-    const { count, error } = params.repeat === "daily" ? await q.eq("day_key", params.dayKey) : await q.is("day_key", null);
-    if (error) throw error;
-    return Boolean((count || 0) > 0);
-}
-
-async function insertTaskClaimSupabase(params: { address: string; taskId: string; repeat: TaskRepeat; dayKey: string; points: number }) {
-    const supabase = getSupabaseClient();
-    if (!USE_SUPABASE || !supabase) return null;
-    const address = normalizeAddress(params.address);
-    const taskId = String(params.taskId).slice(0, 64);
-    const points = Math.max(0, Math.floor(Number(params.points) || 0));
-    const payload: any = {
-        task_id: taskId,
-        address,
-        claimed_at: nowIso(),
-        points_awarded: points,
-        day_key: params.repeat === "daily" ? String(params.dayKey) : null,
-    };
-
-    const { error } = await supabase.from("task_claims").insert(payload);
-    if (error) throw error;
-    return { ok: true as const };
-}
-
-async function checkRequirementsSupabase(params: { user: string; req?: TaskRequirements; tasks?: Task[] }) {
-    const req = params.req;
-    if (!req) return { ok: true as const };
-
-    const u = normalizeAddress(params.user);
-    const uRow = await getUserFromSupabase(u);
-
-    if (req.minPoints !== undefined && (uRow?.points || 0) < req.minPoints) {
-        return { ok: false as const, error: `Requires at least ${req.minPoints} points` };
-    }
-    const volume = Number(uRow?.volumeBnb || 0);
-    if (req.minVolumeBnb !== undefined && volume < req.minVolumeBnb) {
-        return { ok: false as const, error: `Requires at least ${req.minVolumeBnb} BNB volume` };
-    }
-    if (req.minFollowTasks !== undefined) {
-        const tasks = params.tasks || (await listTasksFromSupabase()) || [];
-        const followCount = await countFollowClaimsFromSupabase({ user: u, tasks });
-        if ((followCount || 0) < req.minFollowTasks) {
-            return { ok: false as const, error: `Requires completing ${req.minFollowTasks} follow tasks` };
-        }
-    }
-
-    return { ok: true as const };
-}
-
-async function getAdminRoleFromSupabase(addr?: string | null): Promise<"admin" | "superadmin" | null> {
-    const supabase = getSupabaseClient();
-    if (!USE_SUPABASE || !supabase) return null;
-    if (!addr) return null;
-    await ensureAdminsSeededSupabase();
-    const address = normalizeAddress(addr);
-    const { data, error } = await supabase.from("admins").select("role").eq("address", address).maybeSingle();
-    if (error || !data) return null;
-    const role = (data as any).role;
-    return role === "superadmin" ? "superadmin" : role === "admin" ? "admin" : null;
-}
-
-async function requireAdminSupabase(addr?: string | null, minimum: "admin" | "superadmin" = "admin") {
-    const role = await getAdminRoleFromSupabase(addr);
-    if (!role) return { ok: false as const, role: null as null };
-    if (minimum === "superadmin" && role !== "superadmin") return { ok: false as const, role };
-    return { ok: true as const, role };
-}
-
-async function getClaimsMapFromSupabase(params: { user: string; tasks: Task[]; nowMs: number }): Promise<Record<string, boolean> | null> {
-    const supabase = getSupabaseClient();
-    if (!USE_SUPABASE || !supabase) return null;
-    const u = normalizeAddress(params.user);
-    const todayKey = utcDayKey(params.nowMs);
-    const ids = params.tasks.map((t) => t.id);
-    if (ids.length === 0) return {};
-
-    const { data, error } = await supabase
-        .from("task_claims")
-        .select("task_id,day_key")
-        .eq("address", u)
-        .in("task_id", ids);
-    if (error) return null;
-
-    const hasNone = new Set<string>();
-    const hasDailyToday = new Set<string>();
-    (data || []).forEach((r: any) => {
-        const tid = String(r.task_id);
-        if (r.day_key === null) hasNone.add(tid);
-        if (String(r.day_key) === todayKey) hasDailyToday.add(tid);
-    });
-
-    return Object.fromEntries(
-        params.tasks.map((t) => {
-            if (t.repeat === "daily") return [t.id, hasDailyToday.has(t.id)];
-            return [t.id, hasNone.has(t.id)];
-        })
-    );
-}
-
-async function countFollowClaimsFromSupabase(params: { user: string; tasks: Task[] }): Promise<number | null> {
-    const supabase = getSupabaseClient();
-    if (!USE_SUPABASE || !supabase) return null;
-    const u = normalizeAddress(params.user);
-    const followIds = params.tasks.filter((t) => t.type === "follow").map((t) => t.id);
-    if (followIds.length === 0) return 0;
-    const { count, error } = await supabase
-        .from("task_claims")
-        .select("task_id", { count: "exact", head: true })
-        .eq("address", u)
-        .in("task_id", followIds)
-        .is("day_key", null);
-    if (error) return null;
-    return count || 0;
 }
 
 async function ensureUserExistsSupabase(addressRaw: string) {
@@ -504,8 +265,6 @@ async function loadDbFromFile(): Promise<PointsDb> {
     if (!parsed.devices || typeof parsed.devices !== "object" || Array.isArray(parsed.devices)) parsed.devices = {};
     if (!parsed.admins || typeof parsed.admins !== "object" || Array.isArray(parsed.admins)) parsed.admins = {};
     if (!parsed.shareBoosts || typeof parsed.shareBoosts !== "object" || Array.isArray(parsed.shareBoosts)) parsed.shareBoosts = {};
-    if (!Array.isArray(parsed.tasks)) parsed.tasks = [];
-    if (!parsed.taskClaims || typeof parsed.taskClaims !== "object" || Array.isArray(parsed.taskClaims)) parsed.taskClaims = {};
 
     if (Object.keys(parsed.admins).length === 0 && ADMIN_ADDRESSES.length > 0) {
         const seeded = makeInitialDb();
@@ -546,8 +305,6 @@ async function loadDb(): Promise<PointsDb> {
     if (!parsed.devices || typeof parsed.devices !== "object" || Array.isArray(parsed.devices)) parsed.devices = {};
     if (!parsed.admins || typeof parsed.admins !== "object" || Array.isArray(parsed.admins)) parsed.admins = {};
     if (!parsed.shareBoosts || typeof parsed.shareBoosts !== "object" || Array.isArray(parsed.shareBoosts)) parsed.shareBoosts = {};
-    if (!Array.isArray(parsed.tasks)) parsed.tasks = [];
-    if (!parsed.taskClaims || typeof parsed.taskClaims !== "object" || Array.isArray(parsed.taskClaims)) parsed.taskClaims = {};
 
     if (Object.keys(parsed.admins).length === 0 && ADMIN_ADDRESSES.length > 0) {
         const seeded = makeInitialDb();
@@ -572,56 +329,6 @@ function getOrCreateUser(db: PointsDb, address: Address): PointsUser {
     const created: PointsUser = { points: 0, volumeBnb: 0, createdAt: nowIso(), updatedAt: nowIso() };
     db.users[addr] = created;
     return created;
-}
-
-function sanitizeTaskRequirements(input: any): TaskRequirements | undefined {
-    if (!input || typeof input !== "object") return undefined;
-    const req: TaskRequirements = {};
-    if (input.minPoints !== undefined && input.minPoints !== null) {
-        const v = Number(input.minPoints);
-        if (Number.isFinite(v) && v >= 0) req.minPoints = Math.floor(v);
-    }
-    if (input.minVolumeBnb !== undefined && input.minVolumeBnb !== null) {
-        const v = Number(input.minVolumeBnb);
-        if (Number.isFinite(v) && v >= 0) req.minVolumeBnb = v;
-    }
-    if (input.minFollowTasks !== undefined && input.minFollowTasks !== null) {
-        const v = Number(input.minFollowTasks);
-        if (Number.isFinite(v) && v >= 0) req.minFollowTasks = Math.floor(v);
-    }
-    return Object.keys(req).length ? req : undefined;
-}
-
-function countUserFollowClaims(db: PointsDb, user: string) {
-    const u = normalizeAddress(user);
-    const tasks = db.tasks || [];
-    const claims = db.taskClaims || {};
-    let count = 0;
-    for (const t of tasks) {
-        if (t.type !== "follow") continue;
-        const c = claims[t.id]?.[u];
-        if (c) count += 1;
-    }
-    return count;
-}
-
-function checkRequirements(db: PointsDb, user: string, req?: TaskRequirements) {
-    if (!req) return { ok: true as const };
-    const u = getOrCreateUser(db, user);
-    if (req.minPoints !== undefined && u.points < req.minPoints) {
-        return { ok: false as const, error: `Requires at least ${req.minPoints} points` };
-    }
-    const volume = Number(u.volumeBnb || 0);
-    if (req.minVolumeBnb !== undefined && volume < req.minVolumeBnb) {
-        return { ok: false as const, error: `Requires at least ${req.minVolumeBnb} BNB volume` };
-    }
-    if (req.minFollowTasks !== undefined) {
-        const follows = countUserFollowClaims(db, user);
-        if (follows < req.minFollowTasks) {
-            return { ok: false as const, error: `Requires completing ${req.minFollowTasks} follow tasks` };
-        }
-    }
-    return { ok: true as const };
 }
 
 function trackDeviceAccount(db: PointsDb, deviceId: string, address: Address) {
@@ -667,45 +374,11 @@ export async function GET(req: NextRequest) {
     const url = new URL(req.url);
     const user = url.searchParams.get("user");
     const whoami = url.searchParams.get("whoami");
-    const tasks = url.searchParams.get("tasks");
 
     if (whoami) {
         const db = await loadDb();
         const role = getAdminRole(db, whoami);
         return NextResponse.json({ role });
-    }
-
-    if (tasks) {
-        const u = user ? normalizeAddress(user) : null;
-        const supaTasks = await listTasksFromSupabase();
-        if (supaTasks) {
-            const claims = u ? await getClaimsMapFromSupabase({ user: u, tasks: supaTasks, nowMs: Date.now() }) : {};
-            const uRow = u ? await getUserFromSupabase(u) : null;
-            const followCount = u ? await countFollowClaimsFromSupabase({ user: u, tasks: supaTasks }) : null;
-            const stats = u
-                ? { points: uRow?.points || 0, volumeBnb: uRow?.volumeBnb || 0, followTasks: followCount || 0 }
-                : null;
-            return NextResponse.json({ tasks: supaTasks, claims: claims || {}, stats });
-        }
-
-        const db = await loadDb();
-        const list = (db.tasks || []).slice().sort((a, b) => b.createdAt.localeCompare(a.createdAt));
-        const claims = db.taskClaims || {};
-        const todayKey = utcDayKey(Date.now());
-        const userClaims = u
-            ? Object.fromEntries(
-                  list.map((t) => {
-                      const byUser = claims[t.id];
-                      const entry = byUser?.[u];
-                      if (t.repeat === "daily") {
-                          return [t.id, Boolean(entry?.[todayKey])];
-                      }
-                      return [t.id, Boolean(entry)];
-                  })
-              )
-            : {};
-        const stats = u ? { points: db.users?.[u]?.points || 0, volumeBnb: db.users?.[u]?.volumeBnb || 0, followTasks: countUserFollowClaims(db, u) } : null;
-        return NextResponse.json({ tasks: list, claims: userClaims, stats });
     }
 
     if (user) {
@@ -1006,235 +679,6 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ ok: true, extra, leaderboard: computeLeaderboard(db) });
     }
 
-    if (action === "taskClaim") {
-        const userRaw = body?.user;
-        const taskIdRaw = body?.taskId;
-        if (!userRaw || !taskIdRaw) return NextResponse.json({ error: "Missing user/taskId" }, { status: 400 });
-        const user = normalizeAddress(userRaw);
-        const taskId = String(taskIdRaw).slice(0, 64);
-
-        try {
-            const supaDevice = await trackDeviceAccountSupabase({ deviceId, address: user });
-            if (supaDevice) {
-                if (supaDevice.accountsCount > 3) {
-                    return NextResponse.json({ error: "Device account limit reached" }, { status: 403 });
-                }
-
-                const task = await getTaskFromSupabase(taskId);
-                if (!task) return NextResponse.json({ error: "Task not found" }, { status: 404 });
-                if (!task.active) return NextResponse.json({ error: "Task inactive" }, { status: 400 });
-
-                const windowCheck = isWithinTaskWindow(task, Date.now());
-                if (!windowCheck.ok) {
-                    return NextResponse.json({ error: windowCheck.reason === "not_started" ? "Task not started" : "Task ended" }, { status: 400 });
-                }
-
-                const reqCheck = await checkRequirementsSupabase({ user, req: task.requirements, tasks: undefined });
-                if (!reqCheck.ok) return NextResponse.json({ error: reqCheck.error }, { status: 400 });
-
-                const repeat: TaskRepeat = task.repeat === "daily" ? "daily" : "none";
-                const dayKey = utcDayKey(Date.now());
-                const already = await hasTaskClaimSupabase({ address: user, taskId: task.id, repeat, dayKey });
-                if (already) {
-                    return NextResponse.json({ ok: true, skipped: true, reason: repeat === "daily" ? "already_claimed_today" : "already_claimed" });
-                }
-
-                await ensureUserExistsSupabase(user);
-                const pointsAwarded = Math.max(0, Math.floor(Number(task.points) || 0));
-                await insertTaskClaimSupabase({ address: user, taskId: task.id, repeat, dayKey, points: pointsAwarded });
-                await incrementUserSupabase({ address: user, pointsDelta: pointsAwarded });
-
-                const leaderboard = await getLeaderboardFromSupabase();
-                return NextResponse.json({ ok: true, awarded: pointsAwarded, leaderboard: leaderboard || [], storage: "supabase" });
-            }
-        } catch (e: any) {
-            if (USE_SUPABASE && getSupabaseClient()) {
-                return NextResponse.json({ error: "Supabase write failed", detail: String(e?.message || e) }, { status: 500 });
-            }
-        }
-
-        const deviceEntry = trackDeviceAccount(db, deviceId, user);
-        if (deviceEntry.accounts.length > 3) {
-            await saveDb(db);
-            return NextResponse.json({ error: "Device account limit reached" }, { status: 403 });
-        }
-
-        const task = (db.tasks || []).find((t) => t.id === taskId);
-        if (!task) return NextResponse.json({ error: "Task not found" }, { status: 404 });
-        if (!task.active) return NextResponse.json({ error: "Task inactive" }, { status: 400 });
-
-        const windowCheck = isWithinTaskWindow(task, Date.now());
-        if (!windowCheck.ok) {
-            return NextResponse.json({ error: windowCheck.reason === "not_started" ? "Task not started" : "Task ended" }, { status: 400 });
-        }
-
-        const reqCheck = checkRequirements(db, user, task.requirements);
-        if (!reqCheck.ok) return NextResponse.json({ error: reqCheck.error }, { status: 400 });
-
-        if (!db.taskClaims) db.taskClaims = {};
-        if (!db.taskClaims[taskId]) db.taskClaims[taskId] = {};
-
-        const repeat: TaskRepeat = task.repeat === "daily" ? "daily" : "none";
-        const dayKey = utcDayKey(Date.now());
-        const existing = db.taskClaims[taskId][user];
-        if (repeat === "daily") {
-            if (existing && typeof existing === "object" && Boolean(existing?.[dayKey])) {
-                return NextResponse.json({ ok: true, skipped: true, reason: "already_claimed_today" });
-            }
-        } else {
-            if (existing) {
-                return NextResponse.json({ ok: true, skipped: true, reason: "already_claimed" });
-            }
-        }
-
-        const u = getOrCreateUser(db, user);
-        u.points += Math.max(0, Math.floor(Number(task.points) || 0));
-        u.updatedAt = nowIso();
-
-        const claimEntry = { claimedAt: nowIso(), points: Math.max(0, Math.floor(Number(task.points) || 0)) };
-        if (repeat === "daily") {
-            const next = existing && typeof existing === "object" ? existing : {};
-            next[dayKey] = claimEntry;
-            db.taskClaims[taskId][user] = next;
-        } else {
-            db.taskClaims[taskId][user] = claimEntry;
-        }
-        await saveDb(db);
-
-        return NextResponse.json({ ok: true, awarded: Math.max(0, Math.floor(Number(task.points) || 0)), leaderboard: computeLeaderboard(db) });
-    }
-
-    if (action === "adminTaskList") {
-        const adminAddress = body?.adminAddress;
-        const supaAuth = await requireAdminSupabase(adminAddress, "admin");
-        if (supaAuth.ok) {
-            const tasks = (await listTasksFromSupabase()) || [];
-            return NextResponse.json({ ok: true, tasks, storage: "supabase" });
-        }
-        const auth = requireAdmin(db, adminAddress, "admin");
-        if (!auth.ok) return NextResponse.json({ error: "Not authorized" }, { status: 403 });
-        const tasks = (db.tasks || []).slice().sort((a, b) => b.createdAt.localeCompare(a.createdAt));
-        return NextResponse.json({ ok: true, tasks, storage: "fallback" });
-    }
-
-    if (action === "adminTaskUpsert") {
-        const adminAddress = body?.adminAddress;
-        const supaAuth = await requireAdminSupabase(adminAddress, "admin");
-        if (!supaAuth.ok) {
-            const auth = requireAdmin(db, adminAddress, "admin");
-            if (!auth.ok) return NextResponse.json({ error: "Not authorized" }, { status: 403 });
-        }
-
-        const idRaw = body?.id;
-        const typeRaw = body?.type;
-        const titleRaw = body?.title;
-        const urlRaw = body?.url;
-        const pointsRaw = body?.points;
-        const activeRaw = body?.active;
-
-        if (typeRaw !== "link" && typeRaw !== "follow" && typeRaw !== "checkin") return NextResponse.json({ error: "Invalid type" }, { status: 400 });
-        if (!titleRaw) return NextResponse.json({ error: "Missing title" }, { status: 400 });
-        if (typeRaw !== "checkin" && !urlRaw) return NextResponse.json({ error: "Missing url" }, { status: 400 });
-
-        const id = (idRaw ? String(idRaw) : `task_${Date.now()}_${Math.random().toString(16).slice(2)}`).slice(0, 64);
-        const title = String(titleRaw).slice(0, 80);
-        const description = body?.description ? String(body.description).slice(0, 240) : "";
-        const url = typeRaw === "checkin" ? "" : String(urlRaw).slice(0, 500);
-        const points = Math.max(0, Math.floor(Number(pointsRaw) || 0));
-        const active = Boolean(activeRaw);
-        const requirements = sanitizeTaskRequirements(body?.requirements);
-        const startAt = sanitizeIsoDate(body?.startAt);
-        const endAt = sanitizeIsoDate(body?.endAt);
-        const repeatRaw = body?.repeat;
-        const repeat: TaskRepeat = repeatRaw === "daily" ? "daily" : "none";
-        if (startAt && endAt) {
-            const s = Date.parse(startAt);
-            const e = Date.parse(endAt);
-            if (Number.isFinite(s) && Number.isFinite(e) && e <= s) {
-                return NextResponse.json({ error: "endAt must be after startAt" }, { status: 400 });
-            }
-        }
-
-        if (!db.tasks) db.tasks = [];
-        const now = nowIso();
-        const existingIdx = db.tasks.findIndex((t) => t.id === id);
-        const entry: Task = {
-            id,
-            type: typeRaw,
-            repeat,
-            title,
-            description,
-            url,
-            points,
-            active,
-            startAt,
-            endAt,
-            requirements,
-            createdAt: existingIdx >= 0 ? db.tasks[existingIdx].createdAt : now,
-            updatedAt: now,
-        };
-        if (existingIdx >= 0) db.tasks[existingIdx] = entry;
-        else db.tasks.unshift(entry);
-        if (supaAuth.ok) {
-            try {
-                const supabase = getSupabaseClient();
-                if (!supabase) return NextResponse.json({ error: "Supabase not configured" }, { status: 500 });
-                const payload: any = {
-                    id: entry.id,
-                    type: entry.type,
-                    repeat: entry.repeat,
-                    title: entry.title,
-                    description: entry.description || "",
-                    url: entry.url,
-                    points: entry.points,
-                    active: entry.active,
-                    start_at: entry.startAt ? new Date(entry.startAt).toISOString() : null,
-                    end_at: entry.endAt ? new Date(entry.endAt).toISOString() : null,
-                    requirements: entry.requirements || null,
-                    updated_at: nowIso(),
-                };
-                const { error } = await supabase.from("tasks").upsert(payload, { onConflict: "id" });
-                if (error) throw error;
-                const fresh = await getTaskFromSupabase(entry.id);
-                return NextResponse.json({ ok: true, task: fresh || entry, storage: "supabase" });
-            } catch (e: any) {
-                return NextResponse.json({ error: "Supabase write failed", detail: String(e?.message || e) }, { status: 500 });
-            }
-        }
-
-        await saveDb(db);
-        return NextResponse.json({ ok: true, task: entry, storage: "fallback" });
-    }
-
-    if (action === "adminTaskRemove") {
-        const adminAddress = body?.adminAddress;
-        const supaAuth = await requireAdminSupabase(adminAddress, "admin");
-        if (!supaAuth.ok) {
-            const auth = requireAdmin(db, adminAddress, "admin");
-            if (!auth.ok) return NextResponse.json({ error: "Not authorized" }, { status: 403 });
-        }
-        const idRaw = body?.id;
-        if (!idRaw) return NextResponse.json({ error: "Missing id" }, { status: 400 });
-        const id = String(idRaw).slice(0, 64);
-        if (supaAuth.ok) {
-            try {
-                const supabase = getSupabaseClient();
-                if (!supabase) return NextResponse.json({ error: "Supabase not configured" }, { status: 500 });
-                const delClaims = await supabase.from("task_claims").delete().eq("task_id", id);
-                if (delClaims.error) throw delClaims.error;
-                const delTask = await supabase.from("tasks").delete().eq("id", id);
-                if (delTask.error) throw delTask.error;
-                return NextResponse.json({ ok: true, storage: "supabase" });
-            } catch (e: any) {
-                return NextResponse.json({ error: "Supabase write failed", detail: String(e?.message || e) }, { status: 500 });
-            }
-        }
-
-        db.tasks = (db.tasks || []).filter((t) => t.id !== id);
-        if (db.taskClaims) delete db.taskClaims[id];
-        await saveDb(db);
-        return NextResponse.json({ ok: true, storage: "fallback" });
-    }
 
     if (action === "adminResetAll") {
         const adminAddress = body?.adminAddress;

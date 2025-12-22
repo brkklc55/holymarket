@@ -2,12 +2,15 @@
 pragma solidity ^0.8.20;
 
 contract PredictionMarket {
+    uint256 private _reentrancyLock;
+
     struct Market {
         string question;
         uint256 endTime;
         uint256 yesPool;
         uint256 noPool;
         bool resolved;
+        bool cancelled;
         bool outcome; // true = Yes, false = No
         mapping(address => uint256) yesBets;
         mapping(address => uint256) noBets;
@@ -20,7 +23,6 @@ contract PredictionMarket {
     }
 
     uint256 public marketCount;
-    uint256 public resetAfterMarketId;
     mapping(uint256 => Market) public markets;
     address public admin;
 
@@ -29,16 +31,40 @@ contract PredictionMarket {
     event MarketResolved(uint256 indexed marketId, bool outcome);
     event WinningsClaimed(uint256 indexed marketId, address indexed user, uint256 amount);
     event EmergencyWithdrawn(uint256 indexed marketId, address indexed user, uint256 amount);
+    event AdminTransferred(address indexed previousAdmin, address indexed newAdmin);
+    event EmergencyMarketCancelled(uint256 indexed marketId);
 
     constructor() {
         admin = msg.sender;
     }
 
+    modifier onlyAdmin() {
+        require(msg.sender == admin, "Only admin");
+        _;
+    }
+
+    modifier nonReentrant() {
+        require(_reentrancyLock == 0, "Reentrancy");
+        _reentrancyLock = 1;
+        _;
+        _reentrancyLock = 0;
+    }
+
+    function transferAdmin(address newAdmin) external onlyAdmin {
+        require(newAdmin != address(0), "Zero address");
+        address prev = admin;
+        admin = newAdmin;
+        emit AdminTransferred(prev, newAdmin);
+    }
+
     function createMarket(string memory _question, uint256 _duration) external {
         require(msg.sender == admin, "Only admin");
+        require(bytes(_question).length > 0, "Empty question");
+        require(_duration > 0, "Invalid duration");
         marketCount++;
         Market storage m = markets[marketCount];
         m.resolved = false;
+        m.cancelled = false;
         m.outcome = false;
         m.yesPool = 0;
         m.noPool = 0;
@@ -48,8 +74,9 @@ contract PredictionMarket {
     }
 
     function bet(uint256 _marketId, bool _outcome) external payable {
-        require(_marketId > resetAfterMarketId, "Market reset");
+        require(_marketId > 0 && _marketId <= marketCount, "Invalid market");
         Market storage m = markets[_marketId];
+        require(!m.cancelled, "Market cancelled");
         require(block.timestamp < m.endTime, "Market closed");
         require(!m.resolved, "Market resolved");
         require(msg.value > 0, "Bet amount must be > 0");
@@ -67,8 +94,9 @@ contract PredictionMarket {
 
     function resolveMarket(uint256 _marketId, bool _outcome) external {
         require(msg.sender == admin, "Only admin");
-        require(_marketId > resetAfterMarketId, "Market reset");
+        require(_marketId > 0 && _marketId <= marketCount, "Invalid market");
         Market storage m = markets[_marketId];
+        require(!m.cancelled, "Market cancelled");
         require(!m.resolved, "Already resolved");
         require(block.timestamp >= m.endTime, "Market not ended");
 
@@ -77,9 +105,10 @@ contract PredictionMarket {
         emit MarketResolved(_marketId, _outcome);
     }
 
-    function claim(uint256 _marketId) external {
-        require(_marketId > resetAfterMarketId, "Market reset");
+    function claim(uint256 _marketId) external nonReentrant {
+        require(_marketId > 0 && _marketId <= marketCount, "Invalid market");
         Market storage m = markets[_marketId];
+        require(!m.cancelled, "Market cancelled");
         require(m.resolved, "Not resolved");
         require(!m.claimed[msg.sender], "Already claimed");
 
@@ -118,9 +147,10 @@ contract PredictionMarket {
         emit WinningsClaimed(_marketId, msg.sender, netReward);
     }
 
-    function emergencyWithdraw(uint256 _marketId) external {
-        require(_marketId <= resetAfterMarketId, "Market not cancelled");
+    function emergencyWithdraw(uint256 _marketId) external nonReentrant {
+        require(_marketId > 0 && _marketId <= marketCount, "Invalid market");
         Market storage m = markets[_marketId];
+        require(m.cancelled, "Market not cancelled");
         require(!m.claimed[msg.sender], "Already claimed");
 
         uint256 yes = m.yesBets[msg.sender];
@@ -140,8 +170,16 @@ contract PredictionMarket {
         emit EmergencyWithdrawn(_marketId, msg.sender, amount);
     }
 
-    function emergencyReset() external {
-        require(msg.sender == admin, "Only admin");
-        resetAfterMarketId = marketCount;
+    function emergencyCancelMarket(uint256 _marketId) external onlyAdmin {
+        require(_marketId > 0 && _marketId <= marketCount, "Invalid market");
+        Market storage m = markets[_marketId];
+        require(!m.resolved, "Already resolved");
+        require(!m.cancelled, "Already cancelled");
+        m.cancelled = true;
+        emit EmergencyMarketCancelled(_marketId);
+    }
+
+    function emergencyReset() external pure {
+        revert("Use emergencyCancelMarket");
     }
 }

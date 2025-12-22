@@ -1,10 +1,29 @@
-export const PREDICTION_MARKET_ADDRESS = "0x825fdbcd46fadb3dcffdcfc8840274ba047b01cf";
+export const PREDICTION_MARKET_ADDRESS = "0xd2424429bd9b9254b99b81a651c582b9897be880";
 
 export const PREDICTION_MARKET_ABI = [
   {
     "inputs": [],
     "stateMutability": "nonpayable",
     "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "previousAdmin",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "newAdmin",
+        "type": "address"
+      }
+    ],
+    "name": "AdminTransferred",
+    "type": "event"
   },
   {
     "anonymous": false,
@@ -35,6 +54,44 @@ export const PREDICTION_MARKET_ABI = [
       }
     ],
     "name": "BetPlaced",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "marketId",
+        "type": "uint256"
+      }
+    ],
+    "name": "EmergencyMarketCancelled",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "marketId",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "EmergencyWithdrawn",
     "type": "event"
   },
   {
@@ -107,31 +164,6 @@ export const PREDICTION_MARKET_ABI = [
     "type": "event"
   },
   {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "marketId",
-        "type": "uint256"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "EmergencyWithdrawn",
-    "type": "event"
-  },
-  {
     "inputs": [],
     "name": "admin",
     "outputs": [
@@ -194,10 +226,23 @@ export const PREDICTION_MARKET_ABI = [
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_marketId",
+        "type": "uint256"
+      }
+    ],
+    "name": "emergencyCancelMarket",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "emergencyReset",
     "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "pure",
     "type": "function"
   },
   {
@@ -261,19 +306,6 @@ export const PREDICTION_MARKET_ABI = [
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "resetAfterMarketId",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "uint256",
@@ -310,6 +342,11 @@ export const PREDICTION_MARKET_ABI = [
       },
       {
         "internalType": "bool",
+        "name": "cancelled",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
         "name": "outcome",
         "type": "bool"
       }
@@ -331,6 +368,19 @@ export const PREDICTION_MARKET_ABI = [
       }
     ],
     "name": "resolveMarket",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newAdmin",
+        "type": "address"
+      }
+    ],
+    "name": "transferAdmin",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
