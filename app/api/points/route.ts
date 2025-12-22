@@ -127,14 +127,19 @@ async function getUserFromSupabase(addr: string): Promise<{ user: string; points
     };
 }
 
-async function getLeaderboardFromSupabase(): Promise<Array<{ user: string; points: number }> | null> {
+async function getLeaderboardFromSupabase(params?: { offset?: number; limit?: number }): Promise<Array<{ user: string; points: number }> | null> {
     const supabase = getSupabaseClient();
     if (!USE_SUPABASE || !supabase) return null;
+    const offset = Math.max(0, Math.floor(params?.offset ?? 0));
+    const limit = Math.max(1, Math.floor(params?.limit ?? 50));
+    const from = offset;
+    const to = offset + limit - 1;
+
     const { data, error } = await supabase
         .from("users")
         .select("address,points")
         .order("points", { ascending: false })
-        .limit(50);
+        .range(from, to);
     if (error || !data) return null;
     return data.map((r: any) => ({ user: String(r.address), points: Number(r.points || 0) }));
 }
@@ -357,11 +362,13 @@ function requireAdmin(db: PointsDb, addr?: string | null, minimum: "admin" | "su
     return { ok: true as const, role };
 }
 
-function computeLeaderboard(db: PointsDb) {
+function computeLeaderboard(db: PointsDb, params?: { offset?: number; limit?: number }) {
+    const offset = Math.max(0, Math.floor(params?.offset ?? 0));
+    const limit = Math.max(1, Math.floor(params?.limit ?? 50));
     return Object.entries(db.users)
         .map(([user, u]) => ({ user, points: u.points }))
         .sort((a, b) => b.points - a.points)
-        .slice(0, 50);
+        .slice(offset, offset + limit);
 }
 
 function getBnbUsdRate() {
@@ -375,6 +382,12 @@ export async function GET(req: NextRequest) {
     const user = url.searchParams.get("user");
     const whoami = url.searchParams.get("whoami");
 
+    const pageRaw = url.searchParams.get("page");
+    const limitRaw = url.searchParams.get("limit");
+    const page = Math.max(1, Math.floor(Number(pageRaw || "1")));
+    const limit = Math.min(200, Math.max(1, Math.floor(Number(limitRaw || "50"))));
+    const offset = (page - 1) * limit;
+
     if (whoami) {
         const db = await loadDb();
         const role = getAdminRole(db, whoami);
@@ -384,27 +397,45 @@ export async function GET(req: NextRequest) {
     if (user) {
         const addr = normalizeAddress(user);
         const supaUser = await getUserFromSupabase(addr);
-        const supaLb = await getLeaderboardFromSupabase();
+        const supaLb = await getLeaderboardFromSupabase({ offset, limit: limit + 1 });
         if (supaUser || supaLb) {
+            const slice = (supaLb || []).slice(0, limit);
+            const hasMore = (supaLb || []).length > limit;
             return NextResponse.json({
                 user: supaUser ? { user: supaUser.user, points: supaUser.points, referrer: supaUser.referrer } : null,
-                leaderboard: supaLb || [],
+                leaderboard: slice,
+                page,
+                limit,
+                hasMore,
             });
         }
 
         const db = await loadDb();
         const u = db.users[addr];
+        const full = Object.keys(db.users).length;
+        const leaderboard = computeLeaderboard(db, { offset, limit });
+        const hasMore = offset + leaderboard.length < full;
         return NextResponse.json({
             user: u ? { user: addr, points: u.points, referrer: u.referrer || null } : null,
-            leaderboard: computeLeaderboard(db),
+            leaderboard,
+            page,
+            limit,
+            hasMore,
         });
     }
 
-    const supaLb = await getLeaderboardFromSupabase();
-    if (supaLb) return NextResponse.json({ leaderboard: supaLb });
+    const supaLb = await getLeaderboardFromSupabase({ offset, limit: limit + 1 });
+    if (supaLb) {
+        const slice = supaLb.slice(0, limit);
+        const hasMore = supaLb.length > limit;
+        return NextResponse.json({ leaderboard: slice, page, limit, hasMore });
+    }
 
     const db = await loadDb();
-    return NextResponse.json({ leaderboard: computeLeaderboard(db) });
+    const full = Object.keys(db.users).length;
+    const leaderboard = computeLeaderboard(db, { offset, limit });
+    const hasMore = offset + leaderboard.length < full;
+    return NextResponse.json({ leaderboard, page, limit, hasMore });
 }
 
 export async function POST(req: NextRequest) {

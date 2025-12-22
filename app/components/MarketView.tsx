@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createPublicClient, http, parseEther, createWalletClient, custom, formatEther } from "viem";
 import { baseSepolia } from "viem/chains";
 import { useAccount, useChainId } from "wagmi";
@@ -64,6 +64,10 @@ export default function MarketView() {
 
     const [userPoints, setUserPoints] = useState<number>(0);
     const [pointsLeaderboard, setPointsLeaderboard] = useState<Array<{ user: string; points: number }>>([]);
+    const [leaderboardPage, setLeaderboardPage] = useState(1);
+    const [leaderboardHasMore, setLeaderboardHasMore] = useState(false);
+    const [leaderboardLoading, setLeaderboardLoading] = useState(false);
+    const leaderboardLimit = 50;
 
 
     // Admin Creation State
@@ -260,7 +264,9 @@ export default function MarketView() {
 
     const fetchPoints = async () => {
         try {
-            const url = userAddress ? `/api/points?user=${encodeURIComponent(userAddress)}` : "/api/points";
+            const url = userAddress
+                ? `/api/points?user=${encodeURIComponent(userAddress)}&page=1&limit=${leaderboardLimit}`
+                : `/api/points?page=1&limit=${leaderboardLimit}`;
             const res = await fetch(url, {
                 cache: "no-store",
                 headers: typeof window !== "undefined" ? { "x-device-id": getDeviceId() } : undefined,
@@ -268,6 +274,8 @@ export default function MarketView() {
             if (!res.ok) return;
             const json = await res.json();
             setPointsLeaderboard(json.leaderboard || []);
+            setLeaderboardPage(1);
+            setLeaderboardHasMore(Boolean(json?.hasMore));
             if (json.user?.points !== undefined && json.user?.points !== null) {
                 setUserPoints(Number(json.user.points) || 0);
             } else if (!userAddress) {
@@ -275,6 +283,41 @@ export default function MarketView() {
             }
         } catch (e) {
             console.error("Failed to fetch points:", e);
+        }
+    };
+
+    const loadMoreLeaderboard = async () => {
+        if (leaderboardLoading || !leaderboardHasMore) return;
+        setLeaderboardLoading(true);
+        try {
+            const nextPage = leaderboardPage + 1;
+            const url = userAddress
+                ? `/api/points?user=${encodeURIComponent(userAddress)}&page=${nextPage}&limit=${leaderboardLimit}`
+                : `/api/points?page=${nextPage}&limit=${leaderboardLimit}`;
+            const res = await fetch(url, {
+                cache: "no-store",
+                headers: typeof window !== "undefined" ? { "x-device-id": getDeviceId() } : undefined,
+            });
+            if (!res.ok) return;
+            const json = await res.json();
+            const next = Array.isArray(json?.leaderboard) ? json.leaderboard : [];
+            setPointsLeaderboard((prev) => {
+                const seen = new Set(prev.map((e) => e.user.toLowerCase()));
+                const merged = [...prev];
+                for (const e of next) {
+                    const k = String(e.user).toLowerCase();
+                    if (seen.has(k)) continue;
+                    seen.add(k);
+                    merged.push(e);
+                }
+                return merged;
+            });
+            setLeaderboardPage(nextPage);
+            setLeaderboardHasMore(Boolean(json?.hasMore));
+        } catch (e) {
+            console.error("Failed to load more leaderboard:", e);
+        } finally {
+            setLeaderboardLoading(false);
         }
     };
 
@@ -1704,6 +1747,16 @@ export default function MarketView() {
                                 </div>
                             )}
                         </div>
+                        {pointsLeaderboard.length > 0 && leaderboardHasMore && (
+                            <button
+                                type="button"
+                                onClick={loadMoreLeaderboard}
+                                disabled={leaderboardLoading}
+                                className="w-full py-3 rounded-xl bg-slate-900/40 border border-slate-800 text-xs font-bold text-slate-300 hover:border-slate-700 hover:text-white transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                            >
+                                {leaderboardLoading ? "Loading..." : "Load more"}
+                            </button>
+                        )}
                     </div>
                 )}
 
