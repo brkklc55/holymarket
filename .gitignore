@@ -56,3 +56,6 @@ netlify-*.json
 
 # hardhat cache/artifacts (backend)
 backend/cache
+backend/artifacts
+
+e Sepolia network + faucet links*
