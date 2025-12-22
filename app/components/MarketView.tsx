@@ -67,9 +67,37 @@ export default function MarketView() {
 
     // Admin Creation State
     const [newQuestion, setNewQuestion] = useState("");
-    const [newDuration, setNewDuration] = useState("3600"); // 1 hour default
+    const [newDuration, setNewDuration] = useState("3600"); // seconds (contract arg)
+    const [durationDays, setDurationDays] = useState("0");
+    const [durationHours, setDurationHours] = useState("1");
+    const [durationMinutes, setDurationMinutes] = useState("0");
 
     const needsNetworkSwitch = isConnected && chainId !== baseSepolia.id;
+
+    const parseNonNegativeInt = (v: string) => {
+        const n = Number(String(v ?? "").replace(/[^0-9]/g, ""));
+        if (!Number.isFinite(n) || n < 0) return 0;
+        return Math.floor(n);
+    };
+
+    const computeDurationSeconds = (dStr: string, hStr: string, mStr: string) => {
+        const d = parseNonNegativeInt(dStr);
+        const h = parseNonNegativeInt(hStr);
+        const m = parseNonNegativeInt(mStr);
+        const total = d * 86400 + h * 3600 + m * 60;
+        return total;
+    };
+
+    const setDurationPresetSeconds = (seconds: number) => {
+        const s = Math.max(0, Math.floor(seconds));
+        const d = Math.floor(s / 86400);
+        const h = Math.floor((s % 86400) / 3600);
+        const m = Math.floor((s % 3600) / 60);
+        setDurationDays(String(d));
+        setDurationHours(String(h));
+        setDurationMinutes(String(m));
+        setNewDuration(String(s));
+    };
 
     const getDeviceId = () => {
         try {
@@ -302,6 +330,12 @@ export default function MarketView() {
     useEffect(() => {
         init();
     }, []);
+
+    useEffect(() => {
+        const total = computeDurationSeconds(durationDays, durationHours, durationMinutes);
+        const next = String(total);
+        if (newDuration !== next) setNewDuration(next);
+    }, [durationDays, durationHours, durationMinutes]);
 
     useEffect(() => {
         if (market?.resolved && userBet && !userBet.claimed && market.outcome !== undefined) {
@@ -1681,18 +1715,49 @@ export default function MarketView() {
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Duration Window (s)</label>
-                                    <input
-                                        type="number"
-                                        required
-                                        value={newDuration}
-                                        onChange={(e) => setNewDuration(e.target.value)}
-                                        className="w-full premium-input focus:bg-slate-900"
-                                    />
-                                    <div className="mt-4 flex gap-2">
-                                        <button type="button" onClick={() => setNewDuration("3600")} className="flex-1 py-1.5 bg-slate-800 text-[10px] rounded-lg hover:bg-slate-700 font-bold transition-all">1 Hour</button>
-                                        <button type="button" onClick={() => setNewDuration("86400")} className="flex-1 py-1.5 bg-slate-800 text-[10px] rounded-lg hover:bg-slate-700 font-bold transition-all">24 Hours</button>
-                                        <button type="button" onClick={() => setNewDuration("604800")} className="flex-1 py-1.5 bg-slate-800 text-[10px] rounded-lg hover:bg-slate-700 font-bold transition-all">7 Days</button>
+                                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Duration</label>
+                                    <div className="grid grid-cols-3 gap-2">
+                                        <div className="space-y-1">
+                                            <label className="text-[9px] font-bold text-slate-600 uppercase tracking-widest ml-1">Days</label>
+                                            <input
+                                                type="number"
+                                                min={0}
+                                                value={durationDays}
+                                                onChange={(e) => setDurationDays(e.target.value)}
+                                                className="w-full premium-input focus:bg-slate-900"
+                                            />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <label className="text-[9px] font-bold text-slate-600 uppercase tracking-widest ml-1">Hours</label>
+                                            <input
+                                                type="number"
+                                                min={0}
+                                                value={durationHours}
+                                                onChange={(e) => setDurationHours(e.target.value)}
+                                                className="w-full premium-input focus:bg-slate-900"
+                                            />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <label className="text-[9px] font-bold text-slate-600 uppercase tracking-widest ml-1">Minutes</label>
+                                            <input
+                                                type="number"
+                                                min={0}
+                                                value={durationMinutes}
+                                                onChange={(e) => setDurationMinutes(e.target.value)}
+                                                className="w-full premium-input focus:bg-slate-900"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="mt-3 p-3 rounded-xl bg-slate-900/30 border border-slate-800 flex items-center justify-between">
+                                        <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Total seconds</div>
+                                        <div className="text-xs font-mono text-slate-300">{newDuration}</div>
+                                    </div>
+                                    <div className="mt-4 grid grid-cols-5 gap-2">
+                                        <button type="button" onClick={() => setDurationPresetSeconds(15 * 60)} className="py-1.5 bg-slate-800 text-[10px] rounded-lg hover:bg-slate-700 font-bold transition-all">15m</button>
+                                        <button type="button" onClick={() => setDurationPresetSeconds(60 * 60)} className="py-1.5 bg-slate-800 text-[10px] rounded-lg hover:bg-slate-700 font-bold transition-all">1h</button>
+                                        <button type="button" onClick={() => setDurationPresetSeconds(6 * 60 * 60)} className="py-1.5 bg-slate-800 text-[10px] rounded-lg hover:bg-slate-700 font-bold transition-all">6h</button>
+                                        <button type="button" onClick={() => setDurationPresetSeconds(24 * 60 * 60)} className="py-1.5 bg-slate-800 text-[10px] rounded-lg hover:bg-slate-700 font-bold transition-all">24h</button>
+                                        <button type="button" onClick={() => setDurationPresetSeconds(7 * 24 * 60 * 60)} className="py-1.5 bg-slate-800 text-[10px] rounded-lg hover:bg-slate-700 font-bold transition-all">7d</button>
                                     </div>
                                 </div>
 
