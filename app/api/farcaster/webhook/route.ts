@@ -45,6 +45,15 @@ async function deleteNotificationDetails(fid: number) {
     if (error) throw error;
 }
 
+export async function GET() {
+    try {
+        console.log("miniapp_webhook:ping", { at: nowIso() });
+    } catch {
+        // ignore
+    }
+    return NextResponse.json({ ok: true });
+}
+
 export async function POST(request: NextRequest) {
     const requestJson = await request.json().catch(() => null);
     if (!requestJson) return NextResponse.json({ success: false, error: "Invalid JSON" }, { status: 400 });
