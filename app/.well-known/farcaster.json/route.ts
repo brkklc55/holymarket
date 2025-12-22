@@ -29,7 +29,7 @@ export async function GET(req: Request) {
         frame: {
             version: "1",
             name: "HolyMarket",
-            iconUrl: `${appUrl}/logo.png`,
+            iconUrl: `${appUrl}/ihm-beta.png`,
             homeUrl: appUrl,
         }
     };

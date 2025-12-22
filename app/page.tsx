@@ -5,7 +5,7 @@ const appOrigin = baseUrl || "";
 
 const frameMetadata: Record<string, string> = {
   'fc:frame': 'vNext',
-  ...(appOrigin ? { 'fc:frame:image': `${appOrigin}/logo.png` } : { 'fc:frame:image': '/logo.png' }),
+  ...(appOrigin ? { 'fc:frame:image': `${appOrigin}/ihm-beta.png` } : { 'fc:frame:image': '/ihm-beta.png' }),
   'fc:frame:image:aspect_ratio': '1.91:1',
   ...(baseUrl ? { 'fc:frame:post_url': `${baseUrl}/api/frame` } : {}),
   'fc:frame:button:1': 'Enter HolyMarket',
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'HolyMarket',
     description: 'Prediction Market on Farcaster',
-    images: appOrigin ? [`${appOrigin}/logo.png`] : ['/logo.png'],
+    images: appOrigin ? [`${appOrigin}/ihm-beta.png`] : ['/ihm-beta.png'],
   },
   other: {
     ...frameMetadata,
@@ -35,7 +35,7 @@ export default function Page() {
         <div className="text-center space-y-4">
           <div className="flex justify-center">
             <img
-              src="/logo.png"
+              src="/ihm-beta.png"
               alt="HolyMarket"
               className="w-20 h-20 rounded-2xl border border-slate-800 bg-slate-900/40"
             />

@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   title: "HolyMarket - Prediction Markets",
   description: "Decentralized prediction markets on Base Sepolia",
   icons: {
-    icon: "/logo.png",
+    icon: "/ihm-beta.png",
   },
 };
 
