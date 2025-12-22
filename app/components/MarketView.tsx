@@ -6,6 +6,7 @@ import { baseSepolia } from "viem/chains";
 import { useAccount, useChainId } from "wagmi";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { TrendingUp, Share2, Twitter, Info } from "lucide-react";
+ import sdk from "@farcaster/frame-sdk";
 import { PREDICTION_MARKET_ADDRESS, PREDICTION_MARKET_ABI } from "../constants";
 import { useToast } from "./ui/ToastProvider";
 
@@ -628,6 +629,15 @@ export default function MarketView() {
         }
     };
 
+    const handleEnableNotifications = async () => {
+        try {
+            await sdk.actions.addMiniApp();
+            toast({ title: "Requested", message: "Check the Warpcast prompt to add HolyMarket and enable notifications.", variant: "success" });
+        } catch (e: any) {
+            toast({ title: "Failed", message: e?.message || "Could not open Warpcast prompt.", variant: "error" });
+        }
+    };
+
 
     const handleCreateMarket = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -652,6 +662,23 @@ export default function MarketView() {
             toast({ title: "Market created", message: `Transaction submitted: ${hash}`, variant: "success" });
             await fetchMarketCount();
             setNewQuestion("");
+
+            // Best-effort Warpcast notification broadcast
+            try {
+                await fetch("/api/farcaster/notify", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        adminAddress: address,
+                        title: "New market",
+                        body: newQuestion.slice(0, 120),
+                        notificationId: `market-${Date.now()}`,
+                        targetUrl: typeof window !== "undefined" ? window.location.origin : undefined,
+                    }),
+                });
+            } catch {
+                // ignore
+            }
         } catch (error: any) {
             toast({ title: "Create market failed", message: error?.message || "Unknown error", variant: "error" });
         } finally {
@@ -1168,6 +1195,13 @@ export default function MarketView() {
                                 <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-white leading-tight break-words">{market.question}</h2>
                             </div>
                             <div className="flex gap-2 md:pt-1">
+                                <button
+                                    onClick={handleEnableNotifications}
+                                    className="px-3 py-2.5 rounded-xl bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 transition-all text-xs font-bold"
+                                    title="Enable Warpcast notifications"
+                                >
+                                    Enable notifications
+                                </button>
                                 <button
                                     onClick={() => window.open(`https://warpcast.com/~/compose?text=Predicting on HolyMarket: ${market.question}&embeds[]=${window.location.href}`)}
                                     className="p-2.5 rounded-xl bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 transition-all"

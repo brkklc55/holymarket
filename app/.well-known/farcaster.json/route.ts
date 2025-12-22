@@ -10,6 +10,7 @@ export async function GET(req: Request) {
     })();
 
     const appUrl = process.env.NEXT_PUBLIC_URL || origin || 'http://localhost:3000';
+    const webhookUrl = process.env.FARCASTER_WEBHOOK_URL || `${appUrl}/api/farcaster/webhook`;
 
     const accountAssociationHeader = process.env.FARCASTER_ACCOUNT_ASSOCIATION_HEADER;
     const accountAssociationPayload = process.env.FARCASTER_ACCOUNT_ASSOCIATION_PAYLOAD;
@@ -26,6 +27,13 @@ export async function GET(req: Request) {
 
     const config = {
         ...(accountAssociation ? { accountAssociation } : {}),
+        miniapp: {
+            version: "1",
+            name: "HolyMarket",
+            iconUrl: `${appUrl}/ihm-beta.png`,
+            homeUrl: appUrl,
+            webhookUrl,
+        },
         frame: {
             version: "1",
             name: "HolyMarket",
