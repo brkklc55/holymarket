@@ -336,7 +336,7 @@ export default function MarketView() {
         const run = async () => {
             if (typeof window === "undefined") return;
             const key = "holymarket_prompt_addminiapp_v1";
-            const already = window.localStorage.getItem(key);
+            const already = window.sessionStorage.getItem(key);
             if (already) return;
 
             try {
@@ -345,7 +345,7 @@ export default function MarketView() {
                 if (!isMiniApp) return;
 
                 // Avoid re-prompting if the user stays in the app
-                window.localStorage.setItem(key, "1");
+                window.sessionStorage.setItem(key, "1");
 
                 // Give the UI a moment to settle before prompting
                 await new Promise((r) => setTimeout(r, 600));
@@ -353,7 +353,7 @@ export default function MarketView() {
             } catch {
                 // If it fails, don't spam retries.
                 try {
-                    window.localStorage.setItem("holymarket_prompt_addminiapp_v1", "1");
+                    window.sessionStorage.setItem("holymarket_prompt_addminiapp_v1", "1");
                 } catch {
                     // ignore
                 }
