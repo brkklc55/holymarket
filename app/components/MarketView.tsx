@@ -1090,33 +1090,33 @@ export default function MarketView() {
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
                 <div className="premium-card p-1.5 bg-slate-900/50 overflow-x-auto no-scrollbar">
                     <div className="flex gap-1 min-w-max">
-                    {[
-                        { id: "market", label: "Market" },
-                        { id: "leaderboard", label: "Leaderboard" },
-                        { id: "activity", label: "Activity" },
-                        { id: "airdrop", label: "Airdrop", disabled: true, badge: "SOON" },
-                        { id: "profile", label: "Profile" },
-                        { id: "admin", label: "Admin" }
-                    ].map((tab) => (
-                        (tab.id !== "admin" || isAdmin) && (
-                            <button
-                                key={tab.id}
-                                disabled={(tab as any).disabled}
-                                onClick={() => {
-                                    if ((tab as any).disabled) return;
-                                    setActiveTab(tab.id as any);
-                                }}
-                                className={`flex-none px-3 py-2 rounded-xl text-[10px] font-bold transition-all flex items-center justify-center gap-2 whitespace-nowrap ${(tab as any).disabled ? "opacity-60 cursor-not-allowed" : ""} ${activeTab === tab.id ? "bg-sky-500 text-white shadow-lg shadow-sky-500/20" : "text-slate-400 hover:text-white hover:bg-slate-800"}`}
-                            >
-                                <span>{tab.label}</span>
-                                {(tab as any).badge && (
-                                    <span className="ml-1 px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 text-[8px] font-black border border-slate-700">
-                                        {(tab as any).badge}
-                                    </span>
-                                )}
-                            </button>
-                        )
-                    ))}
+                        {[
+                            { id: "market", label: "Market" },
+                            { id: "leaderboard", label: "Leaderboard" },
+                            { id: "activity", label: "Activity" },
+                            { id: "airdrop", label: "Airdrop", disabled: true, badge: "SOON" },
+                            { id: "profile", label: "Profile" },
+                            { id: "admin", label: "Admin" }
+                        ].map((tab) => (
+                            (tab.id !== "admin" || isAdmin) && (
+                                <button
+                                    key={tab.id}
+                                    disabled={(tab as any).disabled}
+                                    onClick={() => {
+                                        if ((tab as any).disabled) return;
+                                        setActiveTab(tab.id as any);
+                                    }}
+                                    className={`flex-none px-3 py-2 rounded-xl text-[10px] font-bold transition-all flex items-center justify-center gap-2 whitespace-nowrap ${(tab as any).disabled ? "opacity-60 cursor-not-allowed" : ""} ${activeTab === tab.id ? "bg-sky-500 text-white shadow-lg shadow-sky-500/20" : "text-slate-400 hover:text-white hover:bg-slate-800"}`}
+                                >
+                                    <span>{tab.label}</span>
+                                    {(tab as any).badge && (
+                                        <span className="ml-1 px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 text-[8px] font-black border border-slate-700">
+                                            {(tab as any).badge}
+                                        </span>
+                                    )}
+                                </button>
+                            )
+                        ))}
                     </div>
                 </div>
                 <div className="flex justify-end">
@@ -1468,179 +1468,31 @@ export default function MarketView() {
                                         <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 font-bold">ETH</span>
                                     </div>
                                 </div>
-                                <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-white leading-tight break-words">{market.question}</h2>
-                            </div>
-                            <div className="flex gap-2 md:pt-1">
-                                <button
-                                    onClick={() => window.open(`https://warpcast.com/~/compose?text=Predicting on HolyMarket: ${market.question}&embeds[]=${window.location.href}`)}
-                                    className="p-2.5 rounded-xl bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 transition-all"
-                                    title="Share on Warpcast"
-                                >
-                                    <Share2 size={18} />
-                                </button>
-                                <button
-                                    onClick={() => window.open(`https://twitter.com/intent/tweet?text=I'm predicting on HolyMarket: ${market.question}&url=${window.location.href}`)}
-                                    className="p-2.5 rounded-xl bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 transition-all"
-                                    title="Share on Twitter"
-                                >
-                                    <Twitter size={18} />
-                                </button>
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-4 mb-8">
-                            <div className="p-4 rounded-2xl bg-emerald-500/5 border border-emerald-500/10 flex flex-col">
-                                <span className="text-[10px] font-bold text-emerald-500 mb-2 uppercase tracking-tighter">YES Pool ({calculateMultiplier(true)}x)</span>
-                                <div className="flex items-baseline gap-1">
-                                    <span className="text-2xl font-black text-white">{(Number(market.yesPool) / 1e18).toFixed(3)}</span>
-                                    <span className="text-xs text-slate-500 font-bold">ETH</span>
-                                </div>
-                                <div className="mt-3 pt-3 border-t border-emerald-500/10">
-                                    <span className="text-[10px] text-slate-500 block mb-1">Potential Payout</span>
-                                    <span className="text-xs font-bold text-emerald-400">{calculatePotentialProfit(true)} ETH</span>
-                                </div>
-                            </div>
-                            <div className="p-4 rounded-2xl bg-rose-500/5 border border-rose-500/10 flex flex-col">
-                                <span className="text-[10px] font-bold text-rose-500 mb-2 uppercase tracking-tighter">NO Pool ({calculateMultiplier(false)}x)</span>
-                                <div className="flex items-baseline gap-1">
-                                    <span className="text-2xl font-black text-white">{(Number(market.noPool) / 1e18).toFixed(3)}</span>
-                                    <span className="text-xs text-slate-500 font-bold">ETH</span>
-                                </div>
-                                <div className="mt-3 pt-3 border-t border-rose-500/10">
-                                    <span className="text-[10px] text-slate-500 block mb-1">Potential Payout</span>
-                                    <span className="text-xs font-bold text-rose-400">{calculatePotentialProfit(false)} ETH</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="mt-auto">
-                            {market.resolved ? (
-                                <div className="p-6 rounded-2xl bg-slate-800/50 border border-slate-700 flex flex-col items-center text-center">
-                                    <span className="text-[10px] font-bold text-slate-500 mb-4 uppercase tracking-widest">Winning Outcome</span>
-                                    <div className={`text-4xl font-black mb-6 ${market.outcome ? "text-emerald-400" : "text-rose-500"}`}>
-                                        {market.outcome ? "YES ✓" : "NO ✓"}
-                                    </div>
-
-                                    <div className="w-full p-4 rounded-2xl bg-slate-900/40 border border-slate-800 text-left mb-4">
-                                        <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Your bet</div>
-                                        <div className="mt-2 flex justify-between gap-4">
-                                            <div className="text-xs font-bold text-emerald-400">YES: {userBet ? Number(formatEther(userBet.yesAmount)).toFixed(4) : "0.0000"} ETH</div>
-                                            <div className="text-xs font-bold text-rose-400">NO: {userBet ? Number(formatEther(userBet.noAmount)).toFixed(4) : "0.0000"} ETH</div>
-                                        </div>
-                                    </div>
-
-                                    {userBet?.claimed ? (
-                                        <div className="w-full p-4 rounded-2xl bg-slate-900/40 border border-slate-800 text-sm text-slate-300 font-bold">
-                                            Already claimed.
-                                        </div>
-                                    ) : (userBet && userBet.yesAmount === 0n && userBet.noAmount === 0n) ? (
-                                        <div className="w-full p-4 rounded-2xl bg-slate-900/40 border border-slate-800 text-sm text-slate-400 font-bold">
-                                            You did not place a bet in this market.
-                                        </div>
-                                    ) : parseFloat(claimableAmount) <= 0 ? (
-                                        <div className="w-full p-4 rounded-2xl bg-slate-900/40 border border-slate-800 text-sm text-slate-400 font-bold">
-                                            No winnings for this wallet.
-                                        </div>
-                                    ) : (
+                                <div className="grid grid-cols-2 gap-4">
                                     <button
-                                        onClick={handleClaim}
-                                        disabled={betting || needsNetworkSwitch || !isConnected || parseFloat(claimableAmount) <= 0}
-                                        className="w-full premium-btn py-4 bg-white text-slate-900 hover:bg-slate-100 disabled:opacity-60 disabled:cursor-not-allowed"
+                                        onClick={() => handleBet(true)}
+                                        disabled={betting || needsNetworkSwitch || !isConnected}
+                                        className={`premium-btn py-4 bg-emerald-600 hover:bg-emerald-500 shadow-xl shadow-emerald-600/20 ${betting || needsNetworkSwitch || !isConnected ? "opacity-60 cursor-not-allowed hover:transform-none" : ""}`}
                                     >
-                                        {betting ? "Processing..." : `Claim ${Number(claimableAmount).toFixed(4)} ETH Reward`}
+                                        {betting ? "Processing..." : "VOTE YES"}
                                     </button>
-                                    )}
-                                    {(!isConnected || needsNetworkSwitch) && (
-                                        <div className="mt-3 text-[11px] text-slate-500">
-                                            Connect your wallet and switch to Base Sepolia to claim.
-                                        </div>
-                                    )}
+                                    <button
+                                        onClick={() => handleBet(false)}
+                                        disabled={betting || needsNetworkSwitch || !isConnected}
+                                        className={`premium-btn py-4 bg-rose-600 hover:bg-rose-500 shadow-xl shadow-rose-600/20 ${betting || needsNetworkSwitch || !isConnected ? "opacity-60 cursor-not-allowed hover:transform-none" : ""}`}
+                                    >
+                                        {betting ? "Processing..." : "VOTE NO"}
+                                    </button>
                                 </div>
-                            ) : (
-                                <div className="space-y-6">
-                                    <div className="space-y-3">
-                                        <div className="flex items-center justify-between px-1">
-                                            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Amount</div>
-                                            <div className="flex items-center gap-2">
-                                                {walletBalanceLoading ? (
-                                                    <span className="text-[10px] font-bold text-slate-500">Loading...</span>
-                                                ) : walletBalance !== null ? (
-                                                    <span className="text-[10px] font-bold text-slate-500">Available: {Number(formatEther(walletBalance)).toFixed(4)} ETH</span>
-                                                ) : (
-                                                    <span className="text-[10px] font-bold text-slate-600">Available: —</span>
-                                                )}
-                                                <button
-                                                    type="button"
-                                                    disabled={walletBalance === null || walletBalanceLoading || needsNetworkSwitch || !isConnected}
-                                                    onClick={() => {
-                                                        if (walletBalance === null) return;
-                                                        const reserve = parseEther("0.0002");
-                                                        const max = walletBalance > reserve ? walletBalance - reserve : 0n;
-                                                        if (max <= 0n) {
-                                                            toast({ title: "Insufficient balance", message: "Not enough ETH for a bet (after gas reserve).", variant: "warning" });
-                                                            return;
-                                                        }
-                                                        const maxStr = formatEther(max);
-                                                        setAmount(maxStr);
-                                                    }}
-                                                    className="px-2 py-1 rounded-lg bg-slate-900/60 border border-slate-800 text-[10px] font-extrabold text-slate-300 hover:border-slate-700 hover:text-white disabled:opacity-60 disabled:cursor-not-allowed"
-                                                >
-                                                    MAX
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <div className="flex flex-wrap gap-2">
-                                            {[
-                                                { label: "0.001", value: "0.001" },
-                                                { label: "0.005", value: "0.005" },
-                                                { label: "0.01", value: "0.01" },
-                                                { label: "0.05", value: "0.05" },
-                                            ].map((chip) => (
-                                                <button
-                                                    key={chip.value}
-                                                    type="button"
-                                                    onClick={() => setAmount(chip.value)}
-                                                    className={`px-3 py-1.5 rounded-full text-[10px] font-extrabold border transition-all ${amount === chip.value ? "bg-sky-500/15 text-sky-300 border-sky-500/30" : "bg-slate-900/40 text-slate-400 border-slate-800 hover:border-slate-700 hover:text-slate-200"}`}
-                                                >
-                                                    {chip.label} ETH
-                                                </button>
-                                            ))}
-                                        </div>
-                                        <div className="relative">
-                                            <input
-                                                type="number"
-                                                value={amount}
-                                                onChange={(e) => setAmount(e.target.value)}
-                                                className="w-full premium-input py-4 text-xl pr-16 bg-slate-900/80"
-                                            />
-                                            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 font-bold">ETH</span>
-                                        </div>
+                                {!isConnected && (
+                                    <div className="text-center text-xs text-slate-500">
+                                        Connect your wallet to place a vote.
                                     </div>
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <button
-                                            onClick={() => handleBet(true)}
-                                            disabled={betting || needsNetworkSwitch || !isConnected}
-                                            className={`premium-btn py-4 bg-emerald-600 hover:bg-emerald-500 shadow-xl shadow-emerald-600/20 ${betting || needsNetworkSwitch || !isConnected ? "opacity-60 cursor-not-allowed hover:transform-none" : ""}`}
-                                        >
-                                            {betting ? "Processing..." : "VOTE YES"}
-                                        </button>
-                                        <button
-                                            onClick={() => handleBet(false)}
-                                            disabled={betting || needsNetworkSwitch || !isConnected}
-                                            className={`premium-btn py-4 bg-rose-600 hover:bg-rose-500 shadow-xl shadow-rose-600/20 ${betting || needsNetworkSwitch || !isConnected ? "opacity-60 cursor-not-allowed hover:transform-none" : ""}`}
-                                        >
-                                            {betting ? "Processing..." : "VOTE NO"}
-                                        </button>
-                                    </div>
-                                    {!isConnected && (
-                                        <div className="text-center text-xs text-slate-500">
-                                            Connect your wallet to place a vote.
-                                        </div>
-                                    )}
-                                </div>
-                            )}
-                        </div>
+                                )}
+                            </div>
+                        )}
                     </div>
+                </div>
                 )}
 
                 {activeTab === "airdrop" && (
