@@ -32,6 +32,10 @@ export async function GET(req: Request) {
             name: "HolyMarket",
             iconUrl: `${appUrl}/ihm-beta.png`,
             homeUrl: appUrl,
+            imageUrl: `${appUrl}/ihm-beta.png`,
+            buttonTitle: "Open HolyMarket",
+            splashImageUrl: `${appUrl}/ihm-beta.png`,
+            splashBackgroundColor: "#050b1a",
             webhookUrl,
         },
         frame: {

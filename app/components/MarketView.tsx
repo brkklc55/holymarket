@@ -631,6 +631,7 @@ export default function MarketView() {
 
     const handleEnableNotifications = async () => {
         try {
+            await sdk.actions.ready();
             await sdk.actions.addMiniApp();
             toast({ title: "Requested", message: "Check the Warpcast prompt to add HolyMarket and enable notifications.", variant: "success" });
         } catch (e: any) {
