@@ -336,8 +336,12 @@ export default function MarketView() {
         const run = async () => {
             if (typeof window === "undefined") return;
             const key = "holymarket_prompt_addminiapp_v1";
-            const already = window.sessionStorage.getItem(key);
-            if (already) return;
+            const cooldownMs = 5 * 60 * 1000;
+            const last = window.sessionStorage.getItem(key);
+            if (last) {
+                const t = Number(last);
+                if (Number.isFinite(t) && Date.now() - t < cooldownMs) return;
+            }
 
             try {
                 await sdk.actions.ready();
@@ -348,12 +352,12 @@ export default function MarketView() {
                 await new Promise((r) => setTimeout(r, 600));
                 await sdk.actions.addMiniApp();
 
-                // Avoid re-prompting if the user stays in the app
-                window.sessionStorage.setItem(key, "1");
+                // Avoid spamming prompts; cooldown instead of one-time lock
+                window.sessionStorage.setItem(key, String(Date.now()));
             } catch {
                 // If it fails, don't spam retries.
                 try {
-                    window.sessionStorage.setItem("holymarket_prompt_addminiapp_v1", "1");
+                    window.sessionStorage.setItem("holymarket_prompt_addminiapp_v1", String(Date.now()));
                 } catch {
                     // ignore
                 }
@@ -392,6 +396,15 @@ export default function MarketView() {
             }
 
             await sdk.actions.addMiniApp();
+
+            try {
+                if (typeof window !== "undefined") {
+                    window.sessionStorage.setItem("holymarket_prompt_addminiapp_v1", String(Date.now()));
+                }
+            } catch {
+                // ignore
+            }
+
             toast({ title: "Requested", message: "Check the Warpcast prompt.", variant: "success" });
         } catch (e: any) {
             const name = String(e?.name || "");
@@ -1204,124 +1217,260 @@ export default function MarketView() {
                                                 className="w-full px-3 py-2 rounded-xl bg-slate-900/40 border border-slate-800 text-xs text-slate-200 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-sky-500/30"
                                             />
                                         </div>
+                                        <div className="flex flex-wrap items-center gap-2">
+                                        <button
+                                            type="button"
+                                            onClick={() => setMarketFilter("all")}
+                                            className={`px-3 py-2 rounded-xl text-[10px] font-black border transition-all ${marketFilter === "all" ? "bg-sky-500/10 text-sky-400 border-sky-500/20" : "bg-slate-900/40 text-slate-400 border-slate-800 hover:border-slate-700 hover:text-white"}`}
+                                        >
+                                            ALL
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => setMarketFilter("live")}
+                                            className={`px-3 py-2 rounded-xl text-[10px] font-black border transition-all ${marketFilter === "live" ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" : "bg-slate-900/40 text-slate-400 border-slate-800 hover:border-slate-700 hover:text-white"}`}
+                                        >
+                                            LIVE
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => setMarketFilter("ended")}
+                                            className={`px-3 py-2 rounded-xl text-[10px] font-black border transition-all ${marketFilter === "ended" ? "bg-slate-900/60 text-slate-300 border-slate-800" : "bg-slate-900/40 text-slate-400 border-slate-800 hover:border-slate-700 hover:text-white"}`}
+                                        >
+                                            ENDED
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => setMarketFilter("cancelled")}
+                                            className={`px-3 py-2 rounded-xl text-[10px] font-black border transition-all ${marketFilter === "cancelled" ? "bg-amber-500/10 text-amber-400 border-amber-500/20" : "bg-slate-900/40 text-slate-400 border-slate-800 hover:border-slate-700 hover:text-white"}`}
+                                        >
+                                            CANCELLED
+                                        </button>
+
                                         <div className="flex items-center gap-2">
-                                            <button
-                                                type="button"
-                                                onClick={() => setMarketFilter("all")}
-                                                className={`px-3 py-2 rounded-xl text-[10px] font-black border transition-all ${marketFilter === "all" ? "bg-sky-500/10 text-sky-400 border-sky-500/20" : "bg-slate-900/40 text-slate-400 border-slate-800 hover:border-slate-700 hover:text-white"}`}
-                                            >
-                                                ALL
-                                            </button>
-                                            <button
-                                                type="button"
-                                                onClick={() => setMarketFilter("live")}
-                                                className={`px-3 py-2 rounded-xl text-[10px] font-black border transition-all ${marketFilter === "live" ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" : "bg-slate-900/40 text-slate-400 border-slate-800 hover:border-slate-700 hover:text-white"}`}
-                                            >
-                                                LIVE
-                                            </button>
-                                            <button
-                                                type="button"
-                                                onClick={() => setMarketFilter("ended")}
-                                                className={`px-3 py-2 rounded-xl text-[10px] font-black border transition-all ${marketFilter === "ended" ? "bg-slate-900/60 text-slate-300 border-slate-800" : "bg-slate-900/40 text-slate-400 border-slate-800 hover:border-slate-700 hover:text-white"}`}
-                                            >
-                                                ENDED
-                                            </button>
-                                            <button
-                                                type="button"
-                                                onClick={() => setMarketFilter("cancelled")}
-                                                className={`px-3 py-2 rounded-xl text-[10px] font-black border transition-all ${marketFilter === "cancelled" ? "bg-amber-500/10 text-amber-400 border-amber-500/20" : "bg-slate-900/40 text-slate-400 border-slate-800 hover:border-slate-700 hover:text-white"}`}
-                                            >
-                                                CANCELLED
-                                            </button>
-                                        </div>
-                                        <div className="flex items-center gap-2">
+                                            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Sort</span>
                                             <select
                                                 value={marketSort}
                                                 onChange={(e) => setMarketSort(e.target.value as any)}
-                                                className="px-3 py-2 rounded-xl bg-slate-900/40 border border-slate-800 text-[10px] font-black text-slate-200 focus:outline-none"
+                                                className="px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-[10px] font-black text-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-500/40"
                                             >
-                                                <option value="newest">Newest</option>
-                                                <option value="ending">Ending soon</option>
-                                                <option value="volume">Top volume</option>
+                                                <option value="newest" className="bg-slate-950 text-slate-100">Newest</option>
+                                                <option value="ending" className="bg-slate-950 text-slate-100">Ending soon</option>
+                                                <option value="volume" className="bg-slate-950 text-slate-100">Top volume</option>
                                             </select>
                                         </div>
                                     </div>
+                                </div>
 
-                                    <div className="flex gap-3 overflow-x-auto pb-6 mb-6 custom-scrollbar no-scrollbar">
-                                        {filtered.map((m) => (
+                                <div className="flex gap-3 overflow-x-auto pb-6 mb-6 custom-scrollbar no-scrollbar">
+                                    {filtered.map((m) => (
+                                        <button
+                                            key={m.id.toString()}
+                                            onClick={() => setSelectedMarketId(m.id)}
+                                            className={`flex-shrink-0 w-48 p-3 rounded-xl border transition-all text-left ${selectedMarketId === m.id ? "border-sky-500 bg-sky-500/10" : "border-slate-800 bg-slate-900/40 hover:border-slate-700"}`}
+                                        >
+                                            <div className="flex justify-between items-center mb-1">
+                                                <span
+                                                    className={`text-[8px] font-black px-1.5 py-0.5 rounded border ${
+                                                        m.cancelled
+                                                            ? "bg-amber-500/10 text-amber-400 border-amber-500/20"
+                                                            : m.resolved
+                                                                ? "bg-slate-900/60 text-slate-400 border-slate-800"
+                                                                : "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                                                    }`}
+                                                >
+                                                    {m.cancelled ? "CANCELLED" : m.resolved ? `ENDED • ${m.outcome ? "YES" : "NO"}` : "LIVE"}
+                                                </span>
+                                                <span className="text-[8px] font-mono text-slate-600">#{m.id.toString()}</span>
+                                            </div>
+                                            <p className="text-[10px] font-bold text-slate-200 truncate mb-2">{m.question}</p>
+                                            <div className="text-[9px] font-black text-sky-400">
+                                                {(Number(m.yesPool + m.noPool) / 1e18).toFixed(3)} ETH
+                                            </div>
+                                            <div className="mt-1 flex justify-between text-[9px] font-bold text-slate-500">
+                                                <span>YES {(Number(m.yesPool) / 1e18).toFixed(3)}</span>
+                                                <span>NO {(Number(m.noPool) / 1e18).toFixed(3)}</span>
+                                            </div>
+                                            <div className="mt-2 h-1.5 w-full rounded-full bg-slate-800 overflow-hidden">
+                                                {(() => {
+                                                    const y = Number(m.yesPool);
+                                                    const n = Number(m.noPool);
+                                                    const total = y + n;
+                                                    const pct = total > 0 ? Math.max(4, Math.min(96, (y / total) * 100)) : 50;
+                                                    return <div className="h-full bg-emerald-500/70" style={{ width: `${pct}%` }} />;
+                                                })()}
+                                            </div>
+                                        </button>
+                                    ))}
+                                    {filtered.length === 0 && (
+                                        <div className="flex-shrink-0 w-full p-6 rounded-2xl bg-slate-900/30 border border-dashed border-slate-800 text-center">
+                                            <div className="text-sm font-black text-slate-200">No markets found</div>
+                                            <div className="mt-1 text-xs text-slate-500">Try clearing filters or search.</div>
+                                        </div>
+                                    )}
+                                </div>
+                            </>
+                        );
+                    })()}
+                    <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-6">
+                        <div className="flex-1 min-w-0">
+                            <div className="flex flex-wrap items-center gap-2 mb-2">
+                                <span className="px-2 py-0.5 bg-sky-500/10 text-sky-500 rounded text-[10px] font-extrabold uppercase border border-sky-500/20">Market #{selectedMarketId.toString()}</span>
+                                <span className={`px-2 py-0.5 rounded text-[10px] font-extrabold border ${timeLeft === "ENDED" ? "bg-red-500/10 text-red-500 border-red-500/20" : "bg-amber-500/10 text-amber-500 border-amber-500/20"}`}>
+                                    {timeLeft === "ENDED" ? "EXPIRED" : timeLeft}
+                                </span>
+                            </div>
+                            <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-white leading-tight break-words">{market.question}</h2>
+                        </div>
+                        <div className="flex gap-2 md:pt-1">
+                            <button
+                                onClick={() => window.open(`https://warpcast.com/~/compose?text=Predicting on HolyMarket: ${market.question}&embeds[]=${window.location.href}`)}
+                                className="p-2.5 rounded-xl bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 transition-all"
+                                title="Share on Warpcast"
+                            >
+                                <Share2 size={18} />
+                            </button>
+                            <button
+                                onClick={() => window.open(`https://twitter.com/intent/tweet?text=I'm predicting on HolyMarket: ${market.question}&url=${window.location.href}`)}
+                                className="p-2.5 rounded-xl bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 transition-all"
+                                title="Share on Twitter"
+                            >
+                                <Twitter size={18} />
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4 mb-8">
+                        <div className="p-4 rounded-2xl bg-emerald-500/5 border border-emerald-500/10 flex flex-col">
+                            <span className="text-[10px] font-bold text-emerald-500 mb-2 uppercase tracking-tighter">YES Pool ({calculateMultiplier(true)}x)</span>
+                            <div className="flex items-baseline gap-1">
+                                <span className="text-2xl font-black text-white">{(Number(market.yesPool) / 1e18).toFixed(3)}</span>
+                                <span className="text-xs text-slate-500 font-bold">ETH</span>
+                            </div>
+                            <div className="mt-3 pt-3 border-t border-emerald-500/10">
+                                <span className="text-[10px] text-slate-500 block mb-1">Potential Payout</span>
+                                <span className="text-xs font-bold text-emerald-400">{calculatePotentialProfit(true)} ETH</span>
+                            </div>
+                        </div>
+                        <div className="p-4 rounded-2xl bg-rose-500/5 border border-rose-500/10 flex flex-col">
+                            <span className="text-[10px] font-bold text-rose-500 mb-2 uppercase tracking-tighter">NO Pool ({calculateMultiplier(false)}x)</span>
+                            <div className="flex items-baseline gap-1">
+                                <span className="text-2xl font-black text-white">{(Number(market.noPool) / 1e18).toFixed(3)}</span>
+                                <span className="text-xs text-slate-500 font-bold">ETH</span>
+                            </div>
+                            <div className="mt-3 pt-3 border-t border-rose-500/10">
+                                <span className="text-[10px] text-slate-500 block mb-1">Potential Payout</span>
+                                <span className="text-xs font-bold text-rose-400">{calculatePotentialProfit(false)} ETH</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="mt-auto">
+                        {market.resolved ? (
+                            <div className="p-6 rounded-2xl bg-slate-800/50 border border-slate-700 flex flex-col items-center text-center">
+                                <span className="text-[10px] font-bold text-slate-500 mb-4 uppercase tracking-widest">Winning Outcome</span>
+                                <div className={`text-4xl font-black mb-6 ${market.outcome ? "text-emerald-400" : "text-rose-500"}`}>
+                                    {market.outcome ? "YES ✓" : "NO ✓"}
+                                </div>
+
+                                <div className="w-full p-4 rounded-2xl bg-slate-900/40 border border-slate-800 text-left mb-4">
+                                    <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Your bet</div>
+                                    <div className="mt-2 flex justify-between gap-4">
+                                        <div className="text-xs font-bold text-emerald-400">YES: {userBet ? Number(formatEther(userBet.yesAmount)).toFixed(4) : "0.0000"} ETH</div>
+                                        <div className="text-xs font-bold text-rose-400">NO: {userBet ? Number(formatEther(userBet.noAmount)).toFixed(4) : "0.0000"} ETH</div>
+                                    </div>
+                                </div>
+
+                                {userBet?.claimed ? (
+                                    <div className="w-full p-4 rounded-2xl bg-slate-900/40 border border-slate-800 text-sm text-slate-300 font-bold">
+                                        Already claimed.
+                                    </div>
+                                ) : (userBet && userBet.yesAmount === 0n && userBet.noAmount === 0n) ? (
+                                    <div className="w-full p-4 rounded-2xl bg-slate-900/40 border border-slate-800 text-sm text-slate-400 font-bold">
+                                        You did not place a bet in this market.
+                                    </div>
+                                ) : parseFloat(claimableAmount) <= 0 ? (
+                                    <div className="w-full p-4 rounded-2xl bg-slate-900/40 border border-slate-800 text-sm text-slate-400 font-bold">
+                                        No winnings for this wallet.
+                                    </div>
+                                ) : (
+                                <button
+                                    onClick={handleClaim}
+                                    disabled={betting || needsNetworkSwitch || !isConnected || parseFloat(claimableAmount) <= 0}
+                                    className="w-full premium-btn py-4 bg-white text-slate-900 hover:bg-slate-100 disabled:opacity-60 disabled:cursor-not-allowed"
+                                >
+                                    {betting ? "Processing..." : `Claim ${Number(claimableAmount).toFixed(4)} ETH Reward`}
+                                </button>
+                                )}
+                                {(!isConnected || needsNetworkSwitch) && (
+                                    <div className="mt-3 text-[11px] text-slate-500">
+                                        Connect your wallet and switch to Base Sepolia to claim.
+                                    </div>
+                                )}
+                            </div>
+                        ) : (
+                            <div className="space-y-6">
+                                <div className="space-y-3">
+                                    <div className="flex items-center justify-between px-1">
+                                        <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Amount</div>
+                                        <div className="flex items-center gap-2">
+                                            {walletBalanceLoading ? (
+                                                <span className="text-[10px] font-bold text-slate-500">Loading...</span>
+                                            ) : walletBalance !== null ? (
+                                                <span className="text-[10px] font-bold text-slate-500">Available: {Number(formatEther(walletBalance)).toFixed(4)} ETH</span>
+                                            ) : (
+                                                <span className="text-[10px] font-bold text-slate-600">Available: —</span>
+                                            )}
                                             <button
-                                                key={m.id.toString()}
-                                                onClick={() => setSelectedMarketId(m.id)}
-                                                className={`flex-shrink-0 w-48 p-3 rounded-xl border transition-all text-left ${selectedMarketId === m.id ? "border-sky-500 bg-sky-500/10" : "border-slate-800 bg-slate-900/40 hover:border-slate-700"}`}
+                                                type="button"
+                                                disabled={walletBalance === null || walletBalanceLoading || needsNetworkSwitch || !isConnected}
+                                                onClick={() => {
+                                                    if (walletBalance === null) return;
+                                                    const reserve = parseEther("0.0002");
+                                                    const max = walletBalance > reserve ? walletBalance - reserve : 0n;
+                                                    if (max <= 0n) {
+                                                        toast({ title: "Insufficient balance", message: "Not enough ETH for a bet (after gas reserve).", variant: "warning" });
+                                                        return;
+                                                    }
+                                                    const maxStr = formatEther(max);
+                                                    setAmount(maxStr);
+                                                }}
+                                                className="px-2 py-1 rounded-lg bg-slate-900/60 border border-slate-800 text-[10px] font-extrabold text-slate-300 hover:border-slate-700 hover:text-white disabled:opacity-60 disabled:cursor-not-allowed"
                                             >
-                                                <div className="flex justify-between items-center mb-1">
-                                                    <span
-                                                        className={`text-[8px] font-black px-1.5 py-0.5 rounded border ${
-                                                            m.cancelled
-                                                                ? "bg-amber-500/10 text-amber-400 border-amber-500/20"
-                                                                : m.resolved
-                                                                    ? "bg-slate-900/60 text-slate-400 border-slate-800"
-                                                                    : "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
-                                                        }`}
-                                                    >
-                                                        {m.cancelled ? "CANCELLED" : m.resolved ? `ENDED • ${m.outcome ? "YES" : "NO"}` : "LIVE"}
-                                                    </span>
-                                                    <span className="text-[8px] font-mono text-slate-600">#{m.id.toString()}</span>
-                                                </div>
-                                                <p className="text-[10px] font-bold text-slate-200 truncate mb-2">{m.question}</p>
-                                                <div className="text-[9px] font-black text-sky-400">
-                                                    {(Number(m.yesPool + m.noPool) / 1e18).toFixed(3)} ETH
-                                                </div>
-                                                <div className="mt-1 flex justify-between text-[9px] font-bold text-slate-500">
-                                                    <span>YES {(Number(m.yesPool) / 1e18).toFixed(3)}</span>
-                                                    <span>NO {(Number(m.noPool) / 1e18).toFixed(3)}</span>
-                                                </div>
-                                                <div className="mt-2 h-1.5 w-full rounded-full bg-slate-800 overflow-hidden">
-                                                    {(() => {
-                                                        const y = Number(m.yesPool);
-                                                        const n = Number(m.noPool);
-                                                        const total = y + n;
-                                                        const pct = total > 0 ? Math.max(4, Math.min(96, (y / total) * 100)) : 50;
-                                                        return <div className="h-full bg-emerald-500/70" style={{ width: `${pct}%` }} />;
-                                                    })()}
-                                                </div>
+                                                MAX
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-wrap gap-2">
+                                        {[
+                                            { label: "0.001", value: "0.001" },
+                                            { label: "0.005", value: "0.005" },
+                                            { label: "0.01", value: "0.01" },
+                                            { label: "0.05", value: "0.05" },
+                                        ].map((chip) => (
+                                            <button
+                                                key={chip.value}
+                                                type="button"
+                                                onClick={() => setAmount(chip.value)}
+                                                className={`px-3 py-1.5 rounded-full text-[10px] font-extrabold border transition-all ${amount === chip.value ? "bg-sky-500/15 text-sky-300 border-sky-500/30" : "bg-slate-900/40 text-slate-400 border-slate-800 hover:border-slate-700 hover:text-slate-200"}`}
+                                            >
+                                                {chip.label} ETH
                                             </button>
                                         ))}
-                                        {filtered.length === 0 && (
-                                            <div className="flex-shrink-0 w-full p-6 rounded-2xl bg-slate-900/30 border border-dashed border-slate-800 text-center">
-                                                <div className="text-sm font-black text-slate-200">No markets found</div>
-                                                <div className="mt-1 text-xs text-slate-500">Try clearing filters or search.</div>
-                                            </div>
-                                        )}
                                     </div>
-                                </>
-                            );
-                        })()}
-                        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-6">
-                            <div className="flex-1 min-w-0">
-                                <div className="flex flex-wrap items-center gap-2 mb-2">
-                                    <span className="px-2 py-0.5 bg-sky-500/10 text-sky-500 rounded text-[10px] font-extrabold uppercase border border-sky-500/20">Market #{selectedMarketId.toString()}</span>
-                                    <span className={`px-2 py-0.5 rounded text-[10px] font-extrabold border ${timeLeft === "ENDED" ? "bg-red-500/10 text-red-500 border-red-500/20" : "bg-amber-500/10 text-amber-500 border-amber-500/20"}`}>
-                                        {timeLeft === "ENDED" ? "EXPIRED" : timeLeft}
-                                    </span>
+                                    <div className="relative">
+                                        <input
+                                            type="number"
+                                            value={amount}
+                                            onChange={(e) => setAmount(e.target.value)}
+                                            className="w-full premium-input py-4 text-xl pr-16 bg-slate-900/80"
+                                        />
+                                        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 font-bold">ETH</span>
+                                    </div>
                                 </div>
                                 <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-white leading-tight break-words">{market.question}</h2>
                             </div>
                             <div className="flex gap-2 md:pt-1">
-                                <button
-                                    onClick={handleEnableNotifications}
-                                    className="px-3 py-2.5 rounded-xl bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 transition-all text-xs font-bold"
-                                    title="Enable Warpcast notifications"
-                                >
-                                    Enable notifications
-                                </button>
-                                <button
-                                    onClick={handleResetNotificationPrompt}
-                                    className="px-3 py-2.5 rounded-xl bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 transition-all text-xs font-bold"
-                                    title="Reset and re-open Warpcast add prompt"
-                                >
-                                    Reset prompt
-                                </button>
                                 <button
                                     onClick={() => window.open(`https://warpcast.com/~/compose?text=Predicting on HolyMarket: ${market.question}&embeds[]=${window.location.href}`)}
                                     className="p-2.5 rounded-xl bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 transition-all"
