@@ -333,6 +333,37 @@ export default function MarketView() {
     }, []);
 
     useEffect(() => {
+        const run = async () => {
+            if (typeof window === "undefined") return;
+            const key = "holymarket_prompt_addminiapp_v1";
+            const already = window.localStorage.getItem(key);
+            if (already) return;
+
+            try {
+                await sdk.actions.ready();
+                const isMiniApp = await sdk.isInMiniApp().catch(() => false);
+                if (!isMiniApp) return;
+
+                // Avoid re-prompting if the user stays in the app
+                window.localStorage.setItem(key, "1");
+
+                // Give the UI a moment to settle before prompting
+                await new Promise((r) => setTimeout(r, 600));
+                await sdk.actions.addMiniApp();
+            } catch {
+                // If it fails, don't spam retries.
+                try {
+                    window.localStorage.setItem("holymarket_prompt_addminiapp_v1", "1");
+                } catch {
+                    // ignore
+                }
+            }
+        };
+
+        run();
+    }, []);
+
+    useEffect(() => {
         const total = computeDurationSeconds(durationDays, durationHours, durationMinutes);
         const next = String(total);
         if (newDuration !== next) setNewDuration(next);
