@@ -49,6 +49,15 @@ export async function POST(request: NextRequest) {
     const requestJson = await request.json().catch(() => null);
     if (!requestJson) return NextResponse.json({ success: false, error: "Invalid JSON" }, { status: 400 });
 
+    try {
+        console.log("miniapp_webhook:received", {
+            at: nowIso(),
+            hasBody: true,
+        });
+    } catch {
+        // ignore
+    }
+
     if (!process.env.NEYNAR_API_KEY) {
         return NextResponse.json(
             { success: false, error: "Missing NEYNAR_API_KEY" },
@@ -61,6 +70,17 @@ export async function POST(request: NextRequest) {
         data = await parseWebhookEvent(requestJson, verifyAppKeyWithNeynar);
     } catch (e: unknown) {
         const error = e as ParseWebhookEvent.ErrorType;
+
+        try {
+            console.log("miniapp_webhook:verify_failed", {
+                at: nowIso(),
+                name: String((error as any)?.name || ""),
+                message: String((error as any)?.message || ""),
+            });
+        } catch {
+            // ignore
+        }
+
         if (
             error?.name === "VerifyJsonFarcasterSignature.InvalidDataError" ||
             error?.name === "VerifyJsonFarcasterSignature.InvalidEventDataError"
@@ -78,6 +98,18 @@ export async function POST(request: NextRequest) {
 
     const fid = Number(data?.fid);
     const event = data?.event;
+
+    try {
+        console.log("miniapp_webhook:verified", {
+            at: nowIso(),
+            fid,
+            type: String(event?.event || ""),
+            hasNotificationDetails: Boolean(event?.notificationDetails?.token && event?.notificationDetails?.url),
+        });
+    } catch {
+        // ignore
+    }
+
     if (!Number.isFinite(fid) || fid <= 0) {
         return NextResponse.json({ success: false, error: "Invalid fid" }, { status: 400 });
     }
