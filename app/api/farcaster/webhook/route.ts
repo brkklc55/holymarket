@@ -81,10 +81,22 @@ export async function POST(request: NextRequest) {
         const error = e as ParseWebhookEvent.ErrorType;
 
         try {
+            const jsonType = requestJson === null ? "null" : Array.isArray(requestJson) ? "array" : typeof requestJson;
+            const keys = requestJson && typeof requestJson === "object" && !Array.isArray(requestJson) ? Object.keys(requestJson).slice(0, 30) : [];
+            let approxSize = -1;
+            try {
+                approxSize = JSON.stringify(requestJson).length;
+            } catch {
+                approxSize = -1;
+            }
+
             console.log("miniapp_webhook:verify_failed", {
                 at: nowIso(),
                 name: String((error as any)?.name || ""),
                 message: String((error as any)?.message || ""),
+                jsonType,
+                keys,
+                approxSize,
             });
         } catch {
             // ignore
