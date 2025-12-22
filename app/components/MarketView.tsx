@@ -6,7 +6,7 @@ import { baseSepolia } from "viem/chains";
 import { useAccount, useChainId } from "wagmi";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { TrendingUp, Share2, Twitter, Info } from "lucide-react";
- import sdk from "@farcaster/frame-sdk";
+ import { sdk } from "@farcaster/miniapp-sdk";
 import { PREDICTION_MARKET_ADDRESS, PREDICTION_MARKET_ABI } from "../constants";
 import { useToast } from "./ui/ToastProvider";
 
