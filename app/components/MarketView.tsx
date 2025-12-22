@@ -634,7 +634,8 @@ export default function MarketView() {
             await sdk.actions.addMiniApp();
             toast({ title: "Requested", message: "Check the Warpcast prompt to add HolyMarket and enable notifications.", variant: "success" });
         } catch (e: any) {
-            toast({ title: "Failed", message: e?.message || "Could not open Warpcast prompt.", variant: "error" });
+            const msg = String(e?.shortMessage || e?.message || e || "Could not open Warpcast prompt.");
+            toast({ title: "Failed", message: msg, variant: "error" });
         }
     };
 
@@ -665,7 +666,7 @@ export default function MarketView() {
 
             // Best-effort Warpcast notification broadcast
             try {
-                await fetch("/api/farcaster/notify", {
+                const res = await fetch("/api/farcaster/notify", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -676,6 +677,22 @@ export default function MarketView() {
                         targetUrl: typeof window !== "undefined" ? window.location.origin : undefined,
                     }),
                 });
+
+                const json = await res.json().catch(() => null);
+                if (!res.ok) {
+                    toast({
+                        title: "Notify failed",
+                        message: json?.error || "Notification broadcast failed",
+                        variant: "warning",
+                    });
+                } else {
+                    const sends = Number(json?.sends || 0);
+                    toast({
+                        title: "Notified",
+                        message: sends > 0 ? `Sent to ${sends} subscribers.` : "No subscribers yet.",
+                        variant: "success",
+                    });
+                }
             } catch {
                 // ignore
             }
