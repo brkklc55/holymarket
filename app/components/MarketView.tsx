@@ -23,7 +23,7 @@ export default function MarketView() {
     const [amount, setAmount] = useState("0.001");
     const [walletBalance, setWalletBalance] = useState<bigint | null>(null);
     const [walletBalanceLoading, setWalletBalanceLoading] = useState(false);
-    const [activeTab, setActiveTab] = useState<"market" | "leaderboard" | "activity" | "airdrop" | "admin" | "list" | "profile">("market");
+    const [activeTab, setActiveTab] = useState<"market" | "leaderboard" | "activity" | "profile" | "faucet" | "airdrop" | "admin" | "list">("market");
     const [leaderboard, setLeaderboard] = useState<any[]>([]);
     const [recentBets, setRecentBets] = useState<any[]>([]);
     const [userHistory, setUserHistory] = useState<any[]>([]);
@@ -1125,15 +1125,16 @@ export default function MarketView() {
         <div className="w-full max-w-2xl lg:max-w-4xl mx-auto space-y-6">
             {/* Header & Wallet */}
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-                <div className="premium-card p-1.5 bg-slate-900/50 overflow-x-auto no-scrollbar">
-                    <div className="flex gap-1 min-w-max">
+                <div className="premium-card p-1.5 bg-slate-900/50">
+                    <div className="flex flex-wrap gap-1">
                         {[
                             { id: "market", label: "Market" },
                             { id: "leaderboard", label: "Leaderboard" },
                             { id: "activity", label: "Activity" },
-                            { id: "airdrop", label: "Airdrop", disabled: true, badge: "SOON" },
                             { id: "profile", label: "Profile" },
-                            { id: "admin", label: "Admin" }
+                            { id: "faucet", label: "Faucet" },
+                            { id: "admin", label: "Admin" },
+                            { id: "airdrop", label: "Airdrop", disabled: true, badge: "SOON" },
                         ].map((tab) => (
                             (tab.id !== "admin" || isAdmin) && (
                                 <button
@@ -1143,7 +1144,7 @@ export default function MarketView() {
                                         if ((tab as any).disabled) return;
                                         setActiveTab(tab.id as any);
                                     }}
-                                    className={`flex-none px-3 py-2 rounded-xl text-[10px] font-bold transition-all flex items-center justify-center gap-2 whitespace-nowrap ${(tab as any).disabled ? "opacity-60 cursor-not-allowed" : ""} ${activeTab === tab.id ? "bg-sky-500 text-white shadow-lg shadow-sky-500/20" : "text-slate-400 hover:text-white hover:bg-slate-800"}`}
+                                    className={`px-3 py-2 rounded-xl text-[10px] font-bold transition-all flex items-center justify-center gap-2 ${(tab as any).disabled ? "opacity-60 cursor-not-allowed" : ""} ${activeTab === tab.id ? "bg-sky-500 text-white shadow-lg shadow-sky-500/20" : "text-slate-400 hover:text-white hover:bg-slate-800"}`}
                                 >
                                     <span>{tab.label}</span>
                                     {(tab as any).badge && (
@@ -1547,68 +1548,22 @@ export default function MarketView() {
                     </div>
                 )}
 
-                {activeTab === "profile" && (
+                {activeTab === "faucet" && (
                     <div className="space-y-6 animate-in fade-in">
-                        <div className="p-6 rounded-3xl bg-sky-500/10 border border-sky-500/20 mb-8 flex items-center justify-between">
+                        <div className="flex items-start justify-between gap-4">
                             <div>
-                                <h3 className="text-xl font-black text-white mb-1">Your Dashboard</h3>
-                                <p className="text-xs text-sky-400 font-bold uppercase tracking-widest">{userHistory.length} Predictions Made</p>
-                                <p className="text-[11px] text-slate-300 font-bold mt-2">Points: <span className="text-white">{userPoints}</span></p>
-                                <p className="text-[11px] text-slate-500 mt-2">
-                                    Points are important for future airdrops. Winnings claims have a <span className="text-slate-200 font-bold">5%</span> protocol fee.
-                                </p>
+                                <h3 className="text-lg font-bold text-white">Faucet</h3>
+                                <div className="mt-1 text-[11px] text-slate-500">
+                                    Need test ETH to place bets? Use a faucet and fund your wallet.
+                                </div>
                             </div>
-                            <div className="w-12 h-12 bg-sky-500/20 rounded-2xl flex items-center justify-center text-sky-400">
-                                <TrendingUp size={24} />
-                            </div>
+                            <span className="px-2 py-1 rounded-full bg-amber-500/10 text-amber-400 text-[10px] font-black border border-amber-500/20">
+                                TESTNET
+                            </span>
                         </div>
 
-                        {userAddress && (
-                            <div className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800">
-                                <div className="flex items-center justify-between gap-4">
-                                    <div>
-                                        <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Your referral link</div>
-                                        <div className="mt-2 font-mono text-[11px] text-slate-300 break-all">
-                                            {`${typeof window !== "undefined" ? window.location.origin : ""}/?ref=${userAddress}`}
-                                        </div>
-                                    </div>
-                                    <button
-                                        type="button"
-                                        className="premium-btn py-2 px-3 text-xs"
-                                        onClick={async () => {
-                                            const link = `${window.location.origin}/?ref=${userAddress}`;
-                                            try {
-                                                await navigator.clipboard.writeText(link);
-                                                toast({ title: "Copied", message: "Referral link copied.", variant: "success" });
-                                            } catch {
-                                                toast({ title: "Copy failed", message: link, variant: "warning" });
-                                            }
-                                        }}
-                                    >
-                                        Copy
-                                    </button>
-                                </div>
-                                <div className="mt-3 text-[11px] text-slate-500">
-                                    When someone joins with your link: both sides get <span className="text-slate-200 font-bold">+50</span> points.
-                                    You also earn <span className="text-slate-200 font-bold">10%</span> of their future points.
-                                </div>
-                            </div>
-                        )}
-
                         <div className="p-5 rounded-2xl bg-slate-900/40 border border-slate-800">
-                            <div className="flex items-start justify-between gap-4">
-                                <div>
-                                    <div className="text-xs font-extrabold text-white">Base Sepolia Faucet</div>
-                                    <div className="mt-1 text-[11px] text-slate-500">
-                                        Need test ETH to place bets? Use a faucet and fund your wallet.
-                                    </div>
-                                </div>
-                                <span className="px-2 py-1 rounded-full bg-amber-500/10 text-amber-400 text-[10px] font-black border border-amber-500/20">
-                                    TESTNET
-                                </span>
-                            </div>
-
-                            <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div className="mt-0 grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <a
                                     href="https://portal.cdp.coinbase.com/products/faucet"
                                     target="_blank"
@@ -1659,6 +1614,56 @@ export default function MarketView() {
                                 </div>
                             </div>
                         </div>
+                    </div>
+                )}
+
+                {activeTab === "profile" && (
+                    <div className="space-y-6 animate-in fade-in">
+                        <div className="p-6 rounded-3xl bg-sky-500/10 border border-sky-500/20 mb-8 flex items-center justify-between">
+                            <div>
+                                <h3 className="text-xl font-black text-white mb-1">Your Dashboard</h3>
+                                <p className="text-xs text-sky-400 font-bold uppercase tracking-widest">{userHistory.length} Predictions Made</p>
+                                <p className="text-[11px] text-slate-300 font-bold mt-2">Points: <span className="text-white">{userPoints}</span></p>
+                                <p className="text-[11px] text-slate-500 mt-2">
+                                    Points are important for future airdrops. Winnings claims have a <span className="text-slate-200 font-bold">5%</span> protocol fee.
+                                </p>
+                            </div>
+                            <div className="w-12 h-12 bg-sky-500/20 rounded-2xl flex items-center justify-center text-sky-400">
+                                <TrendingUp size={24} />
+                            </div>
+                        </div>
+
+                        {userAddress && (
+                            <div className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800">
+                                <div className="flex items-center justify-between gap-4">
+                                    <div>
+                                        <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Your referral link</div>
+                                        <div className="mt-2 font-mono text-[11px] text-slate-300 break-all">
+                                            {`${typeof window !== "undefined" ? window.location.origin : ""}/?ref=${userAddress}`}
+                                        </div>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        className="premium-btn py-2 px-3 text-xs"
+                                        onClick={async () => {
+                                            const link = `${window.location.origin}/?ref=${userAddress}`;
+                                            try {
+                                                await navigator.clipboard.writeText(link);
+                                                toast({ title: "Copied", message: "Referral link copied.", variant: "success" });
+                                            } catch {
+                                                toast({ title: "Copy failed", message: link, variant: "warning" });
+                                            }
+                                        }}
+                                    >
+                                        Copy
+                                    </button>
+                                </div>
+                                <div className="mt-3 text-[11px] text-slate-500">
+                                    When someone joins with your link: both sides get <span className="text-slate-200 font-bold">+50</span> points.
+                                    You also earn <span className="text-slate-200 font-bold">10%</span> of their future points.
+                                </div>
+                            </div>
+                        )}
 
                         <div className="space-y-4">
                             <h4 className="text-xs font-bold text-slate-500 uppercase tracking-[0.2em] ml-1">Betting History</h4>
