@@ -632,11 +632,34 @@ export default function MarketView() {
     const handleEnableNotifications = async () => {
         try {
             await sdk.actions.ready();
+
+            let isMiniApp = false;
+            try {
+                isMiniApp = await sdk.isInMiniApp();
+            } catch {
+                isMiniApp = false;
+            }
+
+            if (!isMiniApp) {
+                toast({
+                    title: "Not in Warpcast Mini App",
+                    message: "Open HolyMarket inside Warpcast mobile Mini Apps. addMiniApp() prompt cannot show in normal browser/webview.",
+                    variant: "warning",
+                });
+                return;
+            }
+
             await sdk.actions.addMiniApp();
             toast({ title: "Requested", message: "Check the Warpcast prompt to add HolyMarket and enable notifications.", variant: "success" });
         } catch (e: any) {
+            const name = String(e?.name || "");
             const msg = String(e?.shortMessage || e?.message || e || "Could not open Warpcast prompt.");
-            toast({ title: "Failed", message: msg, variant: "error" });
+            const debug = typeof window !== "undefined" ? `${window.location.origin}${window.location.pathname}` : "";
+            toast({
+                title: "Enable notifications failed",
+                message: `${name ? `${name}: ` : ""}${msg}${debug ? ` (${debug})` : ""}`,
+                variant: "error",
+            });
         }
     };
 
