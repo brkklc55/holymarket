@@ -42,6 +42,20 @@ export default function MarketView() {
     const [historyUserBets, setHistoryUserBets] = useState<Record<string, { yesAmount: bigint; noAmount: bigint; claimed: boolean }>>({});
     const [historyCancelled, setHistoryCancelled] = useState<Record<string, boolean>>({});
 
+    const formatTimeLeft = (totalSeconds: number) => {
+        if (!Number.isFinite(totalSeconds) || totalSeconds <= 0) return "ENDED";
+        const d = Math.floor(totalSeconds / 86400);
+        const h = Math.floor((totalSeconds % 86400) / 3600);
+        const m = Math.floor((totalSeconds % 3600) / 60);
+        const s = totalSeconds % 60;
+        const parts: string[] = [];
+        if (d > 0) parts.push(`${d}D`);
+        if (h > 0 || d > 0) parts.push(`${h}H`);
+        if (m > 0 || h > 0 || d > 0) parts.push(`${m}M`);
+        parts.push(`${s}S`);
+        return parts.join(" ");
+    };
+
     const marketAddress = (process.env.NEXT_PUBLIC_PREDICTION_MARKET_ADDRESS || PREDICTION_MARKET_ADDRESS) as `0x${string}`;
 
     const [userPoints, setUserPoints] = useState<number>(0);
@@ -505,9 +519,7 @@ export default function MarketView() {
                 if (diff <= 0) {
                     setTimeLeft("ENDED");
                 } else {
-                    const m = Math.floor(diff / 60);
-                    const s = diff % 60;
-                    setTimeLeft(`${m}M ${s}S`);
+                    setTimeLeft(formatTimeLeft(diff));
                 }
             }
         }, 1000);
