@@ -93,6 +93,19 @@ export default function MarketView() {
 
     const needsNetworkSwitch = isConnected && chainId !== baseSepolia.id;
 
+    const getShareBaseUrl = () => {
+        const envBase = process.env.NEXT_PUBLIC_URL;
+        if (envBase) return envBase.replace(/\/$/, "");
+        if (typeof window !== "undefined") return window.location.origin;
+        return "";
+    };
+
+    const getMarketShareUrl = () => {
+        const base = getShareBaseUrl();
+        if (!base) return "";
+        return `${base}/?marketId=${selectedMarketId.toString()}`;
+    };
+
     const parseNonNegativeInt = (v: string) => {
         const n = Number(String(v ?? "").replace(/[^0-9]/g, ""));
         if (!Number.isFinite(n) || n < 0) return 0;
@@ -1485,14 +1498,24 @@ export default function MarketView() {
                         </div>
                         <div className="flex gap-2 md:pt-1">
                             <button
-                                onClick={() => window.open(`https://warpcast.com/~/compose?text=Predicting on HolyMarket: ${market.question}&embeds[]=${window.location.href}`)}
+                                onClick={() => {
+                                    const shareUrl = getMarketShareUrl() || (typeof window !== "undefined" ? window.location.href : "");
+                                    window.open(
+                                        `https://warpcast.com/~/compose?text=Predicting on HolyMarket: ${market.question}&embeds[]=${encodeURIComponent(shareUrl)}`
+                                    );
+                                }}
                                 className="p-2.5 rounded-xl bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 transition-all"
                                 title="Share on Warpcast"
                             >
                                 <Share2 size={18} />
                             </button>
                             <button
-                                onClick={() => window.open(`https://twitter.com/intent/tweet?text=I'm predicting on HolyMarket: ${market.question}&url=${window.location.href}`)}
+                                onClick={() => {
+                                    const shareUrl = getMarketShareUrl() || (typeof window !== "undefined" ? window.location.href : "");
+                                    window.open(
+                                        `https://twitter.com/intent/tweet?text=I'm predicting on HolyMarket: ${market.question}&url=${encodeURIComponent(shareUrl)}`
+                                    );
+                                }}
                                 className="p-2.5 rounded-xl bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 transition-all"
                                 title="Share on Twitter"
                             >
