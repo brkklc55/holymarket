@@ -1756,6 +1756,42 @@ export default function MarketView() {
                             </div>
                         </div>
 
+                        <div className="p-5 rounded-2xl bg-slate-900/40 border border-slate-800">
+                            <div className="flex items-start justify-between gap-4">
+                                <div className="min-w-0">
+                                    <div className="text-xs font-extrabold text-white">Notifications</div>
+                                    <div className="mt-1 text-[11px] text-slate-500">
+                                        Add HolyMarket to Warpcast to enable notifications for market updates.
+                                    </div>
+                                </div>
+                                <button
+                                    type="button"
+                                    className="premium-btn py-2 px-3 text-xs"
+                                    onClick={async () => {
+                                        try {
+                                            await sdk.actions.addMiniApp();
+                                            toast({
+                                                title: "Prompt opened",
+                                                message: "Confirm in Warpcast to add HolyMarket.",
+                                                variant: "success",
+                                            });
+                                        } catch (e: any) {
+                                            toast({
+                                                title: "Failed",
+                                                message: String(e?.message || e || "Could not open add prompt"),
+                                                variant: "error",
+                                            });
+                                        }
+                                    }}
+                                >
+                                    Add Mini App
+                                </button>
+                            </div>
+                            <div className="mt-3 text-[11px] text-slate-500">
+                                After adding, Warpcast will send a token to our webhook so alerts can be delivered.
+                            </div>
+                        </div>
+
                         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
                             <div className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800">
                                 <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Open</div>
