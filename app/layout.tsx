@@ -5,10 +5,14 @@ import TermsGate from "./components/TermsGate";
 import SplashGate from "./components/SplashGate";
 
 export const metadata: Metadata = {
-  title: "HolyMarket - Prediction Markets",
+  title: "HolyMarket",
+  applicationName: "HolyMarket",
   description: "Decentralized prediction markets on Base Sepolia",
   icons: {
     icon: "/ihm-beta.png",
+  },
+  appleWebApp: {
+    title: "HolyMarket",
   },
 };
 

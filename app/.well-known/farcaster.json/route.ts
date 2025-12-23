@@ -30,18 +30,18 @@ export async function GET(req: Request) {
         miniapp: {
             version: "1",
             name: "HolyMarket",
-            iconUrl: `${appUrl}/ihm-beta.png`,
+            iconUrl: `${appUrl}/logo.png`,
             homeUrl: appUrl,
-            imageUrl: `${appUrl}/ihm-beta.png`,
+            imageUrl: `${appUrl}/logo.png`,
             buttonTitle: "Open HolyMarket",
-            splashImageUrl: `${appUrl}/ihm-beta.png`,
+            splashImageUrl: `${appUrl}/logo.png`,
             splashBackgroundColor: "#050b1a",
             webhookUrl,
         },
         frame: {
             version: "1",
             name: "HolyMarket",
-            iconUrl: `${appUrl}/ihm-beta.png`,
+            iconUrl: `${appUrl}/logo.png`,
             homeUrl: appUrl,
         }
     };
