@@ -2,11 +2,12 @@ import type { Metadata } from 'next';
 
 const baseUrl = process.env.NEXT_PUBLIC_URL;
 const appOrigin = baseUrl || "";
+const shareImagePath = "/logo.png?v=2";
 
 const frameMetadata: Record<string, string> = {
   'fc:frame': 'vNext',
-  ...(appOrigin ? { 'fc:frame:image': `${appOrigin}/ihm-beta.png` } : { 'fc:frame:image': '/ihm-beta.png' }),
-  'fc:frame:image:aspect_ratio': '1.91:1',
+  ...(appOrigin ? { 'fc:frame:image': `${appOrigin}${shareImagePath}` } : { 'fc:frame:image': shareImagePath }),
+  'fc:frame:image:aspect_ratio': '1:1',
   ...(baseUrl ? { 'fc:frame:post_url': `${baseUrl}/api/frame` } : {}),
   'fc:frame:button:1': 'Enter HolyMarket',
 };
@@ -17,7 +18,13 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'HolyMarket',
     description: 'Prediction Market on Farcaster',
-    images: appOrigin ? [`${appOrigin}/ihm-beta.png`] : ['/ihm-beta.png'],
+    images: appOrigin ? [`${appOrigin}${shareImagePath}`] : [shareImagePath],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'HolyMarket',
+    description: 'Prediction Market on Farcaster',
+    images: appOrigin ? [`${appOrigin}${shareImagePath}`] : [shareImagePath],
   },
   other: {
     ...frameMetadata,
