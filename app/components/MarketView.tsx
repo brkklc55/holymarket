@@ -42,6 +42,20 @@ export default function MarketView() {
     const [claimableAmount, setClaimableAmount] = useState("0");
     const [historyUserBets, setHistoryUserBets] = useState<Record<string, { yesAmount: bigint; noAmount: bigint; claimed: boolean }>>({});
     const [historyCancelled, setHistoryCancelled] = useState<Record<string, boolean>>({});
+    const [historyMarkets, setHistoryMarkets] = useState<
+        Record<
+            string,
+            {
+                question: string;
+                endTime: bigint;
+                yesPool: bigint;
+                noPool: bigint;
+                resolved: boolean;
+                cancelled: boolean;
+                outcome: boolean;
+            }
+        >
+    >({});
     const [marketSearch, setMarketSearch] = useState("");
     const [marketFilter, setMarketFilter] = useState<"all" | "live" | "ended" | "cancelled">("all");
     const [marketSort, setMarketSort] = useState<"newest" | "ending" | "volume">("newest");
@@ -370,6 +384,21 @@ export default function MarketView() {
     }, []);
 
     useEffect(() => {
+        if (typeof window === "undefined") return;
+        try {
+            const url = new URL(window.location.href);
+            const raw = url.searchParams.get("marketId");
+            if (!raw) return;
+            const n = BigInt(raw);
+            if (n <= 0n) return;
+            setSelectedMarketId(n);
+            setActiveTab("market");
+        } catch {
+            // ignore
+        }
+    }, []);
+
+    useEffect(() => {
         const run = async () => {
             if (typeof window === "undefined") return;
             const key = "holymarket_prompt_addminiapp_v1";
@@ -577,11 +606,24 @@ export default function MarketView() {
         if (!userAddress || !history || history.length === 0) {
             setHistoryUserBets({});
             setHistoryCancelled({});
+            setHistoryMarkets({});
             return;
         }
         try {
             const next: Record<string, { yesAmount: bigint; noAmount: bigint; claimed: boolean }> = {};
             const nextCancelled: Record<string, boolean> = {};
+            const nextMarkets: Record<
+                string,
+                {
+                    question: string;
+                    endTime: bigint;
+                    yesPool: bigint;
+                    noPool: bigint;
+                    resolved: boolean;
+                    cancelled: boolean;
+                    outcome: boolean;
+                }
+            > = {};
             const ids = Array.from(new Set(history.map((h) => (h.marketId as bigint).toString())));
             for (const idStr of ids) {
                 const id = BigInt(idStr);
@@ -604,6 +646,15 @@ export default function MarketView() {
                         });
                         // markets() now returns: question, endTime, yesPool, noPool, resolved, cancelled, outcome
                         nextCancelled[idStr] = Boolean(m[5]);
+                        nextMarkets[idStr] = {
+                            question: String(m[0] || ""),
+                            endTime: BigInt(m[1] ?? 0),
+                            yesPool: BigInt(m[2] ?? 0),
+                            noPool: BigInt(m[3] ?? 0),
+                            resolved: Boolean(m[4]),
+                            cancelled: Boolean(m[5]),
+                            outcome: Boolean(m[6]),
+                        };
                     } catch {
                         nextCancelled[idStr] = false;
                     }
@@ -614,10 +665,82 @@ export default function MarketView() {
             }
             setHistoryUserBets(next);
             setHistoryCancelled(nextCancelled);
+            setHistoryMarkets(nextMarkets);
         } catch (e) {
             console.error("Failed to fetch history user bets:", e);
         }
     };
+
+    const positionsSummary = useMemo(() => {
+        const ids = Object.keys(historyUserBets);
+        let openCount = 0;
+        let closedCount = 0;
+        let claimableCount = 0;
+        let totalWagered = 0n;
+        let claimableTotalWei = 0n;
+
+        for (const idStr of ids) {
+            const ub = historyUserBets[idStr];
+            if (!ub) continue;
+            const wagered = (ub.yesAmount || 0n) + (ub.noAmount || 0n);
+            if (wagered <= 0n) continue;
+            totalWagered += wagered;
+
+            const m = historyMarkets[idStr];
+            const cancelled = Boolean(historyCancelled[idStr]) || Boolean(m?.cancelled);
+            const resolved = Boolean(m?.resolved);
+            const ended = cancelled || resolved;
+
+            if (ended) closedCount += 1;
+            else openCount += 1;
+
+            if (resolved && !ub.claimed) {
+                const winningPool = m?.outcome ? (m?.yesPool || 0n) : (m?.noPool || 0n);
+                const totalPool = (m?.yesPool || 0n) + (m?.noPool || 0n);
+                const winningBet = m?.outcome ? (ub.yesAmount || 0n) : (ub.noAmount || 0n);
+                if (winningBet > 0n && winningPool > 0n && totalPool > 0n) {
+                    const reward = (winningBet * totalPool) / winningPool;
+                    const fee = (reward * 5n) / 100n;
+                    const netReward = reward - fee;
+                    if (netReward > 0n) {
+                        claimableCount += 1;
+                        claimableTotalWei += netReward;
+                    }
+                }
+            }
+        }
+
+        return {
+            openCount,
+            closedCount,
+            claimableCount,
+            totalWageredEth: Number(formatEther(totalWagered)).toFixed(4),
+            claimableTotalEth: Number(formatEther(claimableTotalWei)).toFixed(4),
+        };
+    }, [historyUserBets, historyMarkets, historyCancelled]);
+
+    const claimablePositions = useMemo(() => {
+        const out: Array<{ id: bigint; question: string; amountEth: string }> = [];
+        for (const [idStr, ub] of Object.entries(historyUserBets)) {
+            const m = historyMarkets[idStr];
+            if (!m || !m.resolved || ub.claimed) continue;
+            const winningPool = m.outcome ? m.yesPool : m.noPool;
+            const totalPool = m.yesPool + m.noPool;
+            const winningBet = m.outcome ? ub.yesAmount : ub.noAmount;
+            if (winningBet <= 0n || winningPool <= 0n || totalPool <= 0n) continue;
+            const reward = (winningBet * totalPool) / winningPool;
+            const fee = (reward * 5n) / 100n;
+            const netReward = reward - fee;
+            if (netReward <= 0n) continue;
+            out.push({
+                id: BigInt(idStr),
+                question: m.question,
+                amountEth: Number(formatEther(netReward)).toFixed(4),
+            });
+        }
+        out.sort((a, b) => (a.id > b.id ? -1 : 1));
+        return out;
+    }, [historyUserBets, historyMarkets]);
 
     const fetchMarketCount = async () => {
         try {
@@ -1632,6 +1755,72 @@ export default function MarketView() {
                                 <TrendingUp size={24} />
                             </div>
                         </div>
+
+                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                            <div className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800">
+                                <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Open</div>
+                                <div className="mt-2 text-xl font-black text-white">{positionsSummary.openCount}</div>
+                            </div>
+                            <div className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800">
+                                <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Closed</div>
+                                <div className="mt-2 text-xl font-black text-white">{positionsSummary.closedCount}</div>
+                            </div>
+                            <div className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800">
+                                <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Claimable</div>
+                                <div className="mt-2 text-xl font-black text-white">{positionsSummary.claimableCount}</div>
+                                <div className="mt-1 text-[11px] text-slate-500">{positionsSummary.claimableTotalEth} ETH</div>
+                            </div>
+                            <div className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800">
+                                <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Total wagered</div>
+                                <div className="mt-2 text-xl font-black text-white">{positionsSummary.totalWageredEth}</div>
+                                <div className="mt-1 text-[11px] text-slate-500">ETH</div>
+                            </div>
+                        </div>
+
+                        {claimablePositions.length > 0 && (
+                            <div className="p-5 rounded-2xl bg-slate-900/40 border border-slate-800">
+                                <div className="flex items-center justify-between gap-4">
+                                    <div>
+                                        <div className="text-xs font-extrabold text-white">Claimable</div>
+                                        <div className="mt-1 text-[11px] text-slate-500">Tap a market to claim your winnings.</div>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        className="px-3 py-1.5 rounded-full bg-slate-900/40 border border-slate-800 text-[10px] font-extrabold text-slate-400 hover:text-white hover:border-slate-700 transition-all"
+                                        onClick={() => {
+                                            fetchUserHistory();
+                                        }}
+                                    >
+                                        Refresh
+                                    </button>
+                                </div>
+
+                                <div className="mt-4 space-y-2">
+                                    {claimablePositions.slice(0, 20).map((p) => (
+                                        <button
+                                            key={p.id.toString()}
+                                            type="button"
+                                            onClick={() => {
+                                                setSelectedMarketId(p.id);
+                                                setActiveTab("market");
+                                            }}
+                                            className="w-full text-left p-4 rounded-xl bg-slate-950/30 border border-slate-800 hover:border-slate-700 transition-all"
+                                        >
+                                            <div className="flex items-start justify-between gap-4">
+                                                <div className="min-w-0">
+                                                    <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Market #{p.id.toString()}</div>
+                                                    <div className="mt-1 text-xs font-bold text-slate-200 truncate">{p.question}</div>
+                                                </div>
+                                                <div className="text-right">
+                                                    <div className="text-sm font-black text-emerald-400">{p.amountEth} ETH</div>
+                                                    <div className="text-[10px] text-slate-600 font-bold">CLAIM</div>
+                                                </div>
+                                            </div>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
 
                         {userAddress && (
                             <div className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800">
