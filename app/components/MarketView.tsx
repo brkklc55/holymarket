@@ -2292,7 +2292,7 @@ export default function MarketView() {
                                 className="w-full premium-btn py-3 disabled:opacity-60 disabled:cursor-not-allowed"
                                 onClick={async () => {
                                     const text = `I just placed a prediction on HolyMarket: ${market?.question || ""}`;
-                                    const url = window.location.href;
+                                    const url = getMarketShareUrl() || window.location.href;
                                     window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`);
                                     await claimShareBoost(sharePromptTxHash, sharePromptAmountBnb);
                                     setSharePromptOpen(false);
@@ -2307,7 +2307,7 @@ export default function MarketView() {
                                 className="w-full premium-btn py-3 disabled:opacity-60 disabled:cursor-not-allowed"
                                 onClick={async () => {
                                     const text = `Predicting on HolyMarket: ${market?.question || ""}`;
-                                    const url = window.location.href;
+                                    const url = getMarketShareUrl() || window.location.href;
                                     window.open(`https://warpcast.com/~/compose?text=${encodeURIComponent(text)}&embeds[]=${encodeURIComponent(url)}`);
                                     await claimShareBoost(sharePromptTxHash, sharePromptAmountBnb);
                                     setSharePromptOpen(false);
@@ -2322,7 +2322,7 @@ export default function MarketView() {
                                 className="w-full premium-btn py-3 disabled:opacity-60 disabled:cursor-not-allowed"
                                 onClick={async () => {
                                     const text = `I just placed a prediction on HolyMarket: ${market?.question || ""}`;
-                                    const url = window.location.href;
+                                    const url = getMarketShareUrl() || window.location.href;
                                     window.open(`https://base.app/?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`);
                                     await claimShareBoost(sharePromptTxHash, sharePromptAmountBnb);
                                     setSharePromptOpen(false);
