@@ -94,6 +94,9 @@ export default function MarketView() {
     const needsNetworkSwitch = isConnected && chainId !== baseSepolia.id;
 
     const getShareBaseUrl = () => {
+        const miniappUrl = process.env.NEXT_PUBLIC_MINIAPP_URL;
+        if (miniappUrl) return miniappUrl.replace(/\/$/, "");
+
         if (typeof window !== "undefined") {
             const origin = window.location.origin;
             const pathname = window.location.pathname;
