@@ -4,7 +4,7 @@ import { ParseWebhookEvent, parseWebhookEvent, verifyAppKeyWithNeynar } from "@f
 
 export const runtime = "nodejs";
 
-const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_URL = process.env.SUPABASE_URL || process.env.SUPABASE_URI;
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const SUPABASE_TABLE = process.env.SUPABASE_KV_TABLE || "holymarket_kv";
 
@@ -55,8 +55,32 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
-    const requestJson = await request.json().catch(() => null);
-    if (!requestJson) return NextResponse.json({ success: false, error: "Invalid JSON" }, { status: 400 });
+    const contentType = String(request.headers.get("content-type") || "");
+    const userAgent = String(request.headers.get("user-agent") || "");
+
+    const raw = await request.text().catch(() => "");
+    let requestJson: any = null;
+    try {
+        requestJson = raw ? JSON.parse(raw) : null;
+    } catch {
+        requestJson = null;
+    }
+
+    if (!requestJson) {
+        try {
+            console.log("miniapp_webhook:invalid_json", {
+                at: nowIso(),
+                contentType,
+                userAgent,
+                rawLength: raw.length,
+                rawPreview: raw.slice(0, 200),
+            });
+        } catch {
+            // ignore
+        }
+
+        return NextResponse.json({ success: false, error: "Invalid JSON" }, { status: 400 });
+    }
 
     try {
         console.log("miniapp_webhook:received", {

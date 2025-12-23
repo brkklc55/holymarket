@@ -3,7 +3,7 @@ import { createClient } from "@supabase/supabase-js";
 
 export const runtime = "nodejs";
 
-const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_URL = process.env.SUPABASE_URL || process.env.SUPABASE_URI;
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const SUPABASE_TABLE = process.env.SUPABASE_KV_TABLE || "holymarket_kv";
 
