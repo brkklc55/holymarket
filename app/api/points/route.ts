@@ -494,11 +494,23 @@ export async function POST(req: NextRequest) {
                     return NextResponse.json({ error: "Supabase not configured" }, { status: 500 });
                 }
 
-                const { error: refErr } = await supabase
+                const current = await getUserFromSupabase(user);
+                if (current?.referrer) {
+                    return NextResponse.json({ ok: true, skipped: true, reason: "already_bound", storage: "supabase" });
+                }
+
+                // Only bind if referrer is not already set (atomic)
+                const { data: boundRows, error: refErr } = await supabase
                     .from("users")
                     .update({ referrer_address: referrer, updated_at: nowIso() })
-                    .eq("address", user);
+                    .eq("address", user)
+                    .is("referrer_address", null)
+                    .select("address");
                 if (refErr) throw refErr;
+
+                if (!boundRows || boundRows.length === 0) {
+                    return NextResponse.json({ ok: true, skipped: true, reason: "already_bound", storage: "supabase" });
+                }
 
                 await incrementUserSupabase({ address: user, pointsDelta: 50 });
                 await incrementUserSupabase({ address: referrer, pointsDelta: 50 });
