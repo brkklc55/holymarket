@@ -164,8 +164,6 @@ export async function POST(request: NextRequest) {
             case "miniapp_added":
                 if (event.notificationDetails?.token && event.notificationDetails?.url) {
                     await setNotificationDetails(fid, event.notificationDetails);
-                } else {
-                    await deleteNotificationDetails(fid);
                 }
                 break;
             case "miniapp_removed":
