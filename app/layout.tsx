@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   title: "HolyMarket",
   applicationName: "HolyMarket",
   description: "Decentralized prediction markets on Base Sepolia",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_URL || "https://holymarket.vercel.app"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_URL!),
   icons: {
     icon: "/ihm-beta.png",
   },
