@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@900&display=swap');
+
+        body {
+            background: #020617;
+            color: white;
+            font-family: 'Outfit', sans-serif;
+            margin: 0;
+            padding: 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        .masterpiece-container {
+            display: flex;
+            flex-direction: column;
+            gap: 150px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .block {
+            text-align: center;
+            position: relative;
+            padding: 80px;
+            background: radial-gradient(circle at center, rgba(14, 165, 233, 0.08) 0%, transparent 80%);
+            border-radius: 60px;
+            border: 1px solid rgba(14, 165, 233, 0.1);
+        }
+
+        .logo-svg {
+            width: 400px;
+            height: 400px;
+        }
+
+        .title {
+            font-size: 32px;
+            font-weight: 900;
+            margin-top: 40px;
+            color: #38bdf8;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+        }
+
+        .desc {
+            font-size: 18px;
+            color: #64748b;
+            margin-top: 15px;
+            line-height: 1.6;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="masterpiece-container">
+
+        <!-- CONCEPT 1: THE ORACLE EYE -->
+        <div class="block">
+            <div class="logo-svg">
+                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <filter id="divine-glow" x="-50%" y="-50%" width="200%" height="200%">
+                            <feGaussianBlur stdDeviation="5" result="blur" />
+                            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                        </filter>
+                        <linearGradient id="eye-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#0ea5e9" />
+                            <stop offset="100%" stop-color="#fbbf24" />
+                        </linearGradient>
+                    </defs>
+                    <!-- Divine Halo -->
+                    <circle cx="100" cy="100" r="85" stroke="rgba(251, 191, 36, 0.4)" stroke-width="0.5"
+                        stroke-dasharray="1 10" filter="url(#divine-glow)" />
+
+                    <!-- The Eye Shape -->
+                    <path d="M20 100 C 50 40, 150 40, 180 100 C 150 160, 50 160, 20 100" stroke="#0ea5e9"
+                        stroke-width="2" fill="none" opacity="0.6" />
+
+                    <!-- The Rising Iris (Prediction) -->
+                    <g transform="translate(100, 100)">
+                        <path d="M-40 20 L0 -30 L40 10" stroke="#fbbf24" stroke-width="8" fill="none"
+                            stroke-linecap="round" filter="url(#divine-glow)" />
+                        <circle cx="0" cy="-30" r="12" fill="#fbbf24" filter="url(#divine-glow)" />
+                    </g>
+
+                    <!-- Outer Radiance -->
+                    <path d="M100 10 V30 M190 100 H170 M100 190 V170 M10 100 H30" stroke="#0ea5e9" stroke-width="1"
+                        opacity="0.4" />
+                </svg>
+            </div>
+            <div class="title">The Oracle Gaze</div>
+            <div class="desc">Geleceği gören mistik gözün merkezi, yükselen bir pazar grafiği ve "Divine" halesiyle
+                birleşti. Tahmin piyasasının kutsal vizyonunu simgeler.</div>
+        </div>
+
+        <!-- CONCEPT 2: THE MARKET TEMPLE -->
+        <div class="block">
+            <div class="logo-svg">
+                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Pillars (Candlesticks forming a Gate) -->
+                    <rect x="40" y="80" width="15" height="80" rx="4" fill="#0ea5e9" opacity="0.8"
+                        filter="url(#divine-glow)" />
+                    <rect x="92.5" y="40" width="15" height="120" rx="4" fill="#fbbf24" filter="url(#divine-glow)" />
+                    <rect x="145" y="60" width="15" height="100" rx="4" fill="#0ea5e9" opacity="0.8"
+                        filter="url(#divine-glow)" />
+
+                    <!-- The Temple Arch (Truth) -->
+                    <path d="M30 60 Q 100 0 170 60" stroke="#fbbf24" stroke-width="2" fill="none"
+                        filter="url(#divine-glow)" />
+
+                    <!-- HM Subtle Monogram within pillars -->
+                    <path d="M100 120 V140" stroke="white" stroke-width="2" opacity="0.5" />
+                </svg>
+            </div>
+            <div class="title">The Market Temple</div>
+            <div class="desc">Borsa çubukları (candlesticks) ilahi bir tapınağın sütunlarına dönüştü. Pazarın sarsılmaz
+                temellerini ve doğruluğun kutsal kapısını temsil eder.</div>
+        </div>
+
+        <!-- CONCEPT 3: THE HOLY SPARK -->
+        <div class="block">
+            <div class="logo-svg">
+                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <radialGradient id="spark-glow" cx="50%" cy="50%" r="50%">
+                            <stop offset="0%" stop-color="#white" stop-opacity="1" />
+                            <stop offset="20%" stop-color="#fbbf24" stop-opacity="0.8" />
+                            <stop offset="100%" stop-color="transparent" stop-opacity="0" />
+                        </radialGradient>
+                    </defs>
+
+                    <!-- Intersection Lines (Binary Choice) -->
+                    <path d="M20 180 L180 20" stroke="#0ea5e9" stroke-width="1" opacity="0.3" />
+                    <path d="M20 20 L180 180" stroke="#fbbf24" stroke-width="1" opacity="0.3" />
+
+                    <!-- The Result (The Spark of Truth) -->
+                    <circle cx="100" cy="100" r="40" fill="url(#spark-glow)" filter="url(#divine-glow)" />
+                    <path d="M100 60 V140 M60 100 H140" stroke="white" stroke-width="4" stroke-linecap="round"
+                        filter="url(#divine-glow)" />
+
+                    <!-- HM Floating Energy -->
+                    <text x="100" y="170" text-anchor="middle" fill="white" font-weight="900" font-size="20"
+                        letter-spacing="10">HM</text>
+                </svg>
+            </div>
+            <div class="title">The Holy Spark</div>
+            <div class="desc">İki farklı tahminin kesiştiği noktada doğan "Gerçeklik Kıvılcımı". Minimalist, güçlü ve
+                pazarın sonuçlanma anındaki o ilahi netliği yansıtır.</div>
+        </div>
+
+    </div>
+
+    <div style="margin-top: 100px; opacity: 0.2; font-size: 16px; letter-spacing: 8px;">
+        // DIVINE PREDICTION IDENTITY //
+    </div>
+</body>
+
+</html>

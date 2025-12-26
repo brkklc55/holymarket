@@ -19,6 +19,9 @@ export default function SplashGate({ children }: Props) {
     return (
         <div className="fixed inset-0 z-[9998] bg-slate-950 flex items-center justify-center p-6">
             <div className="w-full max-w-sm text-center">
+                <div className="flex justify-center">
+                    <img src="/logo-official.png" alt="HolyMarket Logo" className="w-32 h-32 rounded-3xl shadow-2xl" />
+                </div>
                 <div className="mt-6 text-3xl font-black tracking-tight text-white">
                     HOLY<span className="text-gradient">MARKET</span>
                 </div>

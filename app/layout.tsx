@@ -10,9 +10,9 @@ export const metadata: Metadata = {
   description: "Decentralized prediction markets on Base Sepolia",
   metadataBase: new URL(process.env.NEXT_PUBLIC_URL || "https://baseappholymarket.xyz"),
   icons: {
-    icon: [{ url: "/logo-premium.svg?v=9", sizes: "any" }],
-    shortcut: ["/logo-premium.svg?v=9"],
-    apple: [{ url: "/logo-premium.svg?v=9", sizes: "180x180", type: "image/svg+xml" }],
+    icon: [{ url: "/logo-official.png?v=1", sizes: "any" }],
+    shortcut: ["/logo-official.png?v=1"],
+    apple: [{ url: "/logo-official.png?v=1", sizes: "180x180", type: "image/png" }],
   },
 
   openGraph: {
@@ -22,9 +22,9 @@ export const metadata: Metadata = {
     siteName: "HolyMarket",
     images: [
       {
-        url: "/logo-premium.svg",
-        width: 256,
-        height: 256,
+        url: "/logo-official.png",
+        width: 412,
+        height: 412,
         alt: "HolyMarket",
       },
     ],
@@ -34,9 +34,9 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "HolyMarket",
     description: "Decentralized prediction markets on Base Sepolia",
-    images: ["/logo-premium.svg"],
+    images: ["/logo-official.png"],
   },
-  manifest: "/manifest.json?v=7",
+  manifest: "/manifest.json?v=8",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",

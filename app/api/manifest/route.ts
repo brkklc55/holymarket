@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 export async function GET() {
     const domain = "baseappholymarket.xyz";
     const baseUrl = `https://${domain}`;
-    const logoUrl = `${baseUrl}/logo-premium.svg?v=9`;
+    const officialLogoUrl = `${baseUrl}/logo-official.png`;
 
     // Hardcoded correct values for baseappholymarket.xyz to bypass incorrect Vercel Env Vars
     const header = "eyJmaWQiOjEzOTU5NjEsInR5cGUiOiJhdXRoIiwia2V5IjoiMHgzNWU5OEZiQTZmNTAzNEQyNTJhNzczRjM2ZDA1OWFlMUE1NjQwOTgwIn0";
@@ -19,21 +19,21 @@ export async function GET() {
         frame: {
             version: "1",
             name: "HolyMarket",
-            iconUrl: logoUrl,
+            iconUrl: officialLogoUrl,
             homeUrl: baseUrl + "/",
-            imageUrl: logoUrl,
+            imageUrl: officialLogoUrl,
             buttonTitle: "Launch App",
-            splashImageUrl: logoUrl,
+            splashImageUrl: officialLogoUrl,
             splashBackgroundColor: "#020617",
         },
         miniapp: {
             version: "1",
             name: "HolyMarket",
-            iconUrl: logoUrl,
+            iconUrl: officialLogoUrl,
             homeUrl: baseUrl + "/",
-            imageUrl: logoUrl,
+            imageUrl: officialLogoUrl,
             buttonTitle: "Launch App",
-            splashImageUrl: logoUrl,
+            splashImageUrl: officialLogoUrl,
             splashBackgroundColor: "#020617",
         },
     };

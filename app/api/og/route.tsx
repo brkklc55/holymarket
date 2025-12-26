@@ -4,6 +4,7 @@ import { NextRequest } from 'next/server';
 export const runtime = 'edge';
 
 export async function GET(req: NextRequest) {
+    const appOrigin = "https://baseappholymarket.xyz";
     const { searchParams } = new URL(req.url);
     const question = searchParams.get('question') || 'Prediction Market';
     const yes = searchParams.get('yes') || '50';
@@ -25,6 +26,12 @@ export async function GET(req: NextRequest) {
                 }}
             >
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <img
+                        src={`${appOrigin}/logo-official.png`}
+                        width="160"
+                        height="160"
+                        style={{ marginBottom: 40, borderRadius: 40 }}
+                    />
                     <div style={{
                         display: 'flex',
                         fontSize: 80,
