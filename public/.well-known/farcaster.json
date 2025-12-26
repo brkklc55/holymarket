@@ -7,11 +7,21 @@
     "frame": {
         "version": "1",
         "name": "HolyMarket",
-        "iconUrl": "https://holymarket.vercel.app/ihm-beta.png?v=5",
+        "iconUrl": "https://holymarket.vercel.app/ihm-beta.png?v=7",
         "homeUrl": "https://holymarket.vercel.app/",
-        "imageUrl": "https://holymarket.vercel.app/logo.png?v=5",
+        "imageUrl": "https://holymarket.vercel.app/ihm-beta.png?v=7",
         "buttonTitle": "Launch App",
-        "splashImageUrl": "https://holymarket.vercel.app/ihm-beta.png?v=5",
+        "splashImageUrl": "https://holymarket.vercel.app/ihm-beta.png?v=7",
+        "splashBackgroundColor": "#020617"
+    },
+    "miniapp": {
+        "version": "1",
+        "name": "HolyMarket",
+        "iconUrl": "https://holymarket.vercel.app/ihm-beta.png?v=7",
+        "homeUrl": "https://holymarket.vercel.app/",
+        "imageUrl": "https://holymarket.vercel.app/ihm-beta.png?v=7",
+        "buttonTitle": "Launch App",
+        "splashImageUrl": "https://holymarket.vercel.app/ihm-beta.png?v=7",
         "splashBackgroundColor": "#020617"
     }
 }
