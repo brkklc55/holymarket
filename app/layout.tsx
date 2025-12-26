@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "HolyMarket",
     description: "Decentralized prediction markets on Base Sepolia",
-    images: ["/logo-official.png"],
+    images: ["/icon.png"],
   },
   manifest: "/manifest.json?v=8",
   appleWebApp: {

@@ -1,10 +1,25 @@
 import { ImageResponse } from 'next/og';
 import { NextRequest } from 'next/server';
+import { Buffer } from 'buffer';
 
 export const runtime = 'edge';
 
 export async function GET(req: NextRequest) {
     const appOrigin = "https://baseappholymarket.xyz";
+
+    // Optimized image loading for Satori
+    let iconDataUri = '';
+    try {
+        const iconResponse = await fetch(`${appOrigin}/icon.png`);
+        if (iconResponse.ok) {
+            const iconBuffer = await iconResponse.arrayBuffer();
+            const base64Icon = Buffer.from(iconBuffer).toString('base64');
+            iconDataUri = `data:image/png;base64,${base64Icon}`;
+        }
+    } catch (e) {
+        console.error("Failed to load icon for OG", e);
+    }
+
     const { searchParams } = new URL(req.url);
     const question = searchParams.get('question') || 'Prediction Market';
     const yes = searchParams.get('yes') || '50';
@@ -26,12 +41,14 @@ export async function GET(req: NextRequest) {
                 }}
             >
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                    <img
-                        src={`${appOrigin}/icon.png`}
-                        width="160"
-                        height="160"
-                        style={{ marginBottom: 40, borderRadius: 40 }}
-                    />
+                    {iconDataUri && (
+                        <img
+                            src={iconDataUri}
+                            width="160"
+                            height="160"
+                            style={{ marginBottom: 40, borderRadius: 40 }}
+                        />
+                    )}
                     <div style={{
                         display: 'flex',
                         fontSize: 80,

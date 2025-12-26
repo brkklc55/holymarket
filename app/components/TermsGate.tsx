@@ -93,10 +93,13 @@ export default function TermsGate({ children }: Props) {
             <div className="relative h-full w-full flex items-center justify-center p-6">
                 <div className="w-full max-w-2xl premium-card p-6 sm:p-8 bg-slate-950/90 border border-slate-800 max-h-[90vh] overflow-y-auto overscroll-contain">
                     <div className="flex items-start justify-between gap-4">
-                        <div>
-                            <div className="text-[10px] font-black text-sky-400 uppercase tracking-[0.25em]">BETA ACCESS</div>
-                            <h2 className="mt-2 text-2xl font-black text-white">{disclaimerText.title}</h2>
-                            <p className="mt-2 text-sm text-slate-400">{disclaimerText.subtitle}</p>
+                        <div className="flex gap-4">
+                            <img src="/icon.png" alt="HolyMarket Logo" className="w-16 h-16 rounded-2xl shadow-lg border border-slate-800" />
+                            <div>
+                                <div className="text-[10px] font-black text-sky-400 uppercase tracking-[0.25em]">BETA ACCESS</div>
+                                <h2 className="mt-2 text-2xl font-black text-white">{disclaimerText.title}</h2>
+                                <p className="mt-2 text-sm text-slate-400">{disclaimerText.subtitle}</p>
+                            </div>
                         </div>
                         <span className="px-2 py-1 rounded-full bg-amber-500/10 text-amber-400 text-[10px] font-black border border-amber-500/20">TESTNET</span>
                     </div>
