@@ -7,21 +7,21 @@
     "frame": {
         "version": "1",
         "name": "HolyMarket",
-        "iconUrl": "https://baseappholymarket.xyz/ihm-beta.png?v=7",
+        "iconUrl": "https://baseappholymarket.xyz/logo.png?v=8",
         "homeUrl": "https://baseappholymarket.xyz/",
-        "imageUrl": "https://baseappholymarket.xyz/ihm-beta.png?v=7",
+        "imageUrl": "https://baseappholymarket.xyz/logo.png?v=8",
         "buttonTitle": "Launch App",
-        "splashImageUrl": "https://baseappholymarket.xyz/ihm-beta.png?v=7",
+        "splashImageUrl": "https://baseappholymarket.xyz/logo.png?v=8",
         "splashBackgroundColor": "#020617"
     },
     "miniapp": {
         "version": "1",
         "name": "HolyMarket",
-        "iconUrl": "https://baseappholymarket.xyz/ihm-beta.png?v=7",
+        "iconUrl": "https://baseappholymarket.xyz/logo.png?v=8",
         "homeUrl": "https://baseappholymarket.xyz/",
-        "imageUrl": "https://baseappholymarket.xyz/ihm-beta.png?v=7",
+        "imageUrl": "https://baseappholymarket.xyz/logo.png?v=8",
         "buttonTitle": "Launch App",
-        "splashImageUrl": "https://baseappholymarket.xyz/ihm-beta.png?v=7",
+        "splashImageUrl": "https://baseappholymarket.xyz/logo.png?v=8",
         "splashBackgroundColor": "#020617"
     }
 }
