@@ -1,13 +1,14 @@
+
 import type { Metadata } from 'next';
 
 const baseUrl = process.env.NEXT_PUBLIC_URL;
 const appOrigin = baseUrl || "";
-const shareImagePath = "/ihm-beta.png?v=7";
+const shareImagePath = "/api/og";
 
 const frameMetadata: Record<string, string> = {
   'fc:frame': 'vNext',
-  ...(appOrigin ? { 'fc:frame:image': `${appOrigin}${shareImagePath}` } : { 'fc:frame:image': shareImagePath }),
-  'fc:frame:image:aspect_ratio': '1:1',
+  'fc:frame:image': appOrigin ? `${appOrigin}${shareImagePath}` : `https://holymarket.vercel.app${shareImagePath}`,
+  'fc:frame:image:aspect_ratio': '1.91:1',
   ...(baseUrl ? { 'fc:frame:post_url': `${baseUrl}/api/frame` } : {}),
   'fc:frame:button:1': 'Enter HolyMarket',
 };

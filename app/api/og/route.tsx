@@ -19,41 +19,58 @@ export async function GET(req: NextRequest) {
                     alignItems: 'center',
                     justifyContent: 'center',
                     flexDirection: 'column',
-                    backgroundImage: 'linear-gradient(to bottom, #f0f9ff, #e0f2fe)',
-                    fontSize: 60,
-                    letterSpacing: -2,
-                    fontWeight: 700,
-                    textAlign: 'center',
-                    color: '#0f172a',
+                    backgroundColor: '#020617',
+                    backgroundImage: 'radial-gradient(circle at 50% 0%, #38bdf820 0%, transparent 50%)',
+                    fontFamily: 'sans-serif',
                 }}
             >
-                <div style={{ marginBottom: 40, padding: '0 40px' }}>{question}</div>
-                <div style={{ display: 'flex', gap: '60px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <div style={{
+                        display: 'flex',
+                        fontSize: 80,
+                        fontWeight: 900,
+                        letterSpacing: '-0.05em',
+                        color: 'white',
+                        lineHeight: 1,
+                    }}>
+                        HOLY<span style={{ color: '#38bdf8' }}>MARKET</span>
+                    </div>
+                    <div style={{
+                        fontSize: 30,
+                        color: '#94a3b8',
+                        marginTop: 20,
+                        fontWeight: 500,
+                        letterSpacing: '0.1em',
+                        textTransform: 'uppercase',
+                    }}>
+                        Prediction Markets on Base
+                    </div>
+                </div>
+
+                <div style={{ display: 'flex', marginTop: 60, gap: '40px' }}>
                     <div style={{
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
-                        backgroundColor: '#dcfce7',
-                        padding: '20px 40px',
-                        borderRadius: '20px',
-                        border: '4px solid #16a34a',
-                        color: '#16a34a'
+                        backgroundColor: 'rgba(30, 41, 59, 0.5)',
+                        padding: '20px 50px',
+                        borderRadius: '24px',
+                        border: '1px solid rgba(56, 189, 248, 0.2)',
                     }}>
-                        <span style={{ fontSize: 40 }}>YES</span>
-                        <span>{yes}%</span>
+                        <div style={{ fontSize: 24, color: '#94a3b8', textTransform: 'uppercase', marginBottom: 5 }}>Yes</div>
+                        <div style={{ fontSize: 48, fontWeight: 700, color: '#22c55e' }}>{yes}%</div>
                     </div>
                     <div style={{
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
-                        backgroundColor: '#fee2e2',
-                        padding: '20px 40px',
-                        borderRadius: '20px',
-                        border: '4px solid #dc2626',
-                        color: '#dc2626'
+                        backgroundColor: 'rgba(30, 41, 59, 0.5)',
+                        padding: '20px 50px',
+                        borderRadius: '24px',
+                        border: '1px solid rgba(244, 63, 94, 0.2)',
                     }}>
-                        <span style={{ fontSize: 40 }}>NO</span>
-                        <span>{no}%</span>
+                        <div style={{ fontSize: 24, color: '#94a3b8', textTransform: 'uppercase', marginBottom: 5 }}>No</div>
+                        <div style={{ fontSize: 48, fontWeight: 700, color: '#f43f5e' }}>{no}%</div>
                     </div>
                 </div>
             </div>
