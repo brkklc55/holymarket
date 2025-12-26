@@ -10,12 +10,12 @@ export async function GET(req: NextRequest) {
 
     try {
         console.log("Starting OG Image Generation");
-        
+
         // 1. Load the icon safely using fs
         // We know public/icon.png exists.
         const iconPath = path.join(process.cwd(), 'public', 'icon.png');
         console.log(`Reading icon from: ${iconPath}`);
-        
+
         if (!fs.existsSync(iconPath)) {
             throw new Error(`Icon file not found at ${iconPath}`);
         }
@@ -42,7 +42,7 @@ export async function GET(req: NextRequest) {
                         fontFamily: 'sans-serif', // Fallback to system font
                     }}
                 >
-                    </* Branding - Logo */>
+                    {/* Branding - Logo */}
                     <img
                         src={iconDataUri}
                         alt="HolyMarket Logo"
@@ -50,8 +50,8 @@ export async function GET(req: NextRequest) {
                         height="120"
                         style={{ marginBottom: 40 }}
                     />
-                    
-                    </* Branding - Text */>
+
+                    {/* Branding - Text */}
                     <div
                         style={{
                             display: 'flex',
