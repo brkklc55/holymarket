@@ -5,11 +5,16 @@ export async function GET() {
     const baseUrl = `https://${domain}`;
     const logoUrl = `${baseUrl}/logo-premium.svg?v=9`;
 
+    // Use the environment variables from Vercel if available
+    const header = process.env.FARCASTER_ACCOUNT_ASSOCIATION_HEADER || "eyJmaWQiOjEzOTU5NjEsInR5cGUiOiJhdXRoIiwia2V5IjoiMHgzNWU5OEZiQTZmNTAzNEQyNTJhNzczRjM2ZDA1OWFlMUE1NjQwOTgwIn0";
+    const payload = process.env.FARCASTER_ACCOUNT_ASSOCIATION_PAYLOAD || "eyJkb21haW4iOiJiYXNlYXBwaG9seW1hcmtldC54eXoifQ";
+    const signature = process.env.FARCASTER_ACCOUNT_ASSOCIATION_SIGNATURE || "J9BcRA4LwLMsk8a7bebz7lyXp2Fp48c-T3rE61SleO_Wnlduj5M4rSLVO409qM12GjQZU5dFr2DRs-bM0uQfBw";
+
     const manifest = {
         accountAssociation: {
-            header: "eyJmaWQiOjEzOTU5NjEsInR5cGUiOiJhdXRoIiwia2V5IjoiMHgzNWU5OEZiQTZmNTAzNEQyNTJhNzczRjM2ZDA1OWFlMUE1NjQwOTgwIn0",
-            payload: "eyJkb21haW4iOiJiYXNlYXBwaG9seW1hcmtldC54eXoifQ",
-            signature: "J9BcRA4LwLMsk8a7bebz7lyXp2Fp48c-T3rE61SleO_Wnlduj5M4rSLVO409qM12GjQZU5dFr2DRs-bM0uQfBw",
+            header: header,
+            payload: payload,
+            signature: signature,
         },
         frame: {
             version: "1",
