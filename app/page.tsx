@@ -7,7 +7,7 @@ const shareImagePath = "/api/og";
 
 const frameMetadata: Record<string, string> = {
   'fc:frame': 'vNext',
-  'fc:frame:image': appOrigin ? `${appOrigin}${shareImagePath}` : `https://holymarket.vercel.app${shareImagePath}`,
+  'fc:frame:image': appOrigin ? `${appOrigin}${shareImagePath}` : `https://baseappholymarket.xyz${shareImagePath}`,
   'fc:frame:image:aspect_ratio': '1.91:1',
   ...(baseUrl ? { 'fc:frame:post_url': `${baseUrl}/api/frame` } : {}),
   'fc:frame:button:1': 'Enter HolyMarket',
