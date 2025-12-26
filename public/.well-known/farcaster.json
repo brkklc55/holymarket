@@ -4,6 +4,7 @@
         "payload": "eyJkb21haW4iOiJiYXNlYXBwaG9seW1hcmtldC54eXoifQ",
         "signature": "J9BcRA4LwLMsk8a7bebz7lyXp2F148eXXRkvIhh3P98iRJYqUejV8hbQBP+jz8YRxk0P8U0/GvUJtTKKureFZxs="
     },
+    "version": "2025-12-26",
     "frame": {
         "version": "1",
         "name": "HolyMarket",
