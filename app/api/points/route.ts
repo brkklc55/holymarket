@@ -38,6 +38,7 @@ const USE_SUPABASE = Boolean(SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY);
 const ADMIN_ADDRESSES = [
     "0x33713b87bab352c46bba4953ab6cb11afe895d93",
     "0x96a445dd060efd79ab27742de12128f24b4edaec",
+    "0x3DF3b1C5A77Ff85FF25727E54685b17171CC2526",
 ];
 
 const rateState: Map<string, { count: number; resetAt: number }> = new Map();
@@ -106,7 +107,7 @@ function getSupabaseClient() {
 
 const basePublicClient = createPublicClient({
     chain: baseSepolia,
-    transport: http(process.env.BASE_SEPOLIA_RPC_URL || "https://sepolia.base.org"),
+    transport: http(process.env.BASE_SEPOLIA_RPC_URL || "https://base-sepolia.publicnode.com"),
 });
 
 async function getUserFromSupabase(addr: string): Promise<{ user: string; points: number; referrer: string | null; volumeBnb: number } | null> {
@@ -271,9 +272,16 @@ async function loadDbFromFile(): Promise<PointsDb> {
     if (!parsed.admins || typeof parsed.admins !== "object" || Array.isArray(parsed.admins)) parsed.admins = {};
     if (!parsed.shareBoosts || typeof parsed.shareBoosts !== "object" || Array.isArray(parsed.shareBoosts)) parsed.shareBoosts = {};
 
-    if (Object.keys(parsed.admins).length === 0 && ADMIN_ADDRESSES.length > 0) {
-        const seeded = makeInitialDb();
-        parsed.admins = seeded.admins;
+    let adminChanged = false;
+    ADMIN_ADDRESSES.forEach((a, idx) => {
+        const addr = normalizeAddress(a);
+        if (!parsed.admins[addr]) {
+            parsed.admins[addr] = { role: idx === 0 ? "superadmin" : "admin", createdAt: nowIso(), updatedAt: nowIso() };
+            adminChanged = true;
+        }
+    });
+
+    if (adminChanged) {
         fs.writeFileSync(DATA_FILE, JSON.stringify(parsed, null, 2));
     }
     return parsed;
@@ -311,9 +319,16 @@ async function loadDb(): Promise<PointsDb> {
     if (!parsed.admins || typeof parsed.admins !== "object" || Array.isArray(parsed.admins)) parsed.admins = {};
     if (!parsed.shareBoosts || typeof parsed.shareBoosts !== "object" || Array.isArray(parsed.shareBoosts)) parsed.shareBoosts = {};
 
-    if (Object.keys(parsed.admins).length === 0 && ADMIN_ADDRESSES.length > 0) {
-        const seeded = makeInitialDb();
-        parsed.admins = seeded.admins;
+    let adminChanged = false;
+    ADMIN_ADDRESSES.forEach((a, idx) => {
+        const addr = normalizeAddress(a);
+        if (!parsed.admins[addr]) {
+            parsed.admins[addr] = { role: idx === 0 ? "superadmin" : "admin", createdAt: nowIso(), updatedAt: nowIso() };
+            adminChanged = true;
+        }
+    });
+
+    if (adminChanged) {
         await supabase.from(SUPABASE_TABLE).upsert({ key: SUPABASE_DB_KEY, value: parsed });
     }
 

@@ -1,0 +1,17 @@
+{
+    "accountAssociation": {
+        "header": "eyJmaWQiOjEzOTU5NjEsInR5cGUiOiJjdXN0b2R5Iiwia2V5IjoiMHgzREYzYjFDNUE3N0ZmODVGRjI1NzI3RTU0Njg1YjE3MTcxQ0MyNTI2In0",
+        "payload": "eyJkb21haW4iOiJob2x5bWFya2V0LnZlcmNlbC5hcHAifQ",
+        "signature": "exl6EmNqJkM74keZYaA/msfjGUBHmFM77eWkXB3pQUVqEriDM0bPrqd6tuPaA7t8PIX7Ir8y10lYJ8rMZ6fi4Bw="
+    },
+    "frame": {
+        "version": "1",
+        "name": "HolyMarket",
+        "iconUrl": "https://holymarket.vercel.app/ihm-beta.png?v=5",
+        "homeUrl": "https://holymarket.vercel.app/",
+        "imageUrl": "https://holymarket.vercel.app/logo.png?v=5",
+        "buttonTitle": "Launch App",
+        "splashImageUrl": "https://holymarket.vercel.app/ihm-beta.png?v=5",
+        "splashBackgroundColor": "#020617"
+    }
+}

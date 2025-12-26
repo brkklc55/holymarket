@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import FarcasterProvider from "./components/FarcasterProvider";
 import TermsGate from "./components/TermsGate";
@@ -12,9 +12,7 @@ export const metadata: Metadata = {
   icons: {
     icon: "/ihm-beta.png",
   },
-  appleWebApp: {
-    title: "HolyMarket",
-  },
+
   openGraph: {
     title: "HolyMarket",
     description: "Decentralized prediction markets on Base Sepolia",
@@ -36,6 +34,21 @@ export const metadata: Metadata = {
     description: "Decentralized prediction markets on Base Sepolia",
     images: ["/logo.png"],
   },
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "HolyMarket",
+  },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: "cover",
+  themeColor: "#020617",
 };
 
 import { Providers } from "./providers";
