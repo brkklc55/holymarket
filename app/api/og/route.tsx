@@ -1,7 +1,6 @@
 import { ImageResponse } from 'next/og';
 import { NextRequest } from 'next/server';
-import fs from 'fs';
-import path from 'path';
+
 
 export const runtime = 'nodejs';
 
@@ -11,19 +10,8 @@ export async function GET(req: NextRequest) {
     try {
         console.log("Starting OG Image Generation");
 
-        // 1. Load the icon safely using fs
-        // We know public/icon.png exists.
-        const iconPath = path.join(process.cwd(), 'public', 'icon.png');
-        console.log(`Reading icon from: ${iconPath}`);
-
-        if (!fs.existsSync(iconPath)) {
-            throw new Error(`Icon file not found at ${iconPath}`);
-        }
-
-        const iconBuffer = fs.readFileSync(iconPath);
-        const iconBase64 = iconBuffer.toString('base64');
-        const iconDataUri = `data:image/png;base64,${iconBase64}`;
-        console.log("Icon read and converted to base64 successfully");
+        // __ICON_PLACEHOLDER__
+        const iconDataUri = ""; // Will be replaced by script
 
         // 2. Font Loading (Disabled for now to prevent 404 crashes)
         // const fontData = await fetch(new URL('https://baseappholymarket.xyz/fonts/Inter-Bold.ttf')).then((res) => res.arrayBuffer());
