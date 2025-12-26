@@ -10,9 +10,9 @@ export const metadata: Metadata = {
   description: "Decentralized prediction markets on Base Sepolia",
   metadataBase: new URL(process.env.NEXT_PUBLIC_URL || "https://baseappholymarket.xyz"),
   icons: {
-    icon: [{ url: "/logo-official.png?v=1", sizes: "any" }],
-    shortcut: ["/logo-official.png?v=1"],
-    apple: [{ url: "/logo-official.png?v=1", sizes: "180x180", type: "image/png" }],
+    icon: [{ url: "/icon.png?v=2", sizes: "any" }],
+    shortcut: ["/icon.png?v=2"],
+    apple: [{ url: "/icon.png?v=2", sizes: "180x180", type: "image/png" }],
   },
 
   openGraph: {
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     siteName: "HolyMarket",
     images: [
       {
-        url: "/logo-official.png",
+        url: "/icon.png",
         width: 412,
         height: 412,
         alt: "HolyMarket",

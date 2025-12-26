@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 export async function GET() {
     const domain = "baseappholymarket.xyz";
     const baseUrl = `https://${domain}`;
-    const officialLogoUrl = `${baseUrl}/logo-official.png`;
+    const officialLogoUrl = `${baseUrl}/icon.png`;
 
     // Hardcoded correct values for baseappholymarket.xyz to bypass incorrect Vercel Env Vars
     const header = "eyJmaWQiOjEzOTU5NjEsInR5cGUiOiJhdXRoIiwia2V5IjoiMHgzNWU5OEZiQTZmNTAzNEQyNTJhNzczRjM2ZDA1OWFlMUE1NjQwOTgwIn0";
