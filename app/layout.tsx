@@ -10,8 +10,9 @@ export const metadata: Metadata = {
   description: "Decentralized prediction markets on Base Sepolia",
   metadataBase: new URL(process.env.NEXT_PUBLIC_URL!),
   icons: {
-    icon: "/ihm-beta.png?v=6",
-    apple: "/ihm-beta.png?v=6",
+    icon: [{ url: "/ihm-beta.png?v=7", sizes: "any" }],
+    shortcut: ["/ihm-beta.png?v=7"],
+    apple: [{ url: "/ihm-beta.png?v=7", sizes: "180x180", type: "image/png" }],
   },
 
   openGraph: {
@@ -35,7 +36,7 @@ export const metadata: Metadata = {
     description: "Decentralized prediction markets on Base Sepolia",
     images: ["/logo.png"],
   },
-  manifest: "/manifest.json?v=6",
+  manifest: "/manifest.json?v=7",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",

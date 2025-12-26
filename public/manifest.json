@@ -14,13 +14,13 @@
     ],
     "icons": [
         {
-            "src": "https://holymarket.vercel.app/ihm-beta.png?v=5",
+            "src": "/ihm-beta.png",
             "sizes": "192x192",
             "type": "image/png",
             "purpose": "any maskable"
         },
         {
-            "src": "https://holymarket.vercel.app/ihm-beta.png?v=5",
+            "src": "/ihm-beta.png",
             "sizes": "512x512",
             "type": "image/png",
             "purpose": "any maskable"
