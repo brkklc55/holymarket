@@ -8,7 +8,7 @@ export async function GET() {
     // Hardcoded correct values for baseappholymarket.xyz to bypass incorrect Vercel Env Vars
     const header = "eyJmaWQiOjEzOTU5NjEsInR5cGUiOiJhdXRoIiwia2V5IjoiMHgzNWU5OEZiQTZmNTAzNEQyNTJhNzczRjM2ZDA1OWFlMUE1NjQwOTgwIn0";
     const payload = "eyJkb21haW4iOiJiYXNlYXBwaG9seW1hcmtldC54eXoifQ";
-    const signature = "J9BcRA4LwLMsk8a7bebz7lyXp2Fp48c-T3rE61SleO_Wnlduj5M4rSLVO409qM12GjQZU5dFr2DRs-bM0uQfBw";
+    const signature = "aJXo93UhDyy7/hJGiamw2jzqKkIN02Mb5fYsayIa8FoG97V+L0MJlVNlduj5M4rSLVO409qM12GjQZU5dFr2DRs=";
 
     const manifest = {
         accountAssociation: {
