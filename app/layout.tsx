@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   title: "HolyMarket",
   applicationName: "HolyMarket",
   description: "Decentralized prediction markets on Base Sepolia",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_URL!),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_URL || "https://baseappholymarket.xyz"),
   icons: {
     icon: [{ url: "/logo-premium.svg?v=9", sizes: "any" }],
     shortcut: ["/logo-premium.svg?v=9"],

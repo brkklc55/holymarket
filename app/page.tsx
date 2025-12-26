@@ -43,7 +43,6 @@ export default function Page() {
         <div className="text-center space-y-4">
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tighter text-white leading-none break-words">
             HOLY<span className="text-gradient">MARKET</span>
-            <span className="sr-only">v13.5</span>
           </h1>
         </div>
 

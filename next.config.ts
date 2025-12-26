@@ -26,7 +26,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/.well-known/farcaster.json",
-        destination: "/api/definite-farcaster-manifest",
+        destination: "/api/manifest",
       },
     ];
   },
