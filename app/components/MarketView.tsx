@@ -2321,7 +2321,7 @@ export default function MarketView() {
                                 onClick={async () => {
                                     const text = `I just placed a prediction on HolyMarket: ${market?.question || ""}`;
                                     const url = getMarketShareUrl() || window.location.href;
-                                    window.open(`https://base.app/?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`);
+                                    window.open(`https://base.app/?text=${encodeURIComponent(text)}`);
                                     await claimShareBoost(sharePromptTxHash, sharePromptAmountBnb);
                                     setSharePromptOpen(false);
                                 }}

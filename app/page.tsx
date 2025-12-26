@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 
 const baseUrl = process.env.NEXT_PUBLIC_URL;
 const appOrigin = baseUrl || "";
-const shareImagePath = "/logo.png?v=2";
+const shareImagePath = "/ihm-beta.png?v=7";
 
 const frameMetadata: Record<string, string> = {
   'fc:frame': 'vNext',
