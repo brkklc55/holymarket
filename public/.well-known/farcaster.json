@@ -8,21 +8,21 @@
     "frame": {
         "version": "1",
         "name": "HolyMarket",
-        "iconUrl": "https://baseappholymarket.xyz/logo.png?v=8",
+        "iconUrl": "https://baseappholymarket.xyz/logo-premium.svg?v=9",
         "homeUrl": "https://baseappholymarket.xyz/",
-        "imageUrl": "https://baseappholymarket.xyz/logo.png?v=8",
+        "imageUrl": "https://baseappholymarket.xyz/logo-premium.svg?v=9",
         "buttonTitle": "Launch App",
-        "splashImageUrl": "https://baseappholymarket.xyz/logo.png?v=8",
+        "splashImageUrl": "https://baseappholymarket.xyz/logo-premium.svg?v=9",
         "splashBackgroundColor": "#020617"
     },
     "miniapp": {
         "version": "1",
         "name": "HolyMarket",
-        "iconUrl": "https://baseappholymarket.xyz/logo.png?v=8",
+        "iconUrl": "https://baseappholymarket.xyz/logo-premium.svg?v=9",
         "homeUrl": "https://baseappholymarket.xyz/",
-        "imageUrl": "https://baseappholymarket.xyz/logo.png?v=8",
+        "imageUrl": "https://baseappholymarket.xyz/logo-premium.svg?v=9",
         "buttonTitle": "Launch App",
-        "splashImageUrl": "https://baseappholymarket.xyz/logo.png?v=8",
+        "splashImageUrl": "https://baseappholymarket.xyz/logo-premium.svg?v=9",
         "splashBackgroundColor": "#020617"
     }
 }
