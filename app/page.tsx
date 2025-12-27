@@ -3,8 +3,8 @@ import type { Metadata } from 'next';
 
 const baseUrl = process.env.NEXT_PUBLIC_URL || 'https://baseappholymarket.xyz';
 const appOrigin = baseUrl;
-const fullShareImageUrl = `${appOrigin}/embed.png?v=7`; // Cache bust
-const frameImageUrl = `${appOrigin}/og.png?v=7`; // Cache bust
+const fullShareImageUrl = `${appOrigin}/embed.png?v=8`; // Bump to v8
+const frameImageUrl = `${appOrigin}/og.png?v=8`; // Bump to v8
 
 const frameMetadata: Record<string, string> = {
   'fc:frame': 'vNext',
@@ -14,7 +14,7 @@ const frameMetadata: Record<string, string> = {
   'fc:frame:button:1': 'Enter HolyMarket',
 };
 
-const manifestUrl = `${appOrigin}/api/manifest`;
+const manifestUrl = `${appOrigin}/api/manifest?v=8`; // Versioning manifest link to force re-crawl
 
 export const metadata: Metadata = {
   title: 'HolyMarket',

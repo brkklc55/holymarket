@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 export async function GET() {
     const domain = "baseappholymarket.xyz";
     const baseUrl = `https://${domain}`;
-    const officialLogoUrl = `${baseUrl}/icon.png?v=7`;
+    const officialLogoUrl = `${baseUrl}/icon.png?v=8`;
     const webhookUrl = `${baseUrl}/api/farcaster/webhook`;
 
     // Hardcoded correct values for baseappholymarket.xyz to bypass incorrect Vercel Env Vars
@@ -25,7 +25,7 @@ export async function GET() {
             name: "HolyMarket",
             iconUrl: officialLogoUrl,
             homeUrl: baseUrl + "/",
-            imageUrl: `${baseUrl}/og.png?v=7`,
+            imageUrl: `${baseUrl}/og.png?v=8`,
             buttonTitle: "Launch App",
             webhookUrl: webhookUrl,
             description: appDescription,
@@ -33,14 +33,14 @@ export async function GET() {
             screenshotUrls: [officialLogoUrl],
             primaryCategory: "finance",
             tags: ["crypto", "betting", "prediction", "base"],
-            heroImageUrl: `${baseUrl}/embed.png?v=7`,
+            heroImageUrl: `${baseUrl}/embed.png?v=8`,
         },
         miniapp: {
             version: "1",
             name: "HolyMarket",
             iconUrl: officialLogoUrl,
             homeUrl: baseUrl + "/",
-            imageUrl: `${baseUrl}/embed.png?v=7`,
+            imageUrl: `${baseUrl}/embed.png?v=8`,
             buttonTitle: "Launch App",
             webhookUrl: webhookUrl,
             description: appDescription,
@@ -48,7 +48,7 @@ export async function GET() {
             screenshotUrls: [officialLogoUrl],
             primaryCategory: "finance",
             tags: ["crypto", "betting", "prediction", "base"],
-            heroImageUrl: `${baseUrl}/embed.png?v=7`,
+            heroImageUrl: `${baseUrl}/embed.png?v=8`,
         },
         // Root level fields for various Farcaster tool versions
         name: "HolyMarket",
@@ -56,15 +56,15 @@ export async function GET() {
         webhookUrl: webhookUrl,
         ogTitle: "HolyMarket",
         ogDescription: "Trade your beliefs on Base",
-        ogImageUrl: `${baseUrl}/og.png?v=7`,
-        oglImageUrl: `${baseUrl}/og.png?v=7`,
+        ogImageUrl: `${baseUrl}/og.png?v=8`,
+        oglImageUrl: `${baseUrl}/og.png?v=8`,
         subtitle: appSubtitle,
         description: appDescription,
         screenshotUrls: [officialLogoUrl],
         primaryCategory: "finance",
         tags: ["crypto", "betting", "prediction", "base"],
         tagline: "HolyMarket: Bet on Base",
-        heroImageUrl: `${baseUrl}/embed.png?v=7`,
+        heroImageUrl: `${baseUrl}/embed.png?v=8`,
         castShareUrl: baseUrl,
     };
 
