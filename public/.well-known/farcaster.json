@@ -14,8 +14,8 @@
         "splashImageUrl": "https://baseappholymarket.xyz/icon.png",
         "splashBackgroundColor": "#020617",
         "webhookUrl": "https://baseappholymarket.xyz/api/farcaster/webhook",
-        "description": "HolyMarket is a decentralized prediction market where you can bet on future events using crypto.",
-        "subtitle": "Trade your beliefs",
+        "description": "HolyMarket: The first decentralized prediction market on Base. Trade your beliefs on future events with crypto.",
+        "subtitle": "Trade your beliefs on Base",
         "screenshotUrls": [
             "https://baseappholymarket.xyz/icon.png"
         ],
@@ -38,8 +38,8 @@
         "splashImageUrl": "https://baseappholymarket.xyz/icon.png",
         "splashBackgroundColor": "#020617",
         "webhookUrl": "https://baseappholymarket.xyz/api/farcaster/webhook",
-        "description": "HolyMarket is a decentralized prediction market where you can bet on future events using crypto.",
-        "subtitle": "Trade your beliefs",
+        "description": "HolyMarket: The first decentralized prediction market on Base. Trade your beliefs on future events with crypto.",
+        "subtitle": "Trade your beliefs on Base",
         "screenshotUrls": [
             "https://baseappholymarket.xyz/icon.png"
         ],
@@ -58,9 +58,8 @@
     "ogTitle": "HolyMarket",
     "ogDescription": "Trade your beliefs on Base",
     "ogImageUrl": "https://baseappholymarket.xyz/api/og",
-    "oglImageUrl": "https://baseappholymarket.xyz/api/og",
-    "subtitle": "Trade your beliefs",
-    "description": "HolyMarket is a decentralized prediction market where you can bet on future events using crypto.",
+    "subtitle": "Trade your beliefs on Base",
+    "description": "HolyMarket: The first decentralized prediction market on Base. Trade your beliefs on future events with crypto.",
     "screenshotUrls": [
         "https://baseappholymarket.xyz/icon.png"
     ],
