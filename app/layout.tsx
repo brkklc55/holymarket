@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     siteName: "HolyMarket",
     images: [
       {
-        url: `${baseUrl}/api/og`,
+        url: `${baseUrl}/icon.png`,
         width: 1200,
         height: 630,
         type: 'image/png',
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "HolyMarket",
     description: "HolyMarket: The first decentralized prediction market on Base. Trade your beliefs.",
-    images: [`${baseUrl}/api/og`],
+    images: [`${baseUrl}/icon.png`],
   },
   manifest: "/manifest.json?v=8",
   appleWebApp: {

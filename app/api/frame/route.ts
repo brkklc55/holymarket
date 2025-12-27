@@ -71,7 +71,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         <html>
             <head>
                 <meta property="fc:frame" content="vNext" />
-                <meta property="fc:frame:image" content="${baseUrl}/api/og?question=${encodeURIComponent(question)}&yes=${yesShare.toFixed(1)}&no=${noShare.toFixed(1)}" />
+                <meta property="fc:frame:image" content="${baseUrl}/icon.png" />
                 <meta property="fc:frame:image:aspect_ratio" content="1.91:1" />
                 <meta property="fc:frame:post_url" content="${baseUrl}/api/frame" />
                 <meta property="fc:frame:button:1" content="Yes (${yesShare.toFixed(1)}%)" />

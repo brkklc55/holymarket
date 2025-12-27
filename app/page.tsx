@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 
 const baseUrl = process.env.NEXT_PUBLIC_URL || 'https://baseappholymarket.xyz';
 const appOrigin = baseUrl;
-const fullShareImageUrl = `${appOrigin}/api/og`;
+const fullShareImageUrl = `${appOrigin}/icon.png`;
 
 const frameMetadata: Record<string, string> = {
   'fc:frame': 'vNext',

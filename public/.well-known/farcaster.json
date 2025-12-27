@@ -9,7 +9,7 @@
         "name": "HolyMarket",
         "iconUrl": "https://baseappholymarket.xyz/icon.png",
         "homeUrl": "https://baseappholymarket.xyz/",
-        "imageUrl": "https://baseappholymarket.xyz/api/og",
+        "imageUrl": "https://baseappholymarket.xyz/icon.png",
         "buttonTitle": "Launch App",
         "splashImageUrl": "https://baseappholymarket.xyz/icon.png",
         "splashBackgroundColor": "#020617",
@@ -26,14 +26,14 @@
             "prediction",
             "base"
         ],
-        "heroImageUrl": "https://baseappholymarket.xyz/api/og"
+        "heroImageUrl": "https://baseappholymarket.xyz/icon.png"
     },
     "miniapp": {
         "version": "1",
         "name": "HolyMarket",
         "iconUrl": "https://baseappholymarket.xyz/icon.png",
         "homeUrl": "https://baseappholymarket.xyz/",
-        "imageUrl": "https://baseappholymarket.xyz/api/og",
+        "imageUrl": "https://baseappholymarket.xyz/icon.png",
         "buttonTitle": "Launch App",
         "splashImageUrl": "https://baseappholymarket.xyz/icon.png",
         "splashBackgroundColor": "#020617",
@@ -50,14 +50,14 @@
             "prediction",
             "base"
         ],
-        "heroImageUrl": "https://baseappholymarket.xyz/api/og"
+        "heroImageUrl": "https://baseappholymarket.xyz/icon.png"
     },
     "name": "HolyMarket",
     "iconUrl": "https://baseappholymarket.xyz/icon.png",
     "webhookUrl": "https://baseappholymarket.xyz/api/farcaster/webhook",
     "ogTitle": "HolyMarket",
     "ogDescription": "Trade your beliefs on Base",
-    "ogImageUrl": "https://baseappholymarket.xyz/api/og",
+    "ogImageUrl": "https://baseappholymarket.xyz/icon.png",
     "subtitle": "Trade your beliefs on Base",
     "description": "HolyMarket: The first decentralized prediction market on Base. Trade your beliefs on future events with crypto.",
     "screenshotUrls": [
@@ -71,6 +71,6 @@
         "base"
     ],
     "tagline": "HolyMarket: Bet on Base",
-    "heroImageUrl": "https://baseappholymarket.xyz/api/og",
+    "heroImageUrl": "https://baseappholymarket.xyz/icon.png",
     "castShareUrl": "https://baseappholymarket.xyz/"
 }

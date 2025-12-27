@@ -68,7 +68,7 @@ export async function GET() {
         primaryCategory: "finance",
         tags: ["crypto", "betting", "prediction", "base"],
         tagline: "HolyMarket: Bet on Base",
-        heroImageUrl: `${baseUrl}/api/og`,
+        heroImageUrl: `${baseUrl}/icon.png`,
         castShareUrl: baseUrl,
     };
 
