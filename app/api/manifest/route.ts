@@ -1,17 +1,18 @@
 import { NextResponse } from "next/server";
 
-export async function GET(req: Request) {
-    const host = req.headers.get("host") || "baseappholymarket.xyz";
-    const domain = host.includes("www.") ? "baseappholymarket.xyz" : host; // Keep apex domain for payload consistency
-    const baseUrl = `https://${host}`;
-    const officialLogoUrl = `https://baseappholymarket.xyz/icon.png`;
+export async function GET() {
+    const domain = "baseappholymarket.xyz";
+    const baseUrl = `https://${domain}`;
+    const officialLogoUrl = `${baseUrl}/icon.png`;
+    const webhookUrl = `${baseUrl}/api/farcaster/webhook`;
 
     // Hardcoded correct values for baseappholymarket.xyz to bypass incorrect Vercel Env Vars
     const header = "eyJmaWQiOjEzOTU5NjEsInR5cGUiOiJhdXRoIiwia2V5IjoiMHgzNWU5OEZiQTZmNTAzNEQyNTJhNzczRjM2ZDA1OWFlMUE1NjQwOTgwIn0";
     const payload = "eyJkb21haW4iOiJiYXNlYXBwaG9seW1hcmtldC54eXoifQ";
     const signature = "aJXo93UhDyy7/hJGiamw2jzqKkIN02Mb5fYsayIa8FoG97V+L0MJlVNlduj5M4rSLVO409qM12GjQZU5dFr2DRs=";
 
-    const webhookUrl = `${baseUrl}/api/farcaster/webhook`;
+    const appDescription = "HolyMarket is a decentralized prediction market where you can bet on future events using crypto.";
+    const appSubtitle = "Trade your beliefs";
 
     const manifest = {
         accountAssociation: {
@@ -40,11 +41,12 @@ export async function GET(req: Request) {
             splashImageUrl: officialLogoUrl,
             splashBackgroundColor: "#020617",
             webhookUrl: webhookUrl,
-            description: "HolyMarket is a decentralized prediction market where you can bet on future events using crypto.",
-            subtitle: "Trade your beliefs",
+            description: appDescription,
+            subtitle: appSubtitle,
             screenshotUrls: [officialLogoUrl],
             primaryCategory: "finance",
             tags: ["crypto", "betting", "prediction", "base"],
+            heroImageUrl: officialLogoUrl,
         },
         // Root level fields for various Farcaster tool versions
         name: "HolyMarket",
@@ -53,8 +55,8 @@ export async function GET(req: Request) {
         ogTitle: "HolyMarket",
         ogDescription: "Trade your beliefs on Base",
         ogImageUrl: officialLogoUrl,
-        subtitle: "Trade your beliefs",
-        description: "HolyMarket is a decentralized prediction market where you can bet on future events using crypto.",
+        subtitle: appSubtitle,
+        description: appDescription,
         screenshotUrls: [officialLogoUrl],
         primaryCategory: "finance",
         tags: ["crypto", "betting", "prediction", "base"],
@@ -73,7 +75,7 @@ export async function GET(req: Request) {
             "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
             "Pragma": "no-cache",
             "Expires": "0",
-            "X-Farcaster-Fix": "v12-final-cors-v3",
+            "X-Farcaster-Fix": "v12-final-cors-v4",
         },
     });
 }

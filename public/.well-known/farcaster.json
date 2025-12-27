@@ -36,7 +36,8 @@
             "betting",
             "prediction",
             "base"
-        ]
+        ],
+        "heroImageUrl": "https://baseappholymarket.xyz/icon.png"
     },
     "name": "HolyMarket",
     "iconUrl": "https://baseappholymarket.xyz/icon.png",
