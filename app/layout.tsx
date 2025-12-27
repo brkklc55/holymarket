@@ -4,27 +4,30 @@ import FarcasterProvider from "./components/FarcasterProvider";
 import TermsGate from "./components/TermsGate";
 import SplashGate from "./components/SplashGate";
 
+const defaultUrl = "https://baseappholymarket.xyz";
+const baseUrl = process.env.NEXT_PUBLIC_URL || defaultUrl;
+
 export const metadata: Metadata = {
   title: "HolyMarket",
   applicationName: "HolyMarket",
-  description: "Decentralized prediction markets on Base Sepolia",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_URL || "https://baseappholymarket.xyz"),
+  description: "HolyMarket: The first decentralized prediction market on Base. Trade your beliefs.",
+  metadataBase: new URL(baseUrl),
   icons: {
-    icon: [{ url: "/icon.png?v=2", sizes: "any" }],
-    shortcut: ["/icon.png?v=2"],
-    apple: [{ url: "/icon.png?v=2", sizes: "180x180", type: "image/png" }],
+    icon: [{ url: `${baseUrl}/icon.png?v=2`, sizes: "any" }],
+    shortcut: [`${baseUrl}/icon.png?v=2`],
+    apple: [{ url: `${baseUrl}/icon.png?v=2`, sizes: "180x180", type: "image/png" }],
   },
 
   openGraph: {
     title: "HolyMarket",
-    description: "Decentralized prediction markets on Base Sepolia",
+    description: "HolyMarket: The first decentralized prediction market on Base. Trade your beliefs.",
     url: "/",
     siteName: "HolyMarket",
     images: [
       {
-        url: "/icon.png",
-        width: 412,
-        height: 412,
+        url: `${baseUrl}/api/og`,
+        width: 1200,
+        height: 630,
         alt: "HolyMarket",
       },
     ],
@@ -33,8 +36,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "HolyMarket",
-    description: "Decentralized prediction markets on Base Sepolia",
-    images: ["/icon.png"],
+    description: "HolyMarket: The first decentralized prediction market on Base. Trade your beliefs.",
+    images: [`${baseUrl}/api/og`],
   },
   manifest: "/manifest.json?v=8",
   appleWebApp: {

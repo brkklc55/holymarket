@@ -11,8 +11,8 @@ export async function GET() {
     const payload = "eyJkb21haW4iOiJiYXNlYXBwaG9seW1hcmtldC54eXoifQ";
     const signature = "aJXo93UhDyy7/hJGiamw2jzqKkIN02Mb5fYsayIa8FoG97V+L0MJlVNlduj5M4rSLVO409qM12GjQZU5dFr2DRs=";
 
-    const appDescription = "HolyMarket is a decentralized prediction market where you can bet on future events using crypto.";
-    const appSubtitle = "Trade your beliefs";
+    const appDescription = "HolyMarket: The first decentralized prediction market on Base. Trade your beliefs on future events with crypto.";
+    const appSubtitle = "Trade your beliefs on Base";
 
     const manifest = {
         accountAssociation: {

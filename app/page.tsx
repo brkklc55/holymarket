@@ -1,33 +1,35 @@
 
 import type { Metadata } from 'next';
 
-const baseUrl = process.env.NEXT_PUBLIC_URL;
-const appOrigin = baseUrl || "";
+const baseUrl = process.env.NEXT_PUBLIC_URL || 'https://baseappholymarket.xyz';
+const appOrigin = baseUrl;
 const shareImagePath = "/api/og";
+const fullShareImageUrl = `${appOrigin}${shareImagePath}`;
 
 const frameMetadata: Record<string, string> = {
   'fc:frame': 'vNext',
-  'fc:frame:image': appOrigin ? `${appOrigin}${shareImagePath}` : `https://baseappholymarket.xyz${shareImagePath}`,
+  'fc:frame:image': fullShareImageUrl,
   'fc:frame:image:aspect_ratio': '1.91:1',
-  ...(baseUrl ? { 'fc:frame:post_url': `${baseUrl}/api/frame` } : {}),
+  'fc:frame:post_url': `${appOrigin}/api/frame`,
   'fc:frame:button:1': 'Enter HolyMarket',
 };
 
-const manifestUrl = `https://baseappholymarket.xyz/api/manifest`;
+const manifestUrl = `${appOrigin}/api/manifest`;
 
 export const metadata: Metadata = {
   title: 'HolyMarket',
-  description: 'Prediction Market on Farcaster',
+  description: 'HolyMarket: The first decentralized prediction market on Base. Trade your beliefs.',
   openGraph: {
     title: 'HolyMarket',
-    description: 'Prediction Market on Farcaster',
-    images: appOrigin ? [`${appOrigin}${shareImagePath}`] : [shareImagePath],
+    description: 'HolyMarket: The first decentralized prediction market on Base. Trade your beliefs.',
+    images: [fullShareImageUrl],
+    url: appOrigin,
   },
   twitter: {
     card: 'summary_large_image',
     title: 'HolyMarket',
-    description: 'Prediction Market on Farcaster',
-    images: appOrigin ? [`${appOrigin}${shareImagePath}`] : [shareImagePath],
+    description: 'HolyMarket: The first decentralized prediction market on Base. Trade your beliefs.',
+    images: [fullShareImageUrl],
   },
   other: {
     ...frameMetadata,
