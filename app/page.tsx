@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 
 const baseUrl = (process.env.NEXT_PUBLIC_URL || 'https://baseappholymarket.xyz').replace(/\/?$/, '');
 const appOrigin = baseUrl + '/';
-const fullShareImageUrl = `${baseUrl}/holy-final-v22.png`;
-const frameImageUrl = `${baseUrl}/holy-final-v22.png`;
+const fullShareImageUrl = `${baseUrl}/v23-pırlanta.png`;
+const frameImageUrl = `${baseUrl}/v23-pırlanta.png`;
 
 const frameMetadata: Record<string, string> = {
   'fc:frame': 'vNext',
@@ -13,14 +13,14 @@ const frameMetadata: Record<string, string> = {
   'fc:frame:button:1': 'Enter HolyMarket',
 };
 
-const manifestUrl = `${baseUrl}/.well-known/farcaster.json?v=22`;
+const manifestUrl = `${baseUrl}/.well-known/farcaster-v23.json`;
 
 export const metadata: Metadata = {
   title: 'HolyMarket',
-  description: 'Trade your beliefs on Base. Decentralized and Secure.',
+  description: 'HolyMarket: Trade your beliefs on Base. Secure and Trustless.',
   openGraph: {
     title: 'HolyMarket',
-    description: 'Trade your beliefs on Base. Decentralized and Secure.',
+    description: 'HolyMarket: Trade your beliefs on Base. Secure and Trustless.',
     images: [
       {
         url: frameImageUrl,
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'HolyMarket',
-    description: 'Trade your beliefs on Base. Decentralized and Secure.',
+    description: 'HolyMarket: Trade your beliefs on Base. Secure and Trustless.',
     images: [frameImageUrl],
   },
   other: {
