@@ -3,8 +3,8 @@ import type { Metadata } from 'next';
 
 const baseUrl = process.env.NEXT_PUBLIC_URL || 'https://baseappholymarket.xyz';
 const appOrigin = baseUrl;
-const fullShareImageUrl = `https://placehold.co/1200x800/020617/white?text=HolyMarket+MiniApp+3:2`; // 3:2
-const frameImageUrl = `https://placehold.co/1200x630/020617/white?text=HolyMarket+Frame+1.91:1`; // 1.91:1
+const fullShareImageUrl = `${appOrigin}/embed.png`; // 3:2 shorter path
+const frameImageUrl = `${appOrigin}/og.png`; // 1.91:1 shorter path
 
 const frameMetadata: Record<string, string> = {
   'fc:frame': 'vNext',
@@ -18,17 +18,17 @@ const manifestUrl = `${appOrigin}/api/manifest`;
 
 export const metadata: Metadata = {
   title: 'HolyMarket',
-  description: 'HolyMarket: The first decentralized prediction market on Base. Trade your beliefs.',
+  description: 'Trade your beliefs on Base.',
   openGraph: {
     title: 'HolyMarket',
-    description: 'HolyMarket: The first decentralized prediction market on Base. Trade your beliefs.',
+    description: 'Trade your beliefs on Base.',
     images: [
       {
         url: frameImageUrl,
         width: 1200,
         height: 630,
         type: 'image/png',
-        alt: 'HolyMarket Preview',
+        alt: 'HolyMarket',
       },
     ],
     url: appOrigin,
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'HolyMarket',
-    description: 'HolyMarket: The first decentralized prediction market on Base. Trade your beliefs.',
+    description: 'Trade your beliefs on Base.',
     images: [frameImageUrl],
   },
   other: {
