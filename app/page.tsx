@@ -3,11 +3,12 @@ import type { Metadata } from 'next';
 
 const baseUrl = process.env.NEXT_PUBLIC_URL || 'https://baseappholymarket.xyz';
 const appOrigin = baseUrl;
-const fullShareImageUrl = `${appOrigin}/icon.png`;
+const fullShareImageUrl = `${appOrigin}/miniapp-embed.png`; // 3:2
+const frameImageUrl = `${appOrigin}/og-frame.png`; // 1.91:1
 
 const frameMetadata: Record<string, string> = {
   'fc:frame': 'vNext',
-  'fc:frame:image': fullShareImageUrl,
+  'fc:frame:image': frameImageUrl,
   'fc:frame:image:aspect_ratio': '1.91:1',
   'fc:frame:post_url': `${appOrigin}/api/frame`,
   'fc:frame:button:1': 'Enter HolyMarket',
@@ -23,7 +24,7 @@ export const metadata: Metadata = {
     description: 'HolyMarket: The first decentralized prediction market on Base. Trade your beliefs.',
     images: [
       {
-        url: fullShareImageUrl,
+        url: frameImageUrl,
         width: 1200,
         height: 630,
         type: 'image/png',
@@ -38,7 +39,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'HolyMarket',
     description: 'HolyMarket: The first decentralized prediction market on Base. Trade your beliefs.',
-    images: [fullShareImageUrl],
+    images: [frameImageUrl],
   },
   other: {
     ...frameMetadata,
@@ -54,7 +55,7 @@ export const metadata: Metadata = {
           url: appOrigin,
         },
       },
-      splashImageUrl: `${appOrigin}/icon.png`,
+      splashImageUrl: `${appOrigin}/splash.png`,
       splashBackgroundColor: "#020617",
     }),
   },
