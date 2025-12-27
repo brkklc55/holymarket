@@ -97,24 +97,11 @@ export default function MarketView() {
     const needsNetworkSwitch = isConnected && chainId !== baseSepolia.id;
 
     const getShareBaseUrl = () => {
-        const miniappUrl = process.env.NEXT_PUBLIC_MINIAPP_URL;
-        if (miniappUrl) return miniappUrl.replace(/\/$/, "");
-
-        if (typeof window !== "undefined") {
-            const origin = window.location.origin;
-            const pathname = window.location.pathname;
-
-            // If opened inside the Farcaster/Base miniapp wrapper, prefer sharing the wrapper URL
-            // so shared links look like farcaster.xyz/miniapps/... instead of the underlying app host.
-            if (origin.includes("farcaster.xyz") || origin.includes("warpcast.com")) {
-                return `${origin}${pathname}`.replace(/\/$/, "");
-            }
-        }
-
+        // Always use our own domain for sharing so OG images work correctly
         const envBase = process.env.NEXT_PUBLIC_URL;
         if (envBase) return envBase.replace(/\/$/, "");
-        if (typeof window !== "undefined") return window.location.origin;
-        return "";
+        if (typeof window !== "undefined") return window.location.origin.replace(/\/$/, "");
+        return "https://baseappholymarket.xyz";
     };
 
     const getMarketShareUrl = (forcedChoice?: "YES" | "NO") => {
