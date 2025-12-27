@@ -12,7 +12,7 @@ const frameMetadataList: Record<string, string> = {
   'fc:frame:button:1': 'Enter HolyMarket',
 };
 
-const manifestUrl = `${baseUrl}/.well-known/holy-standard-v31.json`;
+const manifestUrl = `${baseUrl}/.well-known/farcaster.json`;
 
 export const metadata: Metadata = {
   title: 'HolyMarket',
