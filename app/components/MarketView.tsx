@@ -2283,39 +2283,24 @@ export default function MarketView() {
 
             {
                 sharePromptOpen && sharePromptTxHash && sharePromptAmountBnb && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm px-4">
-                        <div className="w-full max-w-sm premium-card p-10 bg-slate-950 border border-white/10 relative overflow-hidden animate-in zoom-in duration-300">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 blur-3xl -mr-16 -mt-16" />
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md px-4 animate-in fade-in duration-300">
+                        <div className="w-full max-w-sm premium-card p-10 bg-slate-950 border border-white/10 relative overflow-hidden animate-in zoom-in duration-300 shadow-[0_0_100px_rgba(59,130,246,0.1)]">
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 blur-[100px] -mr-32 -mt-32" />
 
-                            <div className="w-20 h-20 rounded-3xl bg-blue-500 shadow-[0_0_40px_rgba(59,130,246,0.3)] mx-auto flex items-center justify-center text-white mb-8">
-                                <Sparkles size={40} />
+                            <div className="w-24 h-24 rounded-[2.5rem] bg-blue-500 shadow-[0_0_60px_rgba(59,130,246,0.4)] mx-auto flex items-center justify-center text-white mb-10">
+                                <Sparkles size={48} className="animate-pulse" />
                             </div>
 
-                            <h3 className="text-2xl font-black text-white text-center mb-2">Claim 2X Boost</h3>
-                            <p className="text-[11px] text-slate-400 text-center leading-relaxed font-medium mb-8">
-                                Share your market prediction with the community to double your <span className="text-white font-bold">PTS</span> allocation.
+                            <h3 className="text-3xl font-black text-white text-center mb-3 tracking-tighter">CLAIM BOOST</h3>
+                            <p className="text-[13px] text-slate-400 text-center leading-relaxed font-bold mb-10 max-w-[240px] mx-auto uppercase tracking-wider">
+                                Share your prediction to <span className="text-blue-400">Double</span> your PTS allocation.
                             </p>
 
-                            <div className="space-y-3 mb-8">
+                            <div className="space-y-4 mb-8">
                                 <button
                                     type="button"
                                     disabled={shareBoostBusy}
-                                    className="w-full premium-btn py-4 bg-white text-slate-950 hover:bg-slate-100 flex items-center justify-center gap-2 group disabled:grayscale"
-                                    onClick={async () => {
-                                        const text = `I just predicted ${sharePromptChoice} on HolyMarket: ${market?.question || ""}`;
-                                        const url = getMarketShareUrl() || window.location.href;
-                                        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`);
-                                        await claimShareBoost(sharePromptTxHash, sharePromptAmountBnb);
-                                        setSharePromptOpen(false);
-                                    }}
-                                >
-                                    <span className="text-xs font-black uppercase tracking-widest">Share on X</span>
-                                </button>
-
-                                <button
-                                    type="button"
-                                    disabled={shareBoostBusy}
-                                    className="w-full premium-btn py-4 bg-white/[0.05] text-white border border-white/10 hover:bg-white/[0.1] disabled:grayscale"
+                                    className="w-full premium-btn py-4 bg-blue-500 text-white shadow-lg shadow-blue-500/20 hover:bg-blue-600 flex items-center justify-center gap-2 group disabled:grayscale active:scale-95 transition-all"
                                     onClick={async () => {
                                         const text = `Predicting ${sharePromptChoice} on HolyMarket: ${market?.question || ""}`;
                                         const url = getMarketShareUrl() || window.location.href;
@@ -2324,7 +2309,7 @@ export default function MarketView() {
                                         setSharePromptOpen(false);
                                     }}
                                 >
-                                    <span className="text-xs font-black uppercase tracking-widest text-blue-400">Share on Warpcast</span>
+                                    <span className="text-xs font-black uppercase tracking-widest text-white">Share on Warpcast</span>
                                 </button>
                             </div>
 
