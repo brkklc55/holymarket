@@ -11,10 +11,8 @@
         "homeUrl": "https://baseappholymarket.xyz/",
         "imageUrl": "https://placehold.co/1200x630/020617/white?text=HolyMarket+Frame+1.91:1",
         "buttonTitle": "Launch App",
-        "splashImageUrl": "https://baseappholymarket.xyz/icon.png",
-        "splashBackgroundColor": "#020617",
         "webhookUrl": "https://baseappholymarket.xyz/api/farcaster/webhook",
-        "description": "HolyMarket: The first decentralized prediction market on Base. Trade your beliefs on future events with crypto.",
+        "description": "The first decentralized prediction market on Base. Trade your beliefs.",
         "subtitle": "Trade your beliefs on Base",
         "screenshotUrls": [
             "https://baseappholymarket.xyz/icon.png"
@@ -35,10 +33,8 @@
         "homeUrl": "https://baseappholymarket.xyz/",
         "imageUrl": "https://placehold.co/1200x800/020617/white?text=HolyMarket+MiniApp+3:2",
         "buttonTitle": "Launch App",
-        "splashImageUrl": "https://baseappholymarket.xyz/icon.png",
-        "splashBackgroundColor": "#020617",
         "webhookUrl": "https://baseappholymarket.xyz/api/farcaster/webhook",
-        "description": "HolyMarket: The first decentralized prediction market on Base. Trade your beliefs on future events with crypto.",
+        "description": "The first decentralized prediction market on Base. Trade your beliefs.",
         "subtitle": "Trade your beliefs on Base",
         "screenshotUrls": [
             "https://baseappholymarket.xyz/icon.png"
@@ -59,7 +55,7 @@
     "ogDescription": "Trade your beliefs on Base",
     "ogImageUrl": "https://placehold.co/1200x630/020617/white?text=HolyMarket+OG+1.91:1",
     "subtitle": "Trade your beliefs on Base",
-    "description": "HolyMarket: The first decentralized prediction market on Base. Trade your beliefs on future events with crypto.",
+    "description": "The first decentralized prediction market on Base. Trade your beliefs.",
     "screenshotUrls": [
         "https://baseappholymarket.xyz/icon.png"
     ],

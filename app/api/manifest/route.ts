@@ -11,7 +11,7 @@ export async function GET() {
     const payload = "eyJkb21haW4iOiJiYXNlYXBwaG9seW1hcmtldC54eXoifQ";
     const signature = "aJXo93UhDyy7/hJGiamw2jzqKkIN02Mb5fYsayIa8FoG97V+L0MJlVNlduj5M4rSLVO409qM12GjQZU5dFr2DRs=";
 
-    const appDescription = "HolyMarket: The first decentralized prediction market on Base. Trade your beliefs on future events with crypto.";
+    const appDescription = "The first decentralized prediction market on Base. Trade your beliefs.";
     const appSubtitle = "Trade your beliefs on Base";
 
     const manifest = {
@@ -27,8 +27,6 @@ export async function GET() {
             homeUrl: baseUrl + "/",
             imageUrl: `https://placehold.co/1200x630/020617/white?text=HolyMarket+Frame+1.91:1`,
             buttonTitle: "Launch App",
-            splashImageUrl: `${baseUrl}/splash.png`,
-            splashBackgroundColor: "#020617",
             webhookUrl: webhookUrl,
             description: appDescription,
             subtitle: appSubtitle,
@@ -44,8 +42,6 @@ export async function GET() {
             homeUrl: baseUrl + "/",
             imageUrl: `https://placehold.co/1200x800/020617/white?text=HolyMarket+MiniApp+3:2`,
             buttonTitle: "Launch App",
-            splashImageUrl: `${baseUrl}/splash.png`,
-            splashBackgroundColor: "#020617",
             webhookUrl: webhookUrl,
             description: appDescription,
             subtitle: appSubtitle,

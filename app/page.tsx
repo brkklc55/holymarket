@@ -55,7 +55,6 @@ export const metadata: Metadata = {
           url: appOrigin,
         },
       },
-      splashImageUrl: `${appOrigin}/splash.png`,
       splashBackgroundColor: "#020617",
     }),
   },
