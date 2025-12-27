@@ -25,6 +25,7 @@ export async function GET() {
             buttonTitle: "Launch App",
             splashImageUrl: officialLogoUrl,
             splashBackgroundColor: "#020617",
+            webhookUrl: `${baseUrl}/api/webhook`,
         },
         miniapp: {
             version: "1",
@@ -36,6 +37,19 @@ export async function GET() {
             splashImageUrl: officialLogoUrl,
             splashBackgroundColor: "#020617",
         },
+        // v2 specific manifest fields
+        webhookUrl: `${baseUrl}/api/webhook`,
+        ogTitle: "HolyMarket",
+        ogDescription: "Prediction Market on Base",
+        ogImageUrl: officialLogoUrl,
+        subtitle: "Trade your beliefs",
+        description: "HolyMarket is a decentralized prediction market where you can bet on future events using crypto.",
+        screenshotUrls: [officialLogoUrl],
+        primaryCategory: "finance",
+        tags: ["crypto", "betting", "prediction", "base"],
+        tagline: "HolyMarket: Bet on Base",
+        herolImageUrl: officialLogoUrl,
+        castShareUrl: baseUrl,
     };
 
     return new NextResponse(JSON.stringify(manifest), {
@@ -45,7 +59,7 @@ export async function GET() {
             "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
             "Pragma": "no-cache",
             "Expires": "0",
-            "X-Farcaster-Fix": "v12-final-hardcode",
+            "X-Farcaster-Fix": "v12-final-hardcode-v2",
         },
     });
 }

@@ -13,6 +13,8 @@ const frameMetadata: Record<string, string> = {
   'fc:frame:button:1': 'Enter HolyMarket',
 };
 
+const manifestUrl = appOrigin ? `${appOrigin}/api/manifest` : `https://baseappholymarket.xyz/api/manifest`;
+
 export const metadata: Metadata = {
   title: 'HolyMarket',
   description: 'Prediction Market on Farcaster',
@@ -29,6 +31,8 @@ export const metadata: Metadata = {
   },
   other: {
     ...frameMetadata,
+    "fc:frame:v2": "true",
+    "fc:frame:manifest": manifestUrl,
   },
 };
 
