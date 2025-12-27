@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 
 const baseUrl = (process.env.NEXT_PUBLIC_URL || 'https://baseappholymarket.xyz').replace(/\/?$/, '');
 const appOrigin = baseUrl + '/';
-const fullShareImageUrl = `${baseUrl}/embed.png?v=13`;
-const frameImageUrl = `${baseUrl}/og.png?v=13`;
+const fullShareImageUrl = `${baseUrl}/embed.png?v=15`;
+const frameImageUrl = `${baseUrl}/og.png?v=15`;
 
 const frameMetadata: Record<string, string> = {
   'fc:frame': 'vNext',
@@ -13,7 +13,7 @@ const frameMetadata: Record<string, string> = {
   'fc:frame:button:1': 'Enter HolyMarket',
 };
 
-const manifestUrl = `${baseUrl}/.well-known/farcaster.json?v=13`;
+const manifestUrl = `${baseUrl}/.well-known/farcaster.json?v=15`;
 
 export const metadata: Metadata = {
   title: 'HolyMarket',
