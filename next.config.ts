@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 import path from "path";
 
-const nextConfig: NextConfig = {
+const nextConfig = {
   outputFileTracingRoot: path.join(__dirname),
   eslint: {
     ignoreDuringBuilds: true,
