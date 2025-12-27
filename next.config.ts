@@ -54,7 +54,12 @@ const nextConfig = {
         ],
       },
     ];
-  },
-};
+  async rewrites() {
+      return [
+        { source: "/i", destination: "/icon.png" },
+        { source: "/farcaster.json", destination: "/.well-known/farcaster.json" },
+      ];
+    },
+  };
 
-export default nextConfig;
+  export default nextConfig;

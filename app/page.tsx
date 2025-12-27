@@ -2,18 +2,17 @@ import type { Metadata } from 'next';
 
 const baseUrl = (process.env.NEXT_PUBLIC_URL || 'https://baseappholymarket.xyz').replace(/\/?$/, '');
 const appOrigin = baseUrl + '/';
-const fullShareImageUrl = `${baseUrl}/pirlanta-v30.png`;
-const frameImageUrl = `${baseUrl}/pirlanta-v30.png`;
+const imageUrl = `${baseUrl}/og.png`;
 
-const frameMetadata: Record<string, string> = {
+const frameMetadataList: Record<string, string> = {
   'fc:frame': 'vNext',
-  'fc:frame:image': frameImageUrl,
+  'fc:frame:image': imageUrl,
   'fc:frame:image:aspect_ratio': '1.91:1',
   'fc:frame:post_url': `${baseUrl}/api/frame`,
   'fc:frame:button:1': 'Enter HolyMarket',
 };
 
-const manifestUrl = `${baseUrl}/.well-known/farcaster.json?v=30`;
+const manifestUrl = `${baseUrl}/.well-known/holy-standard-v31.json`;
 
 export const metadata: Metadata = {
   title: 'HolyMarket',
@@ -23,7 +22,7 @@ export const metadata: Metadata = {
     description: 'HolyMarket: Trade your beliefs on Base.',
     images: [
       {
-        url: frameImageUrl,
+        url: imageUrl,
         width: 1200,
         height: 630,
         type: 'image/png',
@@ -38,10 +37,10 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'HolyMarket',
     description: 'HolyMarket: Trade your beliefs on Base.',
-    images: [frameImageUrl],
+    images: [imageUrl],
   },
   other: {
-    ...frameMetadata,
+    ...frameMetadataList,
     "fc:frame:v2": "true",
     "fc:frame:manifest": manifestUrl,
   },
