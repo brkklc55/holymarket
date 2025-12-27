@@ -97,10 +97,7 @@ export default function MarketView() {
     const needsNetworkSwitch = isConnected && chainId !== baseSepolia.id;
 
     const getShareBaseUrl = () => {
-        // Always use our own domain for sharing so OG images work correctly
-        const envBase = process.env.NEXT_PUBLIC_URL;
-        if (envBase) return envBase.replace(/\/$/, "");
-        if (typeof window !== "undefined") return window.location.origin.replace(/\/$/, "");
+        // ALWAYS use our own domain - never the farcaster wrapper
         return "https://baseappholymarket.xyz";
     };
 
