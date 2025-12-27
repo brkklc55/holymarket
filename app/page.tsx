@@ -44,6 +44,19 @@ export const metadata: Metadata = {
     ...frameMetadata,
     "fc:frame:v2": "true",
     "fc:frame:manifest": manifestUrl,
+    "fc:miniapp": JSON.stringify({
+      version: "1",
+      imageUrl: fullShareImageUrl,
+      button: {
+        title: "Launch App",
+        action: {
+          type: "launch_frame",
+          url: appOrigin,
+        },
+      },
+      splashImageUrl: `${appOrigin}/icon.png`,
+      splashBackgroundColor: "#020617",
+    }),
   },
 };
 
