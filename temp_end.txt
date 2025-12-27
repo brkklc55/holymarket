@@ -1,0 +1,10 @@
+                                    >
+                                        Skip Bonus
+                                    </button>
+                                </div>
+                            </div>
+                        ) : null}
+                    </div>
+    </div>
+            );
+}
