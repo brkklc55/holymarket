@@ -5,7 +5,7 @@ import { createPublicClient, http, parseEther, createWalletClient, custom, forma
 import { baseSepolia } from "viem/chains";
 import { useAccount, useChainId } from "wagmi";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { TrendingUp, Share2, Twitter, Info, Sparkles } from "lucide-react";
+import { TrendingUp, Share2, Twitter, Info, Sparkles, Search } from "lucide-react";
 import { sdk } from "@farcaster/miniapp-sdk";
 import { PREDICTION_MARKET_ADDRESS, PREDICTION_MARKET_ABI } from "../constants";
 import { useToast } from "./ui/ToastProvider";
@@ -1394,98 +1394,101 @@ export default function MarketView() {
 
                             return (
                                 <>
-                                    <div className="flex flex-col md:flex-row md:items-center gap-4 mb-6">
-                                        <div className="flex-1 relative">
-                                            <input
-                                                value={marketSearch}
-                                                onChange={(e) => setMarketSearch(e.target.value)}
-                                                placeholder="Search by question..."
-                                                className="w-full premium-input pl-10 pr-4 py-2.5 text-sm"
-                                            />
-                                            <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500">
-                                                <Info size={16} />
+                                    <div className="p-6 rounded-[32px] bg-white/[0.02] border border-white/5 shadow-2xl mb-8 relative overflow-hidden group">
+                                        <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 blur-[100px] -mr-32 -mt-32 transition-all group-hover:bg-blue-500/10" />
+
+                                        <div className="flex flex-col md:flex-row md:items-center gap-4 mb-6 relative z-10">
+                                            <div className="flex-1 relative">
+                                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+                                                <input
+                                                    value={marketSearch}
+                                                    onChange={(e) => setMarketSearch(e.target.value)}
+                                                    placeholder="Search by question..."
+                                                    style={{ paddingLeft: '3rem' }}
+                                                    className="w-full premium-input pr-4 py-2.5 text-sm"
+                                                />
+                                            </div>
+                                            <div className="flex flex-wrap items-center gap-2">
+                                                {[
+                                                    { id: "all", label: "ALL" },
+                                                    { id: "live", label: "LIVE" },
+                                                    { id: "ended", label: "ENDED" },
+                                                    { id: "cancelled", label: "CANCELLED" },
+                                                ].map((btn) => (
+                                                    <button
+                                                        key={btn.id}
+                                                        type="button"
+                                                        onClick={() => setMarketFilter(btn.id as any)}
+                                                        className={`px-3 py-2 rounded-xl text-[10px] font-black tracking-wider transition-all border ${marketFilter === btn.id ? "bg-blue-500/20 text-blue-400 border-blue-500/40 shadow-[0_0_20px_rgba(59,130,246,0.1)]" : "bg-white/5 text-slate-500 border-white/5 hover:border-white/10 hover:text-slate-300"}`}
+                                                    >
+                                                        {btn.label}
+                                                    </button>
+                                                ))}
                                             </div>
                                         </div>
-                                        <div className="flex flex-wrap items-center gap-2">
-                                            {[
-                                                { id: "all", label: "ALL" },
-                                                { id: "live", label: "LIVE" },
-                                                { id: "ended", label: "ENDED" },
-                                                { id: "cancelled", label: "CANCELLED" },
-                                            ].map((btn) => (
-                                                <button
-                                                    key={btn.id}
-                                                    type="button"
-                                                    onClick={() => setMarketFilter(btn.id as any)}
-                                                    className={`px-3 py-1.5 rounded-lg text-[10px] font-black tracking-wider transition-all border ${marketFilter === btn.id ? "bg-blue-500/10 text-blue-400 border-blue-500/30" : "bg-slate-900/40 text-slate-500 border-slate-800 hover:border-slate-700 hover:text-slate-300"}`}
-                                                >
-                                                    {btn.label}
-                                                </button>
-                                            ))}
-                                        </div>
-                                    </div>
 
-                                    <div className="flex gap-4 overflow-x-auto pb-4 mb-8 no-scrollbar touch-pan-x">
-                                        {filtered.map((m) => (
-                                            <button
-                                                key={m.id.toString()}
-                                                onClick={() => setSelectedMarketId(m.id)}
-                                                className={`flex-shrink-0 w-52 p-4 rounded-[20px] border transition-all text-left relative overflow-hidden group ${selectedMarketId === m.id ? "bg-blue-500/5 border-blue-500/40 ring-1 ring-blue-500/20" : "bg-white/[0.02] border-white/5 hover:border-white/20"}`}
-                                            >
-                                                {selectedMarketId === m.id && (
-                                                    <div className="absolute top-0 left-0 w-1 h-full bg-blue-500" />
-                                                )}
-                                                <div className="flex justify-between items-center mb-3">
-                                                    <span
-                                                        className={`text-[8px] font-black px-1.5 py-0.5 rounded uppercase tracking-tighter border ${m.cancelled
-                                                            ? "bg-amber-500/10 text-amber-500 border-amber-500/10"
-                                                            : m.resolved
-                                                                ? "bg-slate-800/50 text-slate-500 border-slate-700/50"
-                                                                : "bg-emerald-500/10 text-emerald-500 border-emerald-500/10"
-                                                            }`}
-                                                    >
-                                                        {m.cancelled ? "CANCELLED" : m.resolved ? "ENDED" : "LIVE"}
-                                                    </span>
-                                                    <span className="text-[9px] font-mono text-slate-600 font-bold">#{m.id.toString()}</span>
-                                                </div>
-                                                <p className="text-xs font-bold text-slate-200 line-clamp-2 mb-4 min-h-[2.5rem] leading-snug group-hover:text-white transition-colors">
-                                                    {m.question}
-                                                </p>
-                                                <div className="space-y-3">
-                                                    <div className="flex justify-between items-end">
-                                                        <div className="flex flex-col">
-                                                            <span className="text-[8px] text-slate-500 font-bold uppercase tracking-widest mb-0.5">Total Volume</span>
-                                                            <span className="text-xs font-black text-blue-400">
-                                                                {(Number(m.yesPool + m.noPool) / 1e18).toFixed(3)} <span className="text-[9px] opacity-70">ETH</span>
-                                                            </span>
-                                                        </div>
-                                                        {m.resolved && (
-                                                            <div className="text-right">
-                                                                <span className="text-[8px] text-slate-500 font-bold uppercase tracking-widest mb-0.5">Outcome</span>
-                                                                <span className={`text-[10px] font-black uppercase ${m.outcome ? "text-emerald-500" : "text-rose-500"}`}>
-                                                                    {m.outcome ? "YES" : "NO"}
+                                        <div className="flex gap-4 overflow-x-auto pb-2 no-scrollbar touch-pan-x relative z-10">
+                                            {filtered.map((m) => (
+                                                <button
+                                                    key={m.id.toString()}
+                                                    onClick={() => setSelectedMarketId(m.id)}
+                                                    className={`flex-shrink-0 w-56 p-5 rounded-[24px] border transition-all text-left relative overflow-hidden group/card ${selectedMarketId === m.id ? "bg-blue-500/10 border-blue-500/40 shadow-xl" : "bg-white/[0.03] border-white/5 hover:border-white/20"}`}
+                                                >
+                                                    {selectedMarketId === m.id && (
+                                                        <div className="absolute top-0 left-0 w-1.5 h-full bg-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.5)]" />
+                                                    )}
+                                                    <div className="flex justify-between items-center mb-3">
+                                                        <span
+                                                            className={`text-[8px] font-black px-1.5 py-0.5 rounded uppercase tracking-tighter border ${m.cancelled
+                                                                ? "bg-amber-500/10 text-amber-500 border-amber-500/10"
+                                                                : m.resolved
+                                                                    ? "bg-slate-800/50 text-slate-500 border-slate-700/50"
+                                                                    : "bg-emerald-500/10 text-emerald-500 border-emerald-500/10"
+                                                                }`}
+                                                        >
+                                                            {m.cancelled ? "CANCELLED" : m.resolved ? "ENDED" : "LIVE"}
+                                                        </span>
+                                                        <span className="text-[9px] font-mono text-slate-600 font-bold">#{m.id.toString()}</span>
+                                                    </div>
+                                                    <p className="text-xs font-bold text-slate-200 line-clamp-2 mb-4 min-h-[2.5rem] leading-snug group-hover:text-white transition-colors">
+                                                        {m.question}
+                                                    </p>
+                                                    <div className="space-y-3">
+                                                        <div className="flex justify-between items-end">
+                                                            <div className="flex flex-col">
+                                                                <span className="text-[8px] text-slate-500 font-bold uppercase tracking-widest mb-0.5">Total Volume</span>
+                                                                <span className="text-xs font-black text-blue-400">
+                                                                    {(Number(m.yesPool + m.noPool) / 1e18).toFixed(3)} <span className="text-[9px] opacity-70">ETH</span>
                                                                 </span>
                                                             </div>
-                                                        )}
+                                                            {m.resolved && (
+                                                                <div className="text-right">
+                                                                    <span className="text-[8px] text-slate-500 font-bold uppercase tracking-widest mb-0.5">Outcome</span>
+                                                                    <span className={`text-[10px] font-black uppercase ${m.outcome ? "text-emerald-500" : "text-rose-500"}`}>
+                                                                        {m.outcome ? "YES" : "NO"}
+                                                                    </span>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                        <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
+                                                            {(() => {
+                                                                const y = Number(m.yesPool);
+                                                                const n = Number(m.noPool);
+                                                                const total = y + n;
+                                                                const pct = total > 0 ? (y / total) * 100 : 50;
+                                                                return <div className="h-full bg-blue-500/60 transition-all duration-500" style={{ width: `${pct}%` }} />;
+                                                            })()}
+                                                        </div>
                                                     </div>
-                                                    <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
-                                                        {(() => {
-                                                            const y = Number(m.yesPool);
-                                                            const n = Number(m.noPool);
-                                                            const total = y + n;
-                                                            const pct = total > 0 ? (y / total) * 100 : 50;
-                                                            return <div className="h-full bg-blue-500/60 transition-all duration-500" style={{ width: `${pct}%` }} />;
-                                                        })()}
-                                                    </div>
+                                                </button>
+                                            ))}
+                                            {filtered.length === 0 && (
+                                                <div className="w-full py-12 px-6 rounded-2xl bg-white/[0.01] border border-dashed border-white/5 text-center">
+                                                    <div className="text-sm font-bold text-slate-400">No matching markets found</div>
+                                                    <div className="mt-1.5 text-xs text-slate-600">Refine your search or filters.</div>
                                                 </div>
-                                            </button>
-                                        ))}
-                                        {filtered.length === 0 && (
-                                            <div className="w-full py-12 px-6 rounded-2xl bg-white/[0.01] border border-dashed border-white/5 text-center">
-                                                <div className="text-sm font-bold text-slate-400">No matching markets found</div>
-                                                <div className="mt-1.5 text-xs text-slate-600">Refine your search or filters.</div>
-                                            </div>
-                                        )}
+                                            )}
+                                        </div>
                                     </div>
                                 </>
                             );
@@ -1692,7 +1695,7 @@ export default function MarketView() {
                                 </div>
                             )}
                         </div>
-                    </div>
+                    </div >
                 )}
 
                 {activeTab === "airdrop" && (
