@@ -30,6 +30,12 @@ export async function GET() {
             splashImageUrl: officialLogoUrl,
             splashBackgroundColor: "#020617",
             webhookUrl: webhookUrl,
+            description: appDescription,
+            subtitle: appSubtitle,
+            screenshotUrls: [officialLogoUrl],
+            primaryCategory: "finance",
+            tags: ["crypto", "betting", "prediction", "base"],
+            heroImageUrl: `${baseUrl}/api/og`,
         },
         miniapp: {
             version: "1",
