@@ -3,13 +3,12 @@ import type { Metadata } from 'next';
 
 const baseUrl = process.env.NEXT_PUBLIC_URL || 'https://baseappholymarket.xyz';
 const appOrigin = baseUrl;
-const shareImagePath = "/api/og";
-const fullShareImageUrl = `${appOrigin}${shareImagePath}`;
+const fullShareImageUrl = `${appOrigin}/icon.png`;
 
 const frameMetadata: Record<string, string> = {
   'fc:frame': 'vNext',
   'fc:frame:image': fullShareImageUrl,
-  'fc:frame:image:aspect_ratio': '1.91:1',
+  'fc:frame:image:aspect_ratio': '1:1',
   'fc:frame:post_url': `${appOrigin}/api/frame`,
   'fc:frame:button:1': 'Enter HolyMarket',
 };
