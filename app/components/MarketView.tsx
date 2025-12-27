@@ -5,7 +5,7 @@ import { createPublicClient, http, parseEther, createWalletClient, custom, forma
 import { baseSepolia } from "viem/chains";
 import { useAccount, useChainId } from "wagmi";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { TrendingUp, Share2, Twitter, Info } from "lucide-react";
+import { TrendingUp, Share2, Twitter, Info, Sparkles } from "lucide-react";
 import { sdk } from "@farcaster/miniapp-sdk";
 import { PREDICTION_MARKET_ADDRESS, PREDICTION_MARKET_ABI } from "../constants";
 import { useToast } from "./ui/ToastProvider";
@@ -1738,11 +1738,10 @@ export default function MarketView() {
                                 </div>
                                 <div className="shrink-0">
                                     <button
-                                        onClick={handleFaucetRequest}
-                                        disabled={faucetLoading || needsNetworkSwitch || !isConnected}
-                                        className="premium-btn px-10 py-5 bg-white text-slate-950 hover:bg-slate-100 shadow-[0_0_50px_rgba(255,255,255,0.1)] active:scale-95 disabled:grayscale"
+                                        onClick={() => window.open("https://portal.cdp.coinbase.com/products/faucet", "_blank")}
+                                        className="premium-btn px-10 py-5 bg-white text-slate-950 hover:bg-slate-100 shadow-[0_0_50px_rgba(255,255,255,0.1)] active:scale-95"
                                     >
-                                        {faucetLoading ? "AUTHORIZING..." : "REQUEST CAPITAL"}
+                                        REQUEST CAPITAL
                                     </button>
                                 </div>
                             </div>
@@ -2065,8 +2064,8 @@ export default function MarketView() {
                                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Market Question</label>
                                     <input
                                         type="text"
-                                        value={newMarketQuestion}
-                                        onChange={(e) => setNewMarketQuestion(e.target.value)}
+                                        value={newQuestion}
+                                        onChange={(e) => setNewQuestion(e.target.value)}
                                         placeholder="Will ETH hit 5k before Feb 2026?"
                                         className="w-full premium-input bg-white/[0.01] py-4"
                                     />
@@ -2076,14 +2075,14 @@ export default function MarketView() {
                                         <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Duration (Hours)</label>
                                         <input
                                             type="number"
-                                            value={newMarketDuration}
-                                            onChange={(e) => setNewMarketDuration(e.target.value)}
+                                            value={durationHours}
+                                            onChange={(e) => setDurationHours(e.target.value)}
                                             className="w-full premium-input bg-white/[0.01] py-4 font-mono"
                                         />
                                     </div>
                                     <div className="flex items-end">
                                         <button
-                                            onClick={handleCreateMarket}
+                                            onClick={(e) => handleCreateMarket(e)}
                                             disabled={betting || needsNetworkSwitch || !isConnected}
                                             className="w-full premium-btn py-4 bg-blue-500 hover:bg-blue-400 shadow-lg shadow-blue-500/20 active:scale-95 disabled:grayscale"
                                         >
@@ -2103,28 +2102,30 @@ export default function MarketView() {
                                         <input
                                             type="text"
                                             placeholder="0x... address"
-                                            value={adminToManage}
-                                            onChange={(e) => setAdminToManage(e.target.value)}
+                                            value={adminMgmtTarget}
+                                            onChange={(e) => setAdminMgmtTarget(e.target.value)}
                                             className="flex-1 premium-input bg-transparent py-3 text-xs font-mono"
                                         />
                                         <button
-                                            onClick={() => handleManageAdmin(true)}
-                                            className="px-4 py-2 bg-emerald-500 text-[10px] font-black text-white rounded-xl active:scale-95 shadow-lg shadow-emerald-500/20"
+                                            onClick={() => adminUpsert()}
+                                            disabled={adminMgmtBusy || !adminMgmtTarget}
+                                            className="px-4 py-2 bg-emerald-500 text-[10px] font-black text-white rounded-xl active:scale-95 shadow-lg shadow-emerald-500/20 disabled:opacity-50"
                                         >
-                                            ADD
+                                            {adminMgmtBusy ? "SAVING..." : "ADD"}
                                         </button>
                                         <button
-                                            onClick={() => handleManageAdmin(false)}
-                                            className="px-4 py-2 bg-rose-500 text-[10px] font-black text-white rounded-xl active:scale-95 shadow-lg shadow-rose-500/20"
+                                            onClick={() => adminRemove(adminMgmtTarget)}
+                                            disabled={adminMgmtBusy || !adminMgmtTarget}
+                                            className="px-4 py-2 bg-rose-500 text-[10px] font-black text-white rounded-xl active:scale-95 shadow-lg shadow-rose-500/20 disabled:opacity-50"
                                         >
-                                            REMOVE
+                                            {adminMgmtBusy ? "REMOVING..." : "REMOVE"}
                                         </button>
                                     </div>
                                     <div className="space-y-2 max-h-[220px] overflow-y-auto pr-2 no-scrollbar">
-                                        {admins.map((addr, i) => (
+                                        {admins.map((a, i) => (
                                             <div key={i} className="flex justify-between items-center p-3 rounded-xl bg-white/[0.02] border border-white/5">
-                                                <span className="text-[11px] font-mono text-slate-400">{addr.slice(0, 16)}...</span>
-                                                <span className="text-[9px] font-black text-emerald-400 uppercase tracking-widest">AUTHORIZED</span>
+                                                <span className="text-[11px] font-mono text-slate-400">{a.address.slice(0, 16)}...</span>
+                                                <span className="text-[9px] font-black text-emerald-400 uppercase tracking-widest">{a.role}</span>
                                             </div>
                                         ))}
                                     </div>
@@ -2136,32 +2137,29 @@ export default function MarketView() {
                                 <h4 className="text-[10px] font-black text-rose-500/50 uppercase tracking-[0.3em] ml-1">Emergency Protocols</h4>
                                 <div className="p-6 rounded-[28px] bg-rose-500/[0.03] border border-rose-500/10 space-y-6">
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Target Market ID</label>
-                                        <input
-                                            type="number"
-                                            value={emergencyMarketId}
-                                            onChange={(e) => setEmergencyMarketId(e.target.value)}
-                                            className="w-full premium-input bg-transparent py-3"
-                                        />
+                                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Current Active Market ID: {selectedMarketId.toString()}</label>
                                     </div>
-                                    <div className="grid grid-cols-3 gap-3">
+                                    <div className="grid grid-cols-2 gap-3">
                                         <button
-                                            onClick={() => handleEmergencyAction("resolve", true)}
-                                            className="py-3 bg-emerald-600 text-[9px] font-black text-white rounded-xl active:scale-95 hover:bg-emerald-500 transition-colors uppercase tracking-widest"
+                                            onClick={() => handleResolve(true)}
+                                            disabled={betting || needsNetworkSwitch || !isConnected || adminRole !== "superadmin"}
+                                            className="py-3 bg-emerald-600 text-[9px] font-black text-white rounded-xl active:scale-95 hover:bg-emerald-500 transition-colors uppercase tracking-widest disabled:opacity-50"
                                         >
-                                            RES YES
+                                            RESOLVE YES
                                         </button>
                                         <button
-                                            onClick={() => handleEmergencyAction("resolve", false)}
-                                            className="py-3 bg-rose-600 text-[9px] font-black text-white rounded-xl active:scale-95 hover:bg-rose-500 transition-colors uppercase tracking-widest"
+                                            onClick={() => handleResolve(false)}
+                                            disabled={betting || needsNetworkSwitch || !isConnected || adminRole !== "superadmin"}
+                                            className="py-3 bg-rose-600 text-[9px] font-black text-white rounded-xl active:scale-95 hover:bg-rose-500 transition-colors uppercase tracking-widest disabled:opacity-50"
                                         >
-                                            RES NO
+                                            RESOLVE NO
                                         </button>
                                         <button
-                                            onClick={() => handleEmergencyAction("cancel", false)}
-                                            className="py-3 bg-slate-700 text-[9px] font-black text-white rounded-xl active:scale-95 hover:bg-slate-600 transition-colors uppercase tracking-widest"
+                                            onClick={handleEmergencyCancelMarket}
+                                            disabled={betting || needsNetworkSwitch || !isConnected || adminRole !== "superadmin"}
+                                            className="col-span-2 py-3 bg-slate-700 text-[9px] font-black text-white rounded-xl active:scale-95 hover:bg-slate-600 transition-colors uppercase tracking-widest disabled:opacity-50"
                                         >
-                                            VOID
+                                            EMERGENCY VOID MARKET
                                         </button>
                                     </div>
                                 </div>
