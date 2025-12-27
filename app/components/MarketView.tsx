@@ -1427,12 +1427,12 @@ export default function MarketView() {
                                             </div>
                                         </div>
 
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pb-6 relative z-10 px-1">
+                                        <div className="flex gap-4 overflow-x-auto pb-6 no-scrollbar snap-x snap-mandatory relative z-10 px-1">
                                             {filtered.map((m) => (
                                                 <button
                                                     key={m.id.toString()}
                                                     onClick={() => setSelectedMarketId(m.id)}
-                                                    className={`w-full p-6 rounded-[32px] border transition-all text-left relative overflow-hidden group/card ${selectedMarketId === m.id ? "bg-blue-500/10 border-blue-500/40 shadow-2xl scale-[1.02]" : "bg-white/[0.03] border-white/5 hover:border-white/10"}`}
+                                                    className={`w-[85%] flex-shrink-0 snap-center p-6 rounded-[32px] border transition-all text-left relative overflow-hidden group/card ${selectedMarketId === m.id ? "bg-blue-500/10 border-blue-500/40 shadow-2xl" : "bg-white/[0.03] border-white/5 hover:border-white/10"}`}
                                                 >
                                                     {selectedMarketId === m.id && (
                                                         <div className="absolute top-0 left-0 w-2 h-full bg-blue-500 shadow-[0_0_20px_rgba(59,130,246,0.5)]" />
@@ -1493,208 +1493,209 @@ export default function MarketView() {
                                 </>
                             );
                         })()}
-                        <div className="premium-card p-6 sm:p-8 relative overflow-hidden group">
-                            <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/5 blur-[120px] -mr-48 -mt-48 transition-all group-hover:bg-blue-500/10" />
-
-                            <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 mb-8 relative z-10">
-                                <div className="flex-1 space-y-4">
-                                    <div className="flex flex-wrap items-center gap-2">
-                                        <span className="px-2.5 py-1 bg-blue-500/10 text-blue-400 rounded-lg text-[10px] font-black tracking-widest border border-blue-500/20 uppercase">Market #{selectedMarketId.toString()}</span>
-                                        {!market.resolved && (
-                                            <span className={`px-2.5 py-1 rounded-lg text-[10px] font-black tracking-widest border uppercase ${timeLeft === "ENDED" ? "bg-rose-500/10 text-rose-500 border-rose-500/20" : "bg-amber-500/10 text-amber-500 border-amber-500/20"}`}>
-                                                {timeLeft === "ENDED" ? "EXPIRED" : timeLeft}
-                                            </span>
-                                        )}
-                                    </div>
-                                    <h2 className="text-2xl sm:text-3xl font-extrabold text-white leading-tight tracking-tight">{market.question}</h2>
+                        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 mb-8 mt-4">
+                            <div className="flex-1 space-y-4">
+                                <div className="flex flex-wrap items-center gap-2">
+                                    <span className="px-2.5 py-1 bg-blue-500/10 text-blue-400 rounded-lg text-[10px] font-black tracking-widest border border-blue-500/20 uppercase">Market #{selectedMarketId.toString()}</span>
+                                    {!market.resolved && (
+                                        <span className={`px-2.5 py-1 rounded-lg text-[10px] font-black tracking-widest border uppercase ${timeLeft === "ENDED" ? "bg-rose-500/10 text-rose-500 border-rose-500/20" : "bg-amber-500/10 text-amber-500 border-amber-500/20"}`}>
+                                            {timeLeft === "ENDED" ? "EXPIRED" : timeLeft}
+                                        </span>
+                                    )}
                                 </div>
-                                <div className="flex gap-2.5 shrink-0">
-                                    <button
-                                        onClick={() => {
-                                            const shareUrl = getMarketShareUrl() || (typeof window !== "undefined" ? window.location.href : "");
-                                            window.open(`https://warpcast.com/~/compose?text=Predicting on HolyMarket: ${market.question}&embeds[]=${encodeURIComponent(shareUrl)}`);
-                                        }}
-                                        className="p-3 rounded-xl bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 transition-all border border-white/5 active:scale-95"
-                                        title="Share on Warpcast"
-                                    >
-                                        <Share2 size={20} />
-                                    </button>
-                                    <button
-                                        onClick={() => {
-                                            const shareUrl = getMarketShareUrl() || (typeof window !== "undefined" ? window.location.href : "");
-                                            window.open(`https://twitter.com/intent/tweet?text=I'm predicting on HolyMarket: ${market.question}&url=${encodeURIComponent(shareUrl)}`);
-                                        }}
-                                        className="p-3 rounded-xl bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 transition-all border border-white/5 active:scale-95"
-                                        title="Share on Twitter"
-                                    >
-                                        <Twitter size={20} />
-                                    </button>
-                                </div>
+                                <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white leading-[1.15] tracking-tight">{market.question}</h2>
                             </div>
-
-                            <div className="grid grid-cols-2 gap-4 mb-10">
-                                <div className="p-5 rounded-[24px] bg-emerald-500/[0.03] border border-emerald-500/10 flex flex-col relative overflow-hidden group hover:border-emerald-500/30 transition-all">
-                                    <div className="absolute top-0 right-0 w-16 h-16 bg-emerald-500/5 blur-2xl -mr-8 -mt-8" />
-                                    <span className="text-[10px] font-black text-emerald-500/70 mb-3 uppercase tracking-widest relative z-10">YES POOL • {calculateMultiplier(true)}x</span>
-                                    <div className="flex items-baseline gap-1.5 relative z-10">
-                                        <span className="text-3xl font-black text-white">{Number(formatEther(market.yesPool)).toFixed(3)}</span>
-                                        <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">ETH</span>
-                                    </div>
-                                    <div className="mt-4 pt-4 border-t border-emerald-500/10 relative z-10">
-                                        <span className="text-[9px] text-slate-500 font-bold uppercase tracking-widest block mb-1">Potential Payout</span>
-                                        <span className="text-sm font-black text-emerald-400">{calculatePotentialProfit(true)} <span className="text-[10px] opacity-70">ETH</span></span>
-                                    </div>
-                                </div>
-                                <div className="p-5 rounded-[24px] bg-rose-500/[0.03] border border-rose-500/10 flex flex-col relative overflow-hidden group hover:border-rose-500/30 transition-all">
-                                    <div className="absolute top-0 right-0 w-16 h-16 bg-rose-500/5 blur-2xl -mr-8 -mt-8" />
-                                    <span className="text-[10px] font-black text-rose-500/70 mb-3 uppercase tracking-widest relative z-10">NO POOL • {calculateMultiplier(false)}x</span>
-                                    <div className="flex items-baseline gap-1.5 relative z-10">
-                                        <span className="text-3xl font-black text-white">{Number(formatEther(market.noPool)).toFixed(3)}</span>
-                                        <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">ETH</span>
-                                    </div>
-                                    <div className="mt-4 pt-4 border-t border-rose-500/10 relative z-10">
-                                        <span className="text-[9px] text-slate-500 font-bold uppercase tracking-widest block mb-1">Potential Payout</span>
-                                        <span className="text-sm font-black text-rose-400">{calculatePotentialProfit(false)} <span className="text-[10px] opacity-70">ETH</span></span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="mt-auto">
-                                {market.resolved ? (
-                                    <>
-                                        <div className="p-8 rounded-[32px] bg-white/[0.02] border border-white/5 flex flex-col items-center text-center relative overflow-hidden">
-                                            <div className={`absolute top-0 inset-x-0 h-1 ${market.outcome ? "bg-emerald-500" : "bg-rose-500"}`} />
-                                            <span className="text-[10px] font-black text-slate-500 mb-6 uppercase tracking-[0.3em]">Market Result</span>
-                                            <div className={`text-5xl font-black mb-8 filter drop-shadow-lg ${market.outcome ? "text-emerald-400" : "text-rose-500"}`}>
-                                                {market.outcome ? "YES" : "NO"} <span className="text-3xl ml-1">✓</span>
-                                            </div>
-
-                                            <div className="w-full p-5 rounded-2xl bg-white/[0.03] border border-white/5 text-left mb-6">
-                                                <div className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-3">Your Final Position</div>
-                                                <div className="flex justify-between items-center">
-                                                    <div className="space-y-1">
-                                                        <div className="text-[10px] text-slate-500 font-bold uppercase">YES Prediction</div>
-                                                        <div className="text-sm font-black text-white">{userBet ? Number(formatEther(userBet.yesAmount)).toFixed(4) : "0.0000"} <span className="text-[10px] opacity-60">ETH</span></div>
-                                                    </div>
-                                                    <div className="space-y-1 text-right">
-                                                        <div className="text-[10px] text-slate-500 font-bold uppercase">NO Prediction</div>
-                                                        <div className="text-sm font-black text-white">{userBet ? Number(formatEther(userBet.noAmount)).toFixed(4) : "0.0000"} <span className="text-[10px] opacity-60">ETH</span></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            {userBet?.claimed ? (
-                                                <div className="w-full py-4 px-6 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-bold text-sm">
-                                                    Reward Successfully Claimed
-                                                </div>
-                                            ) : (userBet && userBet.yesAmount === 0n && userBet.noAmount === 0n) ? (
-                                                <div className="w-full py-4 px-6 rounded-2xl bg-white/5 border border-white/10 text-slate-500 font-bold text-sm">
-                                                    No bets placed in this market
-                                                </div>
-                                            ) : parseFloat(claimableAmount) <= 0 ? (
-                                                <div className="w-full py-4 px-6 rounded-2xl bg-white/5 border border-white/10 text-slate-500 font-bold text-sm">
-                                                    No winnings to claim
-                                                </div>
-                                            ) : (
-                                                <button
-                                                    onClick={handleClaim}
-                                                    disabled={betting || needsNetworkSwitch || !isConnected}
-                                                    className="w-full premium-btn py-4 text-slate-950 bg-white hover:bg-slate-100 shadow-[0_0_40px_rgba(255,255,255,0.1)]"
-                                                >
-                                                    {betting ? "Processing..." : `Claim ${Number(claimableAmount).toFixed(4)} ETH Reward`}
-                                                </button>
-                                            )}
-                                        </div>
-                                        {(!isConnected || needsNetworkSwitch) && (
-                                            <div className="mt-3 text-[11px] text-slate-500 text-center">
-                                                Connect your wallet and switch to Base Sepolia to claim.
-                                            </div>
-                                        )}
-                                    </>
-                                ) : (
-                                    <div className="space-y-10 relative z-10">
-                                        <div className="space-y-6">
-                                            <div className="flex items-center justify-between px-1">
-                                                <div className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em]">Prediction Amount</div>
-                                                <div className="flex items-center gap-3">
-                                                    {walletBalanceLoading ? (
-                                                        <span className="text-[10px] font-bold text-slate-500 animate-pulse">Checking balance...</span>
-                                                    ) : walletBalance !== null ? (
-                                                        <span className="text-[10px] font-bold text-slate-500">Balance: <span className="text-white">{Number(formatEther(walletBalance)).toFixed(4)}</span> ETH</span>
-                                                    ) : (
-                                                        <span className="text-[10px] font-bold text-slate-600">Balance: —</span>
-                                                    )}
-                                                    <button
-                                                        type="button"
-                                                        disabled={walletBalance === null || walletBalanceLoading || needsNetworkSwitch || !isConnected}
-                                                        onClick={() => {
-                                                            if (walletBalance === null) return;
-                                                            const reserve = parseEther("0.0003");
-                                                            const max = walletBalance > reserve ? walletBalance - reserve : 0n;
-                                                            if (max <= 0n) {
-                                                                toast({ title: "Low Balance", message: "Insufficient ETH for gas and bet.", variant: "warning" });
-                                                                return;
-                                                            }
-                                                            setAmount(formatEther(max));
-                                                        }}
-                                                        className="px-2 py-0.5 rounded-lg bg-blue-500/10 border border-blue-500/20 text-[9px] font-black text-blue-400 hover:bg-blue-500 hover:text-white transition-all disabled:opacity-50"
-                                                    >
-                                                        MAX
-                                                    </button>
-                                                </div>
-                                            </div>
-
-                                            <div className="space-y-4">
-                                                <div className="relative group">
-                                                    <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
-                                                        <span className="text-slate-500 font-bold text-sm">Ξ</span>
-                                                    </div>
-                                                    <input
-                                                        type="number"
-                                                        value={amount}
-                                                        onChange={(e) => setAmount(e.target.value)}
-                                                        className="w-full premium-input py-6 text-3xl font-black pl-12 pr-16 bg-white/[0.01] border-white/10 focus:border-blue-500/50"
-                                                        placeholder="0.00"
-                                                    />
-                                                    <span className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-600 font-black text-[10px] tracking-widest">ETH</span>
-                                                </div>
-
-                                                <div className="flex flex-wrap gap-2.5">
-                                                    {["0.001", "0.005", "0.01", "0.05"].map((val) => (
-                                                        <button
-                                                            key={val}
-                                                            type="button"
-                                                            onClick={() => setAmount(val)}
-                                                            className={`px-5 py-2.5 rounded-2xl text-[10px] font-black transition-all border ${amount === val ? "bg-white text-slate-950 border-white shadow-lg" : "bg-white/5 text-slate-500 border-white/5 hover:border-white/10 hover:text-slate-300"}`}
-                                                        >
-                                                            {val} ETH
-                                                        </button>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div className="grid grid-cols-2 gap-4 pt-4">
-                                            <button
-                                                onClick={() => handleBet(true)}
-                                                disabled={betting || needsNetworkSwitch || !isConnected}
-                                                className="premium-btn py-5 bg-emerald-500 hover:bg-emerald-400 shadow-[0_0_30px_rgba(16,185,129,0.1)] active:scale-95 disabled:grayscale"
-                                            >
-                                                {betting ? "Confirming..." : "PREDICT YES"}
-                                            </button>
-                                            <button
-                                                onClick={() => handleBet(false)}
-                                                disabled={betting || needsNetworkSwitch || !isConnected}
-                                                className="premium-btn py-5 bg-rose-500 hover:bg-rose-400 shadow-[0_0_30px_rgba(244,63,94,0.1)] active:scale-95 disabled:grayscale"
-                                            >
-                                                {betting ? "Confirming..." : "PREDICT NO"}
-                                            </button>
-                                        </div>
-                                    </div>
-                                )}
+                            <div className="flex gap-2.5 shrink-0">
+                                <button
+                                    onClick={() => {
+                                        const shareUrl = getMarketShareUrl() || (typeof window !== "undefined" ? window.location.href : "");
+                                        window.open(
+                                            `https://warpcast.com/~/compose?text=Predicting on HolyMarket: ${market.question}&embeds[]=${encodeURIComponent(shareUrl)}`
+                                        );
+                                    }}
+                                    className="p-3 rounded-xl bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 transition-all border border-white/5 active:scale-95"
+                                    title="Share on Warpcast"
+                                >
+                                    <Share2 size={20} />
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        const shareUrl = getMarketShareUrl() || (typeof window !== "undefined" ? window.location.href : "");
+                                        window.open(
+                                            `https://twitter.com/intent/tweet?text=I'm predicting on HolyMarket: ${market.question}&url=${encodeURIComponent(shareUrl)}`
+                                        );
+                                    }}
+                                    className="p-3 rounded-xl bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 transition-all border border-white/5 active:scale-95"
+                                    title="Share on Twitter"
+                                >
+                                    <Twitter size={20} />
+                                </button>
                             </div>
                         </div>
-                    </div>
+
+                        <div className="grid grid-cols-2 gap-4 mb-10">
+                            <div className="p-5 rounded-[24px] bg-emerald-500/[0.03] border border-emerald-500/10 flex flex-col relative overflow-hidden group hover:border-emerald-500/30 transition-all">
+                                <div className="absolute top-0 right-0 w-16 h-16 bg-emerald-500/5 blur-2xl -mr-8 -mt-8" />
+                                <span className="text-[10px] font-black text-emerald-500/70 mb-3 uppercase tracking-widest relative z-10">YES POOL • {calculateMultiplier(true)}x</span>
+                                <div className="flex items-baseline gap-1.5 relative z-10">
+                                    <span className="text-3xl font-black text-white">{Number(formatEther(market.yesPool)).toFixed(3)}</span>
+                                    <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">ETH</span>
+                                </div>
+                                <div className="mt-4 pt-4 border-t border-emerald-500/10 relative z-10">
+                                    <span className="text-[9px] text-slate-500 font-bold uppercase tracking-widest block mb-1">Potential Payout</span>
+                                    <span className="text-sm font-black text-emerald-400">{calculatePotentialProfit(true)} <span className="text-[10px] opacity-70">ETH</span></span>
+                                </div>
+                            </div>
+                            <div className="p-5 rounded-[24px] bg-rose-500/[0.03] border border-rose-500/10 flex flex-col relative overflow-hidden group hover:border-rose-500/30 transition-all">
+                                <div className="absolute top-0 right-0 w-16 h-16 bg-rose-500/5 blur-2xl -mr-8 -mt-8" />
+                                <span className="text-[10px] font-black text-rose-500/70 mb-3 uppercase tracking-widest relative z-10">NO POOL • {calculateMultiplier(false)}x</span>
+                                <div className="flex items-baseline gap-1.5 relative z-10">
+                                    <span className="text-3xl font-black text-white">{Number(formatEther(market.noPool)).toFixed(3)}</span>
+                                    <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">ETH</span>
+                                </div>
+                                <div className="mt-4 pt-4 border-t border-rose-500/10 relative z-10">
+                                    <span className="text-[9px] text-slate-500 font-bold uppercase tracking-widest block mb-1">Potential Payout</span>
+                                    <span className="text-sm font-black text-rose-400">{calculatePotentialProfit(false)} <span className="text-[10px] opacity-70">ETH</span></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="mt-auto">
+                            {market.resolved ? (
+                                <>
+                                    <div className="p-8 rounded-[32px] bg-white/[0.02] border border-white/5 flex flex-col items-center text-center relative overflow-hidden">
+                                        <div className={`absolute top-0 inset-x-0 h-1 ${market.outcome ? "bg-emerald-500" : "bg-rose-500"}`} />
+                                        <span className="text-[10px] font-black text-slate-500 mb-6 uppercase tracking-[0.3em]">Market Result</span>
+                                        <div className={`text-5xl font-black mb-8 filter drop-shadow-lg ${market.outcome ? "text-emerald-400" : "text-rose-500"}`}>
+                                            {market.outcome ? "YES" : "NO"} <span className="text-3xl ml-1">✓</span>
+                                        </div>
+
+                                        <div className="w-full p-5 rounded-2xl bg-white/[0.03] border border-white/5 text-left mb-6">
+                                            <div className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-3">Your Final Position</div>
+                                            <div className="flex justify-between items-center">
+                                                <div className="space-y-1">
+                                                    <div className="text-[10px] text-slate-500 font-bold uppercase">YES Prediction</div>
+                                                    <div className="text-sm font-black text-white">{userBet ? Number(formatEther(userBet.yesAmount)).toFixed(4) : "0.0000"} <span className="text-[10px] opacity-60">ETH</span></div>
+                                                </div>
+                                                <div className="space-y-1 text-right">
+                                                    <div className="text-[10px] text-slate-500 font-bold uppercase">NO Prediction</div>
+                                                    <div className="text-sm font-black text-white">{userBet ? Number(formatEther(userBet.noAmount)).toFixed(4) : "0.0000"} <span className="text-[10px] opacity-60">ETH</span></div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {userBet?.claimed ? (
+                                            <div className="w-full py-4 px-6 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-bold text-sm">
+                                                Reward Successfully Claimed
+                                            </div>
+                                        ) : (userBet && userBet.yesAmount === 0n && userBet.noAmount === 0n) ? (
+                                            <div className="w-full py-4 px-6 rounded-2xl bg-white/5 border border-white/10 text-slate-500 font-bold text-sm">
+                                                No bets placed in this market
+                                            </div>
+                                        ) : parseFloat(claimableAmount) <= 0 ? (
+                                            <div className="w-full py-4 px-6 rounded-2xl bg-white/5 border border-white/10 text-slate-500 font-bold text-sm">
+                                                No winnings to claim
+                                            </div>
+                                        ) : (
+                                            <button
+                                                onClick={handleClaim}
+                                                disabled={betting || needsNetworkSwitch || !isConnected}
+                                                className="w-full premium-btn py-4 text-slate-950 bg-white hover:bg-slate-100 shadow-[0_0_40px_rgba(255,255,255,0.1)]"
+                                            >
+                                                {betting ? "Processing..." : `Claim ${Number(claimableAmount).toFixed(4)} ETH Reward`}
+                                            </button>
+                                        )}
+                                    </div>
+                                    {(!isConnected || needsNetworkSwitch) && (
+                                        <div className="mt-3 text-[11px] text-slate-500 text-center">
+                                            Connect your wallet and switch to Base Sepolia to claim.
+                                        </div>
+                                    )}
+                                </>
+                            ) : (
+                                <div className="space-y-8">
+                                    <div className="space-y-4">
+                                        <div className="flex items-center justify-between px-1">
+                                            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em]">Prediction Amount</div>
+                                            <div className="flex items-center gap-3">
+                                                {walletBalanceLoading ? (
+                                                    <span className="text-[10px] font-bold text-slate-500 animate-pulse">Checking balance...</span>
+                                                ) : walletBalance !== null ? (
+                                                    <span className="text-[10px] font-bold text-slate-500">Balance: <span className="text-slate-300">{Number(formatEther(walletBalance)).toFixed(4)}</span> ETH</span>
+                                                ) : (
+                                                    <span className="text-[10px] font-bold text-slate-600">Balance: —</span>
+                                                )}
+                                                <button
+                                                    type="button"
+                                                    disabled={walletBalance === null || walletBalanceLoading || needsNetworkSwitch || !isConnected}
+                                                    onClick={() => {
+                                                        if (walletBalance === null) return;
+                                                        const reserve = parseEther("0.0003");
+                                                        const max = walletBalance > reserve ? walletBalance - reserve : 0n;
+                                                        if (max <= 0n) {
+                                                            toast({ title: "Low Balance", message: "Insufficient ETH for gas and bet.", variant: "warning" });
+                                                            return;
+                                                        }
+                                                        setAmount(formatEther(max));
+                                                    }}
+                                                    className="px-2 py-0.5 rounded bg-blue-500/10 border border-blue-500/20 text-[9px] font-black text-blue-400 hover:bg-blue-500 hover:text-white transition-all disabled:opacity-50"
+                                                >
+                                                    MAX
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div className="relative group">
+                                            <input
+                                                type="number"
+                                                value={amount}
+                                                onChange={(e) => setAmount(e.target.value)}
+                                                className="w-full premium-input py-5 text-2xl font-black pr-16 bg-white/[0.02]"
+                                                placeholder="0.00"
+                                            />
+                                            <span className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-500 font-black text-sm tracking-widest">ETH</span>
+                                        </div>
+
+                                        <div className="flex flex-wrap gap-2">
+                                            {["0.001", "0.005", "0.01", "0.05"].map((val) => (
+                                                <button
+                                                    key={val}
+                                                    type="button"
+                                                    onClick={() => setAmount(val)}
+                                                    className={`px-4 py-2 rounded-xl text-[10px] font-black transition-all border ${amount === val ? "bg-white text-slate-950 border-white" : "bg-white/5 text-slate-400 border-white/5 hover:border-white/20 hover:text-white"}`}
+                                                >
+                                                    {val} ETH
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <button
+                                            onClick={() => handleBet(true)}
+                                            disabled={betting || needsNetworkSwitch || !isConnected}
+                                            className="premium-btn py-5 bg-emerald-500 hover:bg-emerald-400 shadow-[0_0_30px_rgba(16,185,129,0.15)] active:scale-95 disabled:grayscale"
+                                        >
+                                            {betting ? "Confirming..." : "PREDICT YES"}
+                                        </button>
+                                        <button
+                                            onClick={() => handleBet(false)}
+                                            disabled={betting || needsNetworkSwitch || !isConnected}
+                                            className="premium-btn py-5 bg-rose-500 hover:bg-rose-400 shadow-[0_0_30px_rgba(244,63,94,0.15)] active:scale-95 disabled:grayscale"
+                                        >
+                                            {betting ? "Confirming..." : "PREDICT NO"}
+                                        </button>
+                                    </div>
+
+                                    {!isConnected && (
+                                        <div className="p-4 rounded-xl bg-blue-500/5 border border-blue-500/10 text-center">
+                                            <p className="text-[11px] font-bold text-blue-400 uppercase tracking-widest">Connect wallet to start trading</p>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    </div >
                 )}
 
                 {activeTab === "airdrop" && (
@@ -1976,28 +1977,28 @@ export default function MarketView() {
                                     <p className="text-slate-600 font-bold text-sm uppercase tracking-widest">No rankings available</p>
                                 </div>
                             )}
+                        </div>
 
-                            <div className="flex items-center justify-between gap-4 pt-4">
-                                <button
-                                    type="button"
-                                    onClick={() => fetchLeaderboardPage(leaderboardPage - 1)}
-                                    disabled={leaderboardLoading || leaderboardPage <= 1}
-                                    className="flex-1 py-3.5 rounded-2xl bg-white/5 border border-white/5 text-[10px] font-black text-slate-400 hover:text-white hover:bg-white/10 transition-all disabled:opacity-40"
-                                >
-                                    PREVIOUS
-                                </button>
-                                <div className="px-6 py-3.5 rounded-2xl bg-white/[0.02] border border-white/5 text-[10px] font-black text-slate-500 uppercase tracking-widest">
-                                    PAGE <span className="text-white ml-2">{leaderboardPage}</span>
-                                </div>
-                                <button
-                                    type="button"
-                                    onClick={() => fetchLeaderboardPage(leaderboardPage + 1)}
-                                    disabled={leaderboardLoading || !leaderboardHasMore}
-                                    className="flex-1 py-3.5 rounded-2xl bg-white/5 border border-white/5 text-[10px] font-black text-slate-400 hover:text-white hover:bg-white/10 transition-all disabled:opacity-40"
-                                >
-                                    NEXT
-                                </button>
+                        <div className="flex items-center justify-between gap-4 pt-4">
+                            <button
+                                type="button"
+                                onClick={() => fetchLeaderboardPage(leaderboardPage - 1)}
+                                disabled={leaderboardLoading || leaderboardPage <= 1}
+                                className="flex-1 py-3.5 rounded-2xl bg-white/5 border border-white/5 text-[10px] font-black text-slate-400 hover:text-white hover:bg-white/10 transition-all disabled:opacity-40"
+                            >
+                                PREVIOUS
+                            </button>
+                            <div className="px-6 py-3.5 rounded-2xl bg-white/[0.02] border border-white/5 text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                                PAGE <span className="text-white ml-2">{leaderboardPage}</span>
                             </div>
+                            <button
+                                type="button"
+                                onClick={() => fetchLeaderboardPage(leaderboardPage + 1)}
+                                disabled={leaderboardLoading || !leaderboardHasMore}
+                                className="flex-1 py-3.5 rounded-2xl bg-white/5 border border-white/5 text-[10px] font-black text-slate-400 hover:text-white hover:bg-white/10 transition-all disabled:opacity-40"
+                            >
+                                NEXT
+                            </button>
                         </div>
                     </div>
                 )}
@@ -2171,7 +2172,7 @@ export default function MarketView() {
                 )}
             </div>
 
-            {sharePromptOpen && sharePromptTxHash && sharePromptAmountBnb ? (
+            {sharePromptOpen && sharePromptTxHash && sharePromptAmountBnb && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm px-4">
                     <div className="w-full max-w-sm premium-card p-10 bg-slate-950 border border-white/10 relative overflow-hidden animate-in zoom-in duration-300">
                         <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 blur-3xl -mr-16 -mt-16" />
@@ -2227,7 +2228,7 @@ export default function MarketView() {
                         </button>
                     </div>
                 </div>
-            ) : null}
+            )}
         </div>
     );
 }
