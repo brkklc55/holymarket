@@ -7,15 +7,15 @@
     "frame": {
         "version": "1",
         "name": "HolyMarket",
-        "iconUrl": "https://baseappholymarket.xyz/icon.png?v=9",
+        "iconUrl": "https://baseappholymarket.xyz/icon.png?v=11",
         "homeUrl": "https://baseappholymarket.xyz/",
-        "imageUrl": "https://baseappholymarket.xyz/og.png?v=9",
+        "imageUrl": "https://baseappholymarket.xyz/og.png?v=11",
         "buttonTitle": "Launch App",
         "webhookUrl": "https://baseappholymarket.xyz/api/farcaster/webhook",
-        "description": "The first decentralized prediction market on Base. Trade your beliefs.",
+        "description": "Trade your beliefs on Base. Decentralized and secure.",
         "subtitle": "Trade your beliefs on Base",
         "screenshotUrls": [
-            "https://baseappholymarket.xyz/icon.png?v=9"
+            "https://baseappholymarket.xyz/icon.png?v=11"
         ],
         "primaryCategory": "finance",
         "tags": [
@@ -24,20 +24,20 @@
             "prediction",
             "base"
         ],
-        "heroImageUrl": "https://baseappholymarket.xyz/embed.png?v=9"
+        "heroImageUrl": "https://baseappholymarket.xyz/embed.png?v=11"
     },
     "miniapp": {
         "version": "1",
         "name": "HolyMarket",
-        "iconUrl": "https://baseappholymarket.xyz/icon.png?v=9",
+        "iconUrl": "https://baseappholymarket.xyz/icon.png?v=11",
         "homeUrl": "https://baseappholymarket.xyz/",
-        "imageUrl": "https://baseappholymarket.xyz/embed.png?v=9",
+        "imageUrl": "https://baseappholymarket.xyz/embed.png?v=11",
         "buttonTitle": "Launch App",
         "webhookUrl": "https://baseappholymarket.xyz/api/farcaster/webhook",
-        "description": "The first decentralized prediction market on Base. Trade your beliefs.",
+        "description": "Trade your beliefs on Base. Decentralized and secure.",
         "subtitle": "Trade your beliefs on Base",
         "screenshotUrls": [
-            "https://baseappholymarket.xyz/icon.png?v=9"
+            "https://baseappholymarket.xyz/icon.png?v=11"
         ],
         "primaryCategory": "finance",
         "tags": [
@@ -46,18 +46,18 @@
             "prediction",
             "base"
         ],
-        "heroImageUrl": "https://baseappholymarket.xyz/embed.png?v=9"
+        "heroImageUrl": "https://baseappholymarket.xyz/embed.png?v=11"
     },
     "name": "HolyMarket",
-    "iconUrl": "https://baseappholymarket.xyz/icon.png?v=9",
+    "iconUrl": "https://baseappholymarket.xyz/icon.png?v=11",
     "webhookUrl": "https://baseappholymarket.xyz/api/farcaster/webhook",
-    "ogTitle": "HolyMarket",
-    "ogDescription": "Trade your beliefs on Base",
-    "ogImageUrl": "https://baseappholymarket.xyz/og.png?v=9",
+    "ogTitle": "HolyMarket | Base Prediction Market",
+    "ogDescription": "Trade your beliefs on Base. Decentralized and secure.",
+    "ogImageUrl": "https://baseappholymarket.xyz/og.png?v=11",
     "subtitle": "Trade your beliefs on Base",
-    "description": "The first decentralized prediction market on Base. Trade your beliefs.",
+    "description": "Trade your beliefs on Base. Decentralized and secure.",
     "screenshotUrls": [
-        "https://baseappholymarket.xyz/icon.png?v=9"
+        "https://baseappholymarket.xyz/icon.png?v=11"
     ],
     "primaryCategory": "finance",
     "tags": [
@@ -67,6 +67,6 @@
         "base"
     ],
     "tagline": "HolyMarket: Bet on Base",
-    "heroImageUrl": "https://baseappholymarket.xyz/embed.png?v=9",
+    "heroImageUrl": "https://baseappholymarket.xyz/embed.png?v=11",
     "castShareUrl": "https://baseappholymarket.xyz/"
 }

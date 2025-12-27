@@ -1,20 +1,19 @@
-
 import type { Metadata } from 'next';
 
-const baseUrl = (process.env.NEXT_PUBLIC_URL || 'https://baseappholymarket.xyz').replace(/\/?$/, '/');
-const appOrigin = baseUrl;
-const fullShareImageUrl = `${appOrigin}embed.png?v=9`;
-const frameImageUrl = `${appOrigin}og.png?v=9`;
+const baseUrl = (process.env.NEXT_PUBLIC_URL || 'https://baseappholymarket.xyz').replace(/\/?$/, '');
+const appOrigin = baseUrl + '/';
+const fullShareImageUrl = `${baseUrl}/embed.png?v=11`;
+const frameImageUrl = `${baseUrl}/og.png?v=11`;
 
 const frameMetadata: Record<string, string> = {
   'fc:frame': 'vNext',
   'fc:frame:image': frameImageUrl,
   'fc:frame:image:aspect_ratio': '1.91:1',
-  'fc:frame:post_url': `${appOrigin}api/frame`,
+  'fc:frame:post_url': `${baseUrl}/api/frame`,
   'fc:frame:button:1': 'Enter HolyMarket',
 };
 
-const manifestUrl = `${appOrigin}.well-known/farcaster.json?v=9`;
+const manifestUrl = `${baseUrl}/.well-known/farcaster.json?v=11`;
 
 export const metadata: Metadata = {
   title: 'HolyMarket',

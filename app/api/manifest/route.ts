@@ -2,9 +2,9 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
     const domain = "baseappholymarket.xyz";
-    const baseUrl = `https://${domain}/`;
-    const officialLogoUrl = `${baseUrl}icon.png?v=9`;
-    const webhookUrl = `${baseUrl}api/farcaster/webhook`;
+    const baseUrl = `https://${domain}`;
+    const officialLogoUrl = `${baseUrl}/icon.png?v=11`;
+    const webhookUrl = `${baseUrl}/api/farcaster/webhook`;
 
     // Hardcoded correct values for baseappholymarket.xyz to bypass incorrect Vercel Env Vars
     const header = "eyJmaWQiOjEzOTU5NjEsInR5cGUiOiJhdXRoIiwia2V5IjoiMHgzNWU5OEZiQTZmNTAzNEQyNTJhNzczRjM2ZDA1OWFlMUE1NjQwOTgwIn0";
@@ -25,7 +25,7 @@ export async function GET() {
             name: "HolyMarket",
             iconUrl: officialLogoUrl,
             homeUrl: baseUrl + "/",
-            imageUrl: `${baseUrl}/og.png?v=9`,
+            imageUrl: `${baseUrl}/og.png?v=11`,
             buttonTitle: "Launch App",
             webhookUrl: webhookUrl,
             description: appDescription,
@@ -33,14 +33,14 @@ export async function GET() {
             screenshotUrls: [officialLogoUrl],
             primaryCategory: "finance",
             tags: ["crypto", "betting", "prediction", "base"],
-            heroImageUrl: `${baseUrl}/embed.png?v=9`,
+            heroImageUrl: `${baseUrl}/embed.png?v=11`,
         },
         miniapp: {
             version: "1",
             name: "HolyMarket",
             iconUrl: officialLogoUrl,
             homeUrl: baseUrl + "/",
-            imageUrl: `${baseUrl}/embed.png?v=9`,
+            imageUrl: `${baseUrl}/embed.png?v=11`,
             buttonTitle: "Launch App",
             webhookUrl: webhookUrl,
             description: appDescription,
@@ -48,7 +48,7 @@ export async function GET() {
             screenshotUrls: [officialLogoUrl],
             primaryCategory: "finance",
             tags: ["crypto", "betting", "prediction", "base"],
-            heroImageUrl: `${baseUrl}/embed.png?v=9`,
+            heroImageUrl: `${baseUrl}/embed.png?v=11`,
         },
         // Root level fields for various Farcaster tool versions
         name: "HolyMarket",
@@ -56,15 +56,15 @@ export async function GET() {
         webhookUrl: webhookUrl,
         ogTitle: "HolyMarket",
         ogDescription: "Trade your beliefs on Base",
-        ogImageUrl: `${baseUrl}/og.png?v=9`,
-        oglImageUrl: `${baseUrl}/og.png?v=9`,
+        ogImageUrl: `${baseUrl}/og.png?v=11`,
+        oglImageUrl: `${baseUrl}/og.png?v=11`,
         subtitle: appSubtitle,
         description: appDescription,
         screenshotUrls: [officialLogoUrl],
         primaryCategory: "finance",
         tags: ["crypto", "betting", "prediction", "base"],
         tagline: "HolyMarket: Bet on Base",
-        heroImageUrl: `${baseUrl}/embed.png?v=9`,
+        heroImageUrl: `${baseUrl}/embed.png?v=11`,
         castShareUrl: baseUrl,
     };
 
@@ -78,7 +78,7 @@ export async function GET() {
             "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
             "Pragma": "no-cache",
             "Expires": "0",
-            "X-Farcaster-Fix": "v13-og-fix",
+            "X-Farcaster-Fix": "v11-final-cache-bust",
         },
     });
 }
