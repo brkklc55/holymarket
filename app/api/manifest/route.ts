@@ -10,6 +10,8 @@ export async function GET() {
     const payload = "eyJkb21haW4iOiJiYXNlYXBwaG9seW1hcmtldC54eXoifQ";
     const signature = "aJXo93UhDyy7/hJGiamw2jzqKkIN02Mb5fYsayIa8FoG97V+L0MJlVNlduj5M4rSLVO409qM12GjQZU5dFr2DRs=";
 
+    const webhookUrl = `${baseUrl}/api/farcaster/webhook`;
+
     const manifest = {
         accountAssociation: {
             header,
@@ -25,7 +27,7 @@ export async function GET() {
             buttonTitle: "Launch App",
             splashImageUrl: officialLogoUrl,
             splashBackgroundColor: "#020617",
-            webhookUrl: `${baseUrl}/api/webhook`,
+            webhookUrl: webhookUrl,
         },
         miniapp: {
             version: "1",
@@ -36,11 +38,14 @@ export async function GET() {
             buttonTitle: "Launch App",
             splashImageUrl: officialLogoUrl,
             splashBackgroundColor: "#020617",
+            webhookUrl: webhookUrl,
         },
-        // v2 specific manifest fields
-        webhookUrl: `${baseUrl}/api/webhook`,
+        // Root level fields for various Farcaster tool versions
+        name: "HolyMarket",
+        iconUrl: officialLogoUrl,
+        webhookUrl: webhookUrl,
         ogTitle: "HolyMarket",
-        ogDescription: "Prediction Market on Base",
+        ogDescription: "Trade your beliefs on Base",
         ogImageUrl: officialLogoUrl,
         subtitle: "Trade your beliefs",
         description: "HolyMarket is a decentralized prediction market where you can bet on future events using crypto.",
@@ -56,10 +61,13 @@ export async function GET() {
         status: 200,
         headers: {
             "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type, Authorization",
             "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
             "Pragma": "no-cache",
             "Expires": "0",
-            "X-Farcaster-Fix": "v12-final-hardcode-v2",
+            "X-Farcaster-Fix": "v12-final-cors-v3",
         },
     });
 }
