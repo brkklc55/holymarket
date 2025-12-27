@@ -8,24 +8,24 @@ const defaultUrl = "https://baseappholymarket.xyz";
 const baseUrl = (process.env.NEXT_PUBLIC_URL || defaultUrl).replace(/\/?$/, '');
 
 export const metadata: Metadata = {
-  title: "HolyMarket v2 | Trade on Base",
+  title: "HolyMarket v13 | Trade on Base",
   applicationName: "HolyMarket",
-  description: "HolyMarket: Trade your beliefs on Base. Fast, secure and decentralized.",
+  description: "HolyMarket: Trade your beliefs on Base. Decentarlized, Secure, Fast.",
   metadataBase: new URL(baseUrl + '/'),
   icons: {
-    icon: [{ url: `${baseUrl}/icon.png?v=12`, sizes: "any" }],
-    shortcut: [`${baseUrl}/icon.png?v=12`],
-    apple: [{ url: `${baseUrl}/icon.png?v=12`, sizes: "180x180", type: "image/png" }],
+    icon: [{ url: `${baseUrl}/icon.png?v=13`, sizes: "any" }],
+    shortcut: [`${baseUrl}/icon.png?v=13`],
+    apple: [{ url: `${baseUrl}/icon.png?v=13`, sizes: "180x180", type: "image/png" }],
   },
 
   openGraph: {
-    title: "HolyMarket v2 | Base Prediction Market",
-    description: "HolyMarket: Trade your beliefs on Base. Fast, secure and decentralized.",
+    title: "HolyMarket v13 | Base Prediction Market",
+    description: "HolyMarket: Trade your beliefs on Base. Decentarlized, Secure, Fast.",
     url: "/",
     siteName: "HolyMarket",
     images: [
       {
-        url: `${baseUrl}/og.png?v=12`,
+        url: `${baseUrl}/og.png?v=13`,
         width: 1200,
         height: 630,
         type: 'image/png',
@@ -36,11 +36,11 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "HolyMarket v2 | Base Prediction Market",
-    description: "HolyMarket: Trade your beliefs on Base. Fast, secure and decentralized.",
-    images: [`${baseUrl}/og.png?v=12`],
+    title: "HolyMarket v13 | Base Prediction Market",
+    description: "HolyMarket: Trade your beliefs on Base. Decentarlized, Secure, Fast.",
+    images: [`${baseUrl}/og.png?v=13`],
   },
-  manifest: "/manifest.json?v=12",
+  manifest: "/manifest.json?v=13",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",

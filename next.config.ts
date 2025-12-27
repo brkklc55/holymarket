@@ -42,24 +42,10 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        source: "/api/manifest",
-        headers: [
-          { key: "Cache-Control", value: "no-store, no-cache, must-revalidate, proxy-revalidate" },
-        ],
-      },
-      {
         source: "/",
         headers: [
           { key: "Cache-Control", value: "no-store, no-cache, must-revalidate, proxy-revalidate" },
         ],
-      },
-    ];
-  },
-  async rewrites() {
-    return [
-      {
-        source: "/.well-known/farcaster.json",
-        destination: "/api/manifest",
       },
     ];
   },
