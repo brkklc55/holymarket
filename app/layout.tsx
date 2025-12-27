@@ -10,7 +10,7 @@ const baseUrl = (process.env.NEXT_PUBLIC_URL || defaultUrl).replace(/\/?$/, '');
 export const metadata: Metadata = {
   title: "HolyMarket",
   applicationName: "HolyMarket",
-  description: "HolyMarket: Trade your beliefs on Base.",
+  description: "HolyMarket: Bet your beliefs on Base.",
   metadataBase: new URL(baseUrl + '/'),
   icons: {
     icon: [{ url: `${baseUrl}/icon.png`, sizes: "any" }],
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 
   openGraph: {
     title: "HolyMarket",
-    description: "HolyMarket: Trade your beliefs on Base.",
+    description: "HolyMarket: Bet your beliefs on Base.",
     url: "/",
     siteName: "HolyMarket",
     images: [
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "HolyMarket",
-    description: "HolyMarket: Trade your beliefs on Base.",
+    description: "HolyMarket: Bet your beliefs on Base.",
     images: [`${baseUrl}/og.png`],
   },
   manifest: "/manifest.json",

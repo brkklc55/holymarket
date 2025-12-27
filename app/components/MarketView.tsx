@@ -1321,7 +1321,7 @@ export default function MarketView() {
                     <div>
                         <div className="text-sm font-bold text-white mb-1">Platform Rules & Disclaimer</div>
                         <div className="text-xs text-slate-400 leading-relaxed">
-                            HolyMarket is currently in beta. All trades use Base Sepolia testnet ETH.
+                            HolyMarket is currently in beta. All bets use Base Sepolia testnet ETH.
                             Active participation earns <span className="text-white font-bold">Protocol Points</span> which may qualify for future rewards.
                             <span className="block mt-1.5 text-slate-500 font-medium italic">Note: A 5% protocol fee applies to winning claims.</span>
                         </div>
@@ -1788,7 +1788,7 @@ export default function MarketView() {
                                 <div className="space-y-4">
                                     <div>
                                         <h3 className="text-2xl font-black text-white mb-1">Your Dashboard</h3>
-                                        <p className="text-[10px] text-blue-400 font-extrabold uppercase tracking-[0.3em]">Institutional Grade Trading</p>
+                                        <p className="text-[10px] text-blue-400 font-extrabold uppercase tracking-[0.3em]">Institutional Grade Betting</p>
                                     </div>
                                     <div className="flex flex-wrap gap-4">
                                         <div className="px-4 py-2 rounded-xl bg-white/5 border border-white/5">
@@ -1893,7 +1893,7 @@ export default function MarketView() {
                                             <Info size={16} />
                                         </div>
                                         <p className="text-[11px] text-slate-400 leading-relaxed font-medium">
-                                            Refer traders and earn <span className="text-white font-bold">10%</span> of their earned points + a <span className="text-white font-bold">+50 PTS</span> initial bonus for both parties.
+                                            Refer bettors and earn <span className="text-white font-bold">10%</span> of their earned points + a <span className="text-white font-bold">+50 PTS</span> initial bonus for both parties.
                                         </p>
                                     </div>
                                 </div>
@@ -1902,7 +1902,7 @@ export default function MarketView() {
 
                         <div className="space-y-4">
                             <div className="flex items-center justify-between">
-                                <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-1">Trade History</h4>
+                                <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-1">Bet History</h4>
                                 <div className="h-px flex-1 bg-white/5 mx-4" />
                             </div>
                             <div className="space-y-2.5 max-h-[500px] overflow-y-auto pr-2 no-scrollbar">
@@ -1959,7 +1959,7 @@ export default function MarketView() {
                                         </div>
                                         <div className="space-y-0.5">
                                             <span className="text-sm font-bold text-white block">{entry.user.slice(0, 10)}...{entry.user.slice(-6)}</span>
-                                            <span className="text-[8px] text-slate-600 font-black uppercase tracking-widest">Authenticated Trader</span>
+                                            <span className="text-[8px] text-slate-600 font-black uppercase tracking-widest">Authenticated Bettor</span>
                                         </div>
                                     </div>
                                     <div className="text-right relative z-10">

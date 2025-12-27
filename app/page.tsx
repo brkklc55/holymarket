@@ -8,10 +8,10 @@ const manifestUrl = `${baseUrl}/farcaster.json`;
 
 export const metadata: Metadata = {
   title: 'HolyMarket',
-  description: 'HolyMarket: Trade your beliefs on Base.',
+  description: 'HolyMarket: Bet your beliefs on Base.',
   openGraph: {
     title: 'HolyMarket',
-    description: 'HolyMarket: Trade your beliefs on Base.',
+    description: 'HolyMarket: Bet your beliefs on Base.',
     images: [
       {
         url: imageUrl,
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'HolyMarket',
-    description: 'HolyMarket: Trade your beliefs on Base.',
+    description: 'HolyMarket: Bet your beliefs on Base.',
     images: [imageUrl],
   },
   other: {
@@ -63,7 +63,7 @@ export default function Page() {
               HOLY<span className="text-gradient">MARKET</span>
             </h1>
             <p className="text-slate-400 text-sm sm:text-base font-medium uppercase tracking-[0.2em]">
-              Trade Your Beliefs
+              Bet Your Beliefs
             </p>
           </div>
         </div>

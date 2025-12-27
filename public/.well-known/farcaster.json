@@ -12,7 +12,7 @@
         "imageUrl": "https://baseappholymarket.xyz/og.png",
         "buttonTitle": "Launch HolyMarket",
         "webhookUrl": "https://baseappholymarket.xyz/api/farcaster/webhook",
-        "description": "HolyMarket: Trade your beliefs on Base.",
+        "description": "HolyMarket: Bet your beliefs on Base.",
         "screenshotUrls": [
             "https://baseappholymarket.xyz/og.png"
         ],
@@ -29,7 +29,7 @@
         "imageUrl": "https://baseappholymarket.xyz/og.png",
         "buttonTitle": "Launch HolyMarket",
         "webhookUrl": "https://baseappholymarket.xyz/api/farcaster/webhook",
-        "description": "HolyMarket: Trade your beliefs on Base.",
+        "description": "HolyMarket: Bet your beliefs on Base.",
         "screenshotUrls": [
             "https://baseappholymarket.xyz/og.png"
         ],
@@ -40,8 +40,8 @@
     },
     "name": "HolyMarket",
     "iconUrl": "https://baseappholymarket.xyz/icon.png",
-    "description": "HolyMarket: Trade your beliefs on Base.",
-    "subtitle": "Trade your beliefs on Base.",
+    "description": "HolyMarket: Bet your beliefs on Base.",
+    "subtitle": "Bet your beliefs on Base.",
     "heroImageUrl": "https://baseappholymarket.xyz/og.png",
     "tagline": "HolyMarket: Bet on Base",
     "screenshotUrls": [
@@ -49,7 +49,7 @@
     ],
     "primaryCategory": "finance",
     "ogTitle": "HolyMarket | Base Prediction",
-    "ogDescription": "Trade your beliefs on Base.",
+    "ogDescription": "Bet your beliefs on Base.",
     "ogImageUrl": "https://baseappholymarket.xyz/og.png",
     "castShareUrl": "https://baseappholymarket.xyz/"
 }
