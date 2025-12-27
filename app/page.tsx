@@ -3,8 +3,8 @@ import type { Metadata } from 'next';
 
 const baseUrl = process.env.NEXT_PUBLIC_URL || 'https://baseappholymarket.xyz';
 const appOrigin = baseUrl;
-const fullShareImageUrl = `${appOrigin}/embed.png`; // 3:2 shorter path
-const frameImageUrl = `${appOrigin}/og.png`; // 1.91:1 shorter path
+const fullShareImageUrl = `${appOrigin}/embed.png?v=7`; // Cache bust
+const frameImageUrl = `${appOrigin}/og.png?v=7`; // Cache bust
 
 const frameMetadata: Record<string, string> = {
   'fc:frame': 'vNext',
