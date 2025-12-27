@@ -24,7 +24,19 @@
         "buttonTitle": "Launch App",
         "splashImageUrl": "https://baseappholymarket.xyz/icon.png",
         "splashBackgroundColor": "#020617",
-        "webhookUrl": "https://baseappholymarket.xyz/api/farcaster/webhook"
+        "webhookUrl": "https://baseappholymarket.xyz/api/farcaster/webhook",
+        "description": "HolyMarket is a decentralized prediction market where you can bet on future events using crypto.",
+        "subtitle": "Trade your beliefs",
+        "screenshotUrls": [
+            "https://baseappholymarket.xyz/icon.png"
+        ],
+        "primaryCategory": "finance",
+        "tags": [
+            "crypto",
+            "betting",
+            "prediction",
+            "base"
+        ]
     },
     "name": "HolyMarket",
     "iconUrl": "https://baseappholymarket.xyz/icon.png",
@@ -45,6 +57,6 @@
         "base"
     ],
     "tagline": "HolyMarket: Bet on Base",
-    "herolImageUrl": "https://baseappholymarket.xyz/icon.png",
+    "heroImageUrl": "https://baseappholymarket.xyz/icon.png",
     "castShareUrl": "https://baseappholymarket.xyz/"
 }
