@@ -1732,16 +1732,16 @@ export default function MarketView() {
                                     <div>
                                         <h3 className="text-3xl font-black text-white mb-2">Institutional Faucet</h3>
                                         <p className="text-[11px] text-slate-400 leading-relaxed font-medium">
-                                            Request <span className="text-white font-bold">0.01 Base Sepolia ETH</span> to participate in the predictive economy. Available once every 24 hours per authenticated wallet.
+                                            Access the <span className="text-white font-bold">Official Coinbase Faucet</span> to request Base Sepolia ETH. This utility allows you to participate in the predictive economy by providing the necessary initial capital for testing.
                                         </p>
                                     </div>
                                 </div>
                                 <div className="shrink-0">
                                     <button
                                         onClick={() => window.open("https://portal.cdp.coinbase.com/products/faucet", "_blank")}
-                                        className="premium-btn px-10 py-5 bg-white text-slate-950 hover:bg-slate-100 shadow-[0_0_50px_rgba(255,255,255,0.1)] active:scale-95"
+                                        className="premium-btn px-10 py-5 bg-[#0052FF] text-white hover:bg-[#0045D9] shadow-[0_0_50px_rgba(0,82,255,0.2)] active:scale-95"
                                     >
-                                        REQUEST CAPITAL
+                                        COINBASE FAUCET
                                     </button>
                                 </div>
                             </div>
