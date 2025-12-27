@@ -59,6 +59,7 @@ export default function MarketView() {
     const [marketSearch, setMarketSearch] = useState("");
     const [marketFilter, setMarketFilter] = useState<"all" | "live" | "ended" | "cancelled">("all");
     const [marketSort, setMarketSort] = useState<"newest" | "ending" | "volume">("newest");
+    const [showHowToPlay, setShowHowToPlay] = useState(false);
 
     const formatTimeLeft = (totalSeconds: number) => {
         if (!Number.isFinite(totalSeconds) || totalSeconds <= 0) return "ENDED";
@@ -1467,32 +1468,42 @@ export default function MarketView() {
                                                     <p className="text-sm font-bold text-white line-clamp-3 mb-6 min-h-[3rem] leading-relaxed group-hover:text-blue-400 transition-colors">
                                                         {m.question}
                                                     </p>
-                                                    <div className="pt-4 border-t border-white/5 space-y-3">
-                                                        <div className="flex justify-between items-end">
-                                                            <div className="flex flex-col">
-                                                                <span className="text-[9px] text-slate-500 font-black uppercase tracking-widest mb-1">Volume</span>
-                                                                <span className="text-sm font-black text-white">
-                                                                    {(Number(m.yesPool + m.noPool) / 1e18).toFixed(3)} <span className="text-[9px] opacity-70">ETH</span>
-                                                                </span>
-                                                            </div>
-                                                            {m.resolved && (
-                                                                <div className="text-right">
-                                                                    <span className="text-[8px] text-slate-500 font-bold uppercase tracking-widest mb-0.5">Outcome</span>
-                                                                    <span className={`text-[10px] font-black uppercase ${m.outcome ? "text-emerald-500" : "text-rose-500"}`}>
-                                                                        {m.outcome ? "YES" : "NO"}
+                                                    <div className="pt-4 border-t border-white/5 space-y-4">
+                                                        <div className="space-y-2">
+                                                            <div className="flex justify-between items-end">
+                                                                <div className="flex flex-col">
+                                                                    <span className="text-[9px] text-slate-500 font-black uppercase tracking-widest mb-1">Volume</span>
+                                                                    <span className="text-sm font-black text-white">
+                                                                        {(Number(m.yesPool + m.noPool) / 1e18).toFixed(3)} <span className="text-[9px] opacity-70">ETH</span>
                                                                     </span>
                                                                 </div>
-                                                            )}
+                                                                <div className="text-right">
+                                                                    <span className="text-[8px] text-slate-500 font-bold uppercase tracking-widest mb-0.5">Pool Dominance</span>
+                                                                    <span className="text-[10px] font-black text-blue-400">
+                                                                        {m.yesPool + m.noPool > 0n ? Math.round(Number(m.yesPool * 100n / (m.yesPool + m.noPool))) : 50}% YES
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                            {/* Volume Visualizer */}
+                                                            <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden flex">
+                                                                <div
+                                                                    className="h-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)] transition-all duration-500"
+                                                                    style={{ width: `${m.yesPool + m.noPool > 0n ? Number(m.yesPool * 100n / (m.yesPool + m.noPool)) : 50}%` }}
+                                                                />
+                                                                <div
+                                                                    className="h-full bg-rose-500 shadow-[0_0_10px_rgba(244,63,94,0.3)] transition-all duration-500"
+                                                                    style={{ width: `${m.yesPool + m.noPool > 0n ? Number(m.noPool * 100n / (m.yesPool + m.noPool)) : 50}%` }}
+                                                                />
+                                                            </div>
                                                         </div>
-                                                        <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
-                                                            {(() => {
-                                                                const y = Number(m.yesPool);
-                                                                const n = Number(m.noPool);
-                                                                const total = y + n;
-                                                                const pct = total > 0 ? (y / total) * 100 : 50;
-                                                                return <div className="h-full bg-blue-500/60 transition-all duration-500" style={{ width: `${pct}%` }} />;
-                                                            })()}
-                                                        </div>
+                                                        {m.resolved && (
+                                                            <div className="text-right">
+                                                                <span className="text-[8px] text-slate-500 font-bold uppercase tracking-widest mb-0.5">Outcome</span>
+                                                                <span className={`text-[10px] font-black uppercase ${m.outcome ? "text-emerald-500" : "text-rose-500"}`}>
+                                                                    {m.outcome ? "YES" : "NO"}
+                                                                </span>
+                                                            </div>
+                                                        )}
                                                     </div>
                                                 </button>
                                             ))}
@@ -1503,7 +1514,7 @@ export default function MarketView() {
                                                 </div>
                                             )}
                                         </div>
-                                    </div>
+                                    </div >
                                 </>
                             );
                         })()}
@@ -1713,25 +1724,69 @@ export default function MarketView() {
                 )}
 
                 {activeTab === "airdrop" && (
-                    <div className="animate-in fade-in zoom-in duration-500 flex flex-col items-center justify-center min-h-[480px] text-center px-4">
-                        <div className="w-full max-w-sm premium-card p-10 bg-white/[0.02] border border-white/5 relative overflow-hidden group">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 blur-3xl -mr-16 -mt-16" />
-                            <div className="w-20 h-20 rounded-3xl bg-blue-500 shadow-[0_0_40px_rgba(59,130,246,0.3)] mx-auto flex items-center justify-center text-white mb-8 group-hover:scale-110 transition-transform duration-500">
-                                <Sparkles size={40} />
-                            </div>
-                            <h3 className="text-2xl font-black text-white mb-3">Governance Airdrop</h3>
-                            <p className="text-[10px] text-blue-400 font-extrabold uppercase tracking-[0.4em] mb-6">Coming Soon • Q1 2026</p>
-                            <div className="space-y-4 text-left">
-                                <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/5">
-                                    <p className="text-[11px] text-slate-400 leading-relaxed">
-                                        Strategic allocation for early adopters and market makers. Your <span className="text-white font-bold">PTS</span> will determine your governance rights.
-                                    </p>
+                    <div className="animate-in fade-in zoom-in duration-500 space-y-6 px-1">
+                        <div className="w-full premium-card p-10 bg-gradient-to-br from-blue-600/10 to-transparent border border-white/10 relative overflow-hidden group">
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/20 blur-[120px] -mr-32 -mt-32 animate-pulse" />
+                            <div className="relative z-10">
+                                <div className="w-24 h-24 rounded-[2.5rem] bg-blue-500 shadow-[0_0_60px_rgba(59,130,246,0.5)] mx-auto flex items-center justify-center text-white mb-10 group-hover:scale-110 transition-transform duration-700">
+                                    <Sparkles size={48} className="animate-pulse" />
                                 </div>
-                                <div className="flex items-center gap-3 px-1">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-                                    <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Snapshot Period: ACTIVE</span>
+                                <div className="text-center space-y-4">
+                                    <h3 className="text-3xl font-black text-white tracking-tight">The Holy Allocation</h3>
+                                    <p className="text-[11px] text-blue-400 font-black uppercase tracking-[0.5em]">Season 1 • Active Now</p>
+
+                                    <div className="py-8 grid grid-cols-2 gap-4 border-y border-white/5 my-8">
+                                        <div className="text-center">
+                                            <div className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-2">Your PTS</div>
+                                            <div className="text-3xl font-black text-white">{userPoints}</div>
+                                        </div>
+                                        <div className="text-center border-l border-white/5">
+                                            <div className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-2">Multiplier</div>
+                                            <div className="text-3xl font-black text-emerald-400">1.25x</div>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-4 max-w-sm mx-auto">
+                                        <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden">
+                                            <div className="h-full bg-blue-500 w-[65%] shadow-[0_0_20px_rgba(59,130,246,0.3)]" />
+                                        </div>
+                                        <div className="flex justify-between text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                                            <span>Progress to Next Tier</span>
+                                            <span className="text-white">65%</span>
+                                        </div>
+                                    </div>
+
+                                    <button
+                                        className="mt-10 px-8 py-4 rounded-2xl bg-white/[0.03] border border-white/10 text-[11px] font-black text-white uppercase tracking-[0.2em] hover:bg-white/5 transition-colors"
+                                        onClick={() => setShowHowToPlay(true)}
+                                    >
+                                        How to Farm?
+                                    </button>
                                 </div>
                             </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {[
+                                { title: "Early Adopter", desc: "Bet on your first market.", pts: "+500", done: userHistory.length > 0 },
+                                { title: "High Roller", desc: "Wager more than 0.1 ETH.", pts: "+2500", done: parseFloat(positionsSummary.totalWageredEth) > 0.1 },
+                            ].map((task, i) => (
+                                <div key={i} className="p-6 rounded-[24px] bg-white/[0.02] border border-white/5 flex items-center justify-between group">
+                                    <div className="space-y-1">
+                                        <h4 className="text-xs font-black text-white uppercase tracking-wider">{task.title}</h4>
+                                        <p className="text-[10px] text-slate-500 font-medium">{task.desc}</p>
+                                    </div>
+                                    <div className="text-right">
+                                        {task.done ? (
+                                            <div className="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-500 flex items-center justify-center">
+                                                <Info size={14} />
+                                            </div>
+                                        ) : (
+                                            <span className="text-[11px] font-black text-blue-400">{task.pts}</span>
+                                        )}
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     </div>
                 )}
@@ -1813,7 +1868,24 @@ export default function MarketView() {
                                             <div className="text-lg font-black text-white">{userPoints} <span className="text-[10px] text-blue-400 ml-0.5">PTS</span></div>
                                         </div>
                                         <div className="px-4 py-2 rounded-xl bg-white/5 border border-white/5">
-                                            <div className="text-lg font-black text-white">{userHistory.length}</div>
+                                            <div className="text-[9px] text-slate-500 font-bold uppercase tracking-widest mb-1">Activity</div>
+                                            <div className="text-lg font-black text-white">{userHistory.length} <span className="text-[10px] text-blue-400 ml-0.5">BETS</span></div>
+                                        </div>
+                                        <div className="px-4 py-2 rounded-xl bg-blue-500/10 border border-blue-500/20">
+                                            <div className="text-[9px] text-blue-400 font-bold uppercase tracking-widest mb-1">Rank</div>
+                                            <div className="text-lg font-black text-white">
+                                                {userPoints > 10000 ? "Grandmaster" : userPoints > 5000 ? "Pro" : "Rookie"}
+                                            </div>
+                                        </div>
+                                        <div className="px-4 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
+                                            <div className="text-[9px] text-emerald-400 font-bold uppercase tracking-widest mb-1">Success</div>
+                                            <div className="text-lg font-black text-white">
+                                                {(() => {
+                                                    const closedCount = positionsSummary.closedCount;
+                                                    const won = userHistory.filter(h => h.resolved && ((h.outcome && h.yesAmount > 0n) || (!h.outcome && h.noAmount > 0n))).length;
+                                                    return closedCount > 0 ? Math.round((won / closedCount) * 100) : 0;
+                                                })()}% <span className="text-[10px] opacity-70">WON</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -2186,63 +2258,106 @@ export default function MarketView() {
                 )}
             </div>
 
-            {sharePromptOpen && sharePromptTxHash && sharePromptAmountBnb && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm px-4">
-                    <div className="w-full max-w-sm premium-card p-10 bg-slate-950 border border-white/10 relative overflow-hidden animate-in zoom-in duration-300">
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 blur-3xl -mr-16 -mt-16" />
+            {
+                sharePromptOpen && sharePromptTxHash && sharePromptAmountBnb && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm px-4">
+                        <div className="w-full max-w-sm premium-card p-10 bg-slate-950 border border-white/10 relative overflow-hidden animate-in zoom-in duration-300">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 blur-3xl -mr-16 -mt-16" />
 
-                        <div className="w-20 h-20 rounded-3xl bg-blue-500 shadow-[0_0_40px_rgba(59,130,246,0.3)] mx-auto flex items-center justify-center text-white mb-8">
-                            <Sparkles size={40} />
-                        </div>
+                            <div className="w-20 h-20 rounded-3xl bg-blue-500 shadow-[0_0_40px_rgba(59,130,246,0.3)] mx-auto flex items-center justify-center text-white mb-8">
+                                <Sparkles size={40} />
+                            </div>
 
-                        <h3 className="text-2xl font-black text-white text-center mb-2">Claim 2X Boost</h3>
-                        <p className="text-[11px] text-slate-400 text-center leading-relaxed font-medium mb-8">
-                            Share your market prediction with the community to double your <span className="text-white font-bold">PTS</span> allocation.
-                        </p>
+                            <h3 className="text-2xl font-black text-white text-center mb-2">Claim 2X Boost</h3>
+                            <p className="text-[11px] text-slate-400 text-center leading-relaxed font-medium mb-8">
+                                Share your market prediction with the community to double your <span className="text-white font-bold">PTS</span> allocation.
+                            </p>
 
-                        <div className="space-y-3 mb-8">
+                            <div className="space-y-3 mb-8">
+                                <button
+                                    type="button"
+                                    disabled={shareBoostBusy}
+                                    className="w-full premium-btn py-4 bg-white text-slate-950 hover:bg-slate-100 flex items-center justify-center gap-2 group disabled:grayscale"
+                                    onClick={async () => {
+                                        const text = `I just placed a prediction on HolyMarket: ${market?.question || ""}`;
+                                        const url = getMarketShareUrl() || window.location.href;
+                                        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`);
+                                        await claimShareBoost(sharePromptTxHash, sharePromptAmountBnb);
+                                        setSharePromptOpen(false);
+                                    }}
+                                >
+                                    <span className="text-xs font-black uppercase tracking-widest">Share on X</span>
+                                </button>
+
+                                <button
+                                    type="button"
+                                    disabled={shareBoostBusy}
+                                    className="w-full premium-btn py-4 bg-white/[0.05] text-white border border-white/10 hover:bg-white/[0.1] disabled:grayscale"
+                                    onClick={async () => {
+                                        const text = `Predicting on HolyMarket: ${market?.question || ""}`;
+                                        const url = getMarketShareUrl() || window.location.href;
+                                        window.open(`https://warpcast.com/~/compose?text=${encodeURIComponent(text)}&embeds[]=${encodeURIComponent(url)}`);
+                                        await claimShareBoost(sharePromptTxHash, sharePromptAmountBnb);
+                                        setSharePromptOpen(false);
+                                    }}
+                                >
+                                    <span className="text-xs font-black uppercase tracking-widest text-blue-400">Share on Warpcast</span>
+                                </button>
+                            </div>
+
                             <button
                                 type="button"
+                                className="w-full text-[10px] font-black text-slate-600 hover:text-slate-400 uppercase tracking-[0.3em] transition-colors"
+                                onClick={() => setSharePromptOpen(false)}
                                 disabled={shareBoostBusy}
-                                className="w-full premium-btn py-4 bg-white text-slate-950 hover:bg-slate-100 flex items-center justify-center gap-2 group disabled:grayscale"
-                                onClick={async () => {
-                                    const text = `I just placed a prediction on HolyMarket: ${market?.question || ""}`;
-                                    const url = getMarketShareUrl() || window.location.href;
-                                    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`);
-                                    await claimShareBoost(sharePromptTxHash, sharePromptAmountBnb);
-                                    setSharePromptOpen(false);
-                                }}
                             >
-                                <span className="text-xs font-black uppercase tracking-widest">Share on X</span>
+                                Skip Bonus
                             </button>
+                        </div>
+                    </div>
+                )
+            }
 
-                            <button
-                                type="button"
-                                disabled={shareBoostBusy}
-                                className="w-full premium-btn py-4 bg-white/[0.05] text-white border border-white/10 hover:bg-white/[0.1] disabled:grayscale"
-                                onClick={async () => {
-                                    const text = `Predicting on HolyMarket: ${market?.question || ""}`;
-                                    const url = getMarketShareUrl() || window.location.href;
-                                    window.open(`https://warpcast.com/~/compose?text=${encodeURIComponent(text)}&embeds[]=${encodeURIComponent(url)}`);
-                                    await claimShareBoost(sharePromptTxHash, sharePromptAmountBnb);
-                                    setSharePromptOpen(false);
-                                }}
-                            >
-                                <span className="text-xs font-black uppercase tracking-widest text-blue-400">Share on Warpcast</span>
+            {showHowToPlay && (
+                <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/90 backdrop-blur-xl px-4 animate-in fade-in duration-300">
+                    <div className="w-full max-w-sm premium-card bg-slate-950 border border-white/10 relative overflow-hidden flex flex-col max-h-[90vh]">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 blur-[100px] -mr-32 -mt-32" />
+
+                        <div className="p-8 pb-4 flex justify-between items-center border-b border-white/5 relative z-10">
+                            <h3 className="text-xl font-black text-white uppercase tracking-tighter">How to Play</h3>
+                            <button onClick={() => setShowHowToPlay(false)} className="text-slate-500 hover:text-white transition-colors">
+                                <Info size={20} />
                             </button>
                         </div>
 
-                        <button
-                            type="button"
-                            className="w-full text-[10px] font-black text-slate-600 hover:text-slate-400 uppercase tracking-[0.3em] transition-colors"
-                            onClick={() => setSharePromptOpen(false)}
-                            disabled={shareBoostBusy}
-                        >
-                            Skip Bonus
-                        </button>
+                        <div className="p-8 overflow-y-auto no-scrollbar space-y-8 relative z-10">
+                            {[
+                                { step: "01", title: "Connect & Faucet", desc: "Connect your wallet and use the Faucet to get free Testnet ETH. No real money required." },
+                                { step: "02", title: "Predict & Bet", desc: "Choose a market and predict the outcome. More volume means higher potential rewards." },
+                                { step: "03", title: "Earn PTS", desc: "Every bet earns you PTS. Share your bets on social media to double your allocation." },
+                                { step: "04", title: "Claim Rewards", desc: "If your prediction is correct, claim your share of the total pool once the market ends." }
+                            ].map((s, i) => (
+                                <div key={i} className="flex gap-6 group">
+                                    <span className="text-2xl font-black text-blue-500/30 group-hover:text-blue-500 transition-colors duration-500">{s.step}</span>
+                                    <div className="space-y-1">
+                                        <h4 className="text-sm font-black text-white uppercase tracking-wider">{s.title}</h4>
+                                        <p className="text-[11px] text-slate-400 leading-relaxed font-medium">{s.desc}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className="p-8 pt-4 relative z-10">
+                            <button
+                                onClick={() => setShowHowToPlay(false)}
+                                className="w-full premium-btn py-4 bg-blue-500 text-white font-black text-xs uppercase tracking-[0.2em] shadow-lg shadow-blue-500/20 active:scale-95"
+                            >
+                                Let's Holy Start
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}
-        </div>
+        </div >
     );
 }
