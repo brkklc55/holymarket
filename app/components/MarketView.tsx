@@ -1477,11 +1477,10 @@ export default function MarketView() {
                                                                         {(Number(m.yesPool + m.noPool) / 1e18).toFixed(3)} <span className="text-[9px] opacity-70">ETH</span>
                                                                     </span>
                                                                 </div>
-                                                                <div className="text-right">
-                                                                    <span className="text-[8px] text-slate-500 font-bold uppercase tracking-widest mb-0.5">Pool Dominance</span>
-                                                                    <span className="text-[10px] font-black text-blue-400">
-                                                                        {m.yesPool + m.noPool > 0n ? Math.round(Number(m.yesPool * 100n / (m.yesPool + m.noPool))) : 50}% YES
-                                                                    </span>
+                                                                <div className="text-right flex items-center gap-2 text-[10px] font-black tracking-widest uppercase">
+                                                                    <span className="text-emerald-500">{m.yesPool + m.noPool > 0n ? Math.round(Number(m.yesPool * 100n / (m.yesPool + m.noPool))) : 50}% YES</span>
+                                                                    <span className="text-slate-800">/</span>
+                                                                    <span className="text-rose-500">{m.yesPool + m.noPool > 0n ? Math.round(Number(m.noPool * 100n / (m.yesPool + m.noPool))) : 50}% NO</span>
                                                                 </div>
                                                             </div>
                                                             {/* Volume Visualizer */}
