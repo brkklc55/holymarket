@@ -25,10 +25,9 @@ export async function GET() {
             name: "HolyMarket",
             iconUrl: officialLogoUrl,
             homeUrl: baseUrl + "/",
-            imageUrl: officialLogoUrl,
+            imageUrl: `${baseUrl}/api/og`,
             buttonTitle: "Launch App",
             splashImageUrl: officialLogoUrl,
-            splashlImageUrl: officialLogoUrl, // Warpcast table label version
             splashBackgroundColor: "#020617",
             webhookUrl: webhookUrl,
         },
@@ -37,10 +36,9 @@ export async function GET() {
             name: "HolyMarket",
             iconUrl: officialLogoUrl,
             homeUrl: baseUrl + "/",
-            imageUrl: officialLogoUrl,
+            imageUrl: `${baseUrl}/api/og`,
             buttonTitle: "Launch App",
             splashImageUrl: officialLogoUrl,
-            splashlImageUrl: officialLogoUrl, // Warpcast table label version
             splashBackgroundColor: "#020617",
             webhookUrl: webhookUrl,
             description: appDescription,
@@ -48,8 +46,7 @@ export async function GET() {
             screenshotUrls: [officialLogoUrl],
             primaryCategory: "finance",
             tags: ["crypto", "betting", "prediction", "base"],
-            heroImageUrl: officialLogoUrl,
-            herolImageUrl: officialLogoUrl, // Warpcast table label version
+            heroImageUrl: `${baseUrl}/api/og`,
         },
         // Root level fields for various Farcaster tool versions
         name: "HolyMarket",
@@ -57,16 +54,15 @@ export async function GET() {
         webhookUrl: webhookUrl,
         ogTitle: "HolyMarket",
         ogDescription: "Trade your beliefs on Base",
-        ogImageUrl: officialLogoUrl,
-        oglImageUrl: officialLogoUrl, // Warpcast table label version
+        ogImageUrl: `${baseUrl}/api/og`,
+        oglImageUrl: `${baseUrl}/api/og`,
         subtitle: appSubtitle,
         description: appDescription,
         screenshotUrls: [officialLogoUrl],
         primaryCategory: "finance",
         tags: ["crypto", "betting", "prediction", "base"],
         tagline: "HolyMarket: Bet on Base",
-        heroImageUrl: officialLogoUrl,
-        herolImageUrl: officialLogoUrl, // Warpcast table label version
+        heroImageUrl: `${baseUrl}/api/og`,
         castShareUrl: baseUrl,
     };
 
@@ -80,7 +76,7 @@ export async function GET() {
             "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
             "Pragma": "no-cache",
             "Expires": "0",
-            "X-Farcaster-Fix": "v12-final-cors-v4",
+            "X-Farcaster-Fix": "v13-og-fix",
         },
     });
 }

@@ -9,10 +9,9 @@
         "name": "HolyMarket",
         "iconUrl": "https://baseappholymarket.xyz/icon.png",
         "homeUrl": "https://baseappholymarket.xyz/",
-        "imageUrl": "https://baseappholymarket.xyz/icon.png",
+        "imageUrl": "https://baseappholymarket.xyz/api/og",
         "buttonTitle": "Launch App",
         "splashImageUrl": "https://baseappholymarket.xyz/icon.png",
-        "splashlImageUrl": "https://baseappholymarket.xyz/icon.png",
         "splashBackgroundColor": "#020617",
         "webhookUrl": "https://baseappholymarket.xyz/api/farcaster/webhook"
     },
@@ -21,10 +20,9 @@
         "name": "HolyMarket",
         "iconUrl": "https://baseappholymarket.xyz/icon.png",
         "homeUrl": "https://baseappholymarket.xyz/",
-        "imageUrl": "https://baseappholymarket.xyz/icon.png",
+        "imageUrl": "https://baseappholymarket.xyz/api/og",
         "buttonTitle": "Launch App",
         "splashImageUrl": "https://baseappholymarket.xyz/icon.png",
-        "splashlImageUrl": "https://baseappholymarket.xyz/icon.png",
         "splashBackgroundColor": "#020617",
         "webhookUrl": "https://baseappholymarket.xyz/api/farcaster/webhook",
         "description": "HolyMarket is a decentralized prediction market where you can bet on future events using crypto.",
@@ -39,16 +37,15 @@
             "prediction",
             "base"
         ],
-        "heroImageUrl": "https://baseappholymarket.xyz/icon.png",
-        "herolImageUrl": "https://baseappholymarket.xyz/icon.png"
+        "heroImageUrl": "https://baseappholymarket.xyz/api/og"
     },
     "name": "HolyMarket",
     "iconUrl": "https://baseappholymarket.xyz/icon.png",
     "webhookUrl": "https://baseappholymarket.xyz/api/farcaster/webhook",
     "ogTitle": "HolyMarket",
     "ogDescription": "Trade your beliefs on Base",
-    "ogImageUrl": "https://baseappholymarket.xyz/icon.png",
-    "oglImageUrl": "https://baseappholymarket.xyz/icon.png",
+    "ogImageUrl": "https://baseappholymarket.xyz/api/og",
+    "oglImageUrl": "https://baseappholymarket.xyz/api/og",
     "subtitle": "Trade your beliefs",
     "description": "HolyMarket is a decentralized prediction market where you can bet on future events using crypto.",
     "screenshotUrls": [
@@ -62,7 +59,6 @@
         "base"
     ],
     "tagline": "HolyMarket: Bet on Base",
-    "heroImageUrl": "https://baseappholymarket.xyz/icon.png",
-    "herolImageUrl": "https://baseappholymarket.xyz/icon.png",
+    "heroImageUrl": "https://baseappholymarket.xyz/api/og",
     "castShareUrl": "https://baseappholymarket.xyz/"
 }

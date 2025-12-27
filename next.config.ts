@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 import path from "path";
 
 const nextConfig: NextConfig = {
+  optimizeFonts: false,
   outputFileTracingRoot: path.join(__dirname),
   webpack: (config, { isServer }) => {
     config.resolve = config.resolve || {};
