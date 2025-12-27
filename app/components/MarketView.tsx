@@ -2039,7 +2039,11 @@ export default function MarketView() {
                             </button>
                         </div>
 
-                        <div className="space-y-2.5">
+                        <div className="space-y-4">
+                            <div className="flex items-center justify-between px-6 py-2">
+                                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Bettor</span>
+                                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Cumulative Points</span>
+                            </div>
                             {pointsLeaderboard.map((entry, i) => (
                                 <div key={i} className="flex items-center justify-between p-4 bg-white/[0.02] rounded-[20px] border border-white/5 hover:border-blue-500/30 transition-all group overflow-hidden relative">
                                     <div className="flex items-center gap-5 relative z-10">
@@ -2048,12 +2052,10 @@ export default function MarketView() {
                                         </div>
                                         <div className="space-y-0.5">
                                             <span className="text-sm font-bold text-white block">{entry.user.slice(0, 10)}...{entry.user.slice(-6)}</span>
-                                            <span className="text-[8px] text-slate-600 font-black uppercase tracking-widest">Authenticated Bettor</span>
                                         </div>
                                     </div>
                                     <div className="text-right relative z-10">
-                                        <div className="text-lg font-black text-blue-400 group-hover:text-blue-300 transition-colors">{entry.points}</div>
-                                        <div className="text-[9px] text-slate-600 font-black uppercase tracking-tight">CUMULATIVE PTS</div>
+                                        <div className="text-lg font-black text-blue-400 group-hover:text-blue-300 transition-colors">{entry.points} <span className="text-[10px] text-slate-500 ml-1">PTS</span></div>
                                     </div>
                                     {i === 0 && <div className="absolute top-0 right-0 w-32 h-full bg-amber-500/5 blur-3xl -mr-16" />}
                                 </div>
