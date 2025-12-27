@@ -40,6 +40,11 @@ export async function GET(req: Request) {
             splashImageUrl: officialLogoUrl,
             splashBackgroundColor: "#020617",
             webhookUrl: webhookUrl,
+            description: "HolyMarket is a decentralized prediction market where you can bet on future events using crypto.",
+            subtitle: "Trade your beliefs",
+            screenshotUrls: [officialLogoUrl],
+            primaryCategory: "finance",
+            tags: ["crypto", "betting", "prediction", "base"],
         },
         // Root level fields for various Farcaster tool versions
         name: "HolyMarket",
@@ -54,7 +59,7 @@ export async function GET(req: Request) {
         primaryCategory: "finance",
         tags: ["crypto", "betting", "prediction", "base"],
         tagline: "HolyMarket: Bet on Base",
-        herolImageUrl: officialLogoUrl,
+        heroImageUrl: officialLogoUrl,
         castShareUrl: baseUrl,
     };
 
