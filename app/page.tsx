@@ -22,8 +22,18 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'HolyMarket',
     description: 'HolyMarket: The first decentralized prediction market on Base. Trade your beliefs.',
-    images: [fullShareImageUrl],
+    images: [
+      {
+        url: fullShareImageUrl,
+        width: 1200,
+        height: 630,
+        type: 'image/png',
+        alt: 'HolyMarket Preview',
+      },
+    ],
     url: appOrigin,
+    siteName: 'HolyMarket',
+    type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
@@ -39,8 +49,6 @@ export const metadata: Metadata = {
 };
 
 import MarketView from "./components/MarketView";
-
-// ... metadata remains the same ...
 
 export default function Page() {
   return (

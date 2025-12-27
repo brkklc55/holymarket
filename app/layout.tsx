@@ -28,6 +28,7 @@ export const metadata: Metadata = {
         url: `${baseUrl}/api/og`,
         width: 1200,
         height: 630,
+        type: 'image/png',
         alt: "HolyMarket",
       },
     ],
