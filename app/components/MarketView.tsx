@@ -37,6 +37,7 @@ export default function MarketView() {
     const [sharePromptOpen, setSharePromptOpen] = useState(false);
     const [sharePromptTxHash, setSharePromptTxHash] = useState<string | null>(null);
     const [sharePromptAmountBnb, setSharePromptAmountBnb] = useState<string | null>(null);
+    const [sharePromptChoice, setSharePromptChoice] = useState<"YES" | "NO" | null>(null);
     const [shareBoostBusy, setShareBoostBusy] = useState(false);
     const [userBet, setUserBet] = useState<{ yesAmount: bigint; noAmount: bigint; claimed: boolean } | null>(null);
     const [claimableAmount, setClaimableAmount] = useState("0");
@@ -116,10 +117,30 @@ export default function MarketView() {
         return "";
     };
 
-    const getMarketShareUrl = () => {
+    const getMarketShareUrl = (forcedChoice?: "YES" | "NO") => {
         const base = getShareBaseUrl();
         if (!base) return "";
-        return `${base}/?marketId=${selectedMarketId.toString()}`;
+        const m = market;
+        const choice = forcedChoice || sharePromptChoice;
+
+        const params = new URLSearchParams();
+        params.set('marketId', selectedMarketId.toString());
+
+        if (m) {
+            params.set('question', m.question);
+            const total = m.yesPool + m.noPool;
+            const yesPct = total > 0n ? Math.round(Number(m.yesPool * 100n / total)) : 50;
+            const noPct = 100 - yesPct;
+            const volume = (Number(total) / 1e18).toFixed(3);
+
+            params.set('yesPct', yesPct.toString());
+            params.set('noPct', noPct.toString());
+            params.set('volume', volume);
+        }
+
+        if (choice) params.set('choice', choice);
+
+        return `${base}/?${params.toString()}`;
     };
 
     const parseNonNegativeInt = (v: string) => {
@@ -1091,6 +1112,7 @@ export default function MarketView() {
             // Prompt share to claim 2x points
             setSharePromptTxHash(hash);
             setSharePromptAmountBnb(amount);
+            setSharePromptChoice(outcome ? "YES" : "NO");
             setSharePromptOpen(true);
         } catch (error: any) {
             const msg = String(error?.message || "Unknown error");
@@ -2280,7 +2302,7 @@ export default function MarketView() {
                                     disabled={shareBoostBusy}
                                     className="w-full premium-btn py-4 bg-white text-slate-950 hover:bg-slate-100 flex items-center justify-center gap-2 group disabled:grayscale"
                                     onClick={async () => {
-                                        const text = `I just placed a prediction on HolyMarket: ${market?.question || ""}`;
+                                        const text = `I just predicted ${sharePromptChoice} on HolyMarket: ${market?.question || ""}`;
                                         const url = getMarketShareUrl() || window.location.href;
                                         window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`);
                                         await claimShareBoost(sharePromptTxHash, sharePromptAmountBnb);
@@ -2295,7 +2317,7 @@ export default function MarketView() {
                                     disabled={shareBoostBusy}
                                     className="w-full premium-btn py-4 bg-white/[0.05] text-white border border-white/10 hover:bg-white/[0.1] disabled:grayscale"
                                     onClick={async () => {
-                                        const text = `Predicting on HolyMarket: ${market?.question || ""}`;
+                                        const text = `Predicting ${sharePromptChoice} on HolyMarket: ${market?.question || ""}`;
                                         const url = getMarketShareUrl() || window.location.href;
                                         window.open(`https://warpcast.com/~/compose?text=${encodeURIComponent(text)}&embeds[]=${encodeURIComponent(url)}`);
                                         await claimShareBoost(sharePromptTxHash, sharePromptAmountBnb);

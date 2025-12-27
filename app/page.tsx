@@ -2,42 +2,60 @@ import type { Metadata } from 'next';
 
 const baseUrl = (process.env.NEXT_PUBLIC_URL || 'https://baseappholymarket.xyz').replace(/\/?$/, '');
 const appOrigin = baseUrl + '/';
-const imageUrl = `${baseUrl}/og.png`;
 
-const manifestUrl = `${baseUrl}/farcaster.json`;
+export async function generateMetadata({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }): Promise<Metadata> {
+  const question = typeof searchParams.question === 'string' ? searchParams.question : undefined;
+  const choice = typeof searchParams.choice === 'string' ? searchParams.choice : undefined;
+  const yesPct = typeof searchParams.yesPct === 'string' ? searchParams.yesPct : '50';
+  const noPct = typeof searchParams.noPct === 'string' ? searchParams.noPct : '50';
+  const volume = typeof searchParams.volume === 'string' ? searchParams.volume : '0.00';
 
-export const metadata: Metadata = {
-  title: 'HolyMarket',
-  description: 'HolyMarket: Bet your beliefs on Base.',
-  openGraph: {
+  let imageUrl = `${baseUrl}/og.png`;
+  if (question) {
+    const params = new URLSearchParams();
+    params.set('question', question);
+    if (choice) params.set('choice', choice);
+    params.set('yesPct', yesPct);
+    params.set('noPct', noPct);
+    params.set('volume', volume);
+    imageUrl = `${baseUrl}/api/og?${params.toString()}`;
+  }
+
+  const manifestUrl = `${baseUrl}/farcaster.json`;
+
+  return {
     title: 'HolyMarket',
     description: 'HolyMarket: Bet your beliefs on Base.',
-    images: [
-      {
-        url: imageUrl,
-        width: 1200,
-        height: 630,
-        type: 'image/png',
-        alt: 'HolyMarket',
-      },
-    ],
-    url: appOrigin,
-    siteName: 'HolyMarket',
-    type: 'website',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'HolyMarket',
-    description: 'HolyMarket: Bet your beliefs on Base.',
-    images: [imageUrl],
-  },
-  other: {
-    "fc:frame": "vNext",
-    "fc:frame:image": imageUrl,
-    "fc:frame:v2": "true",
-    "fc:frame:manifest": manifestUrl,
-  },
-};
+    openGraph: {
+      title: 'HolyMarket',
+      description: 'HolyMarket: Bet your beliefs on Base.',
+      images: [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+          type: 'image/png',
+          alt: 'HolyMarket',
+        },
+      ],
+      url: appOrigin,
+      siteName: 'HolyMarket',
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'HolyMarket',
+      description: 'HolyMarket: Bet your beliefs on Base.',
+      images: [imageUrl],
+    },
+    other: {
+      "fc:frame": "vNext",
+      "fc:frame:image": imageUrl,
+      "fc:frame:v2": "true",
+      "fc:frame:manifest": manifestUrl,
+    },
+  };
+}
 
 import MarketView from "./components/MarketView";
 
