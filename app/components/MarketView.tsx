@@ -90,6 +90,7 @@ export default function MarketView() {
     const [durationDays, setDurationDays] = useState("0");
     const [durationHours, setDurationHours] = useState("1");
     const [durationMinutes, setDurationMinutes] = useState("0");
+    const [targetEndTime, setTargetEndTime] = useState("");
 
     const needsNetworkSwitch = isConnected && chainId !== baseSepolia.id;
 
@@ -948,11 +949,24 @@ export default function MarketView() {
             const walletClient = createWalletClient({ chain: baseSepolia, transport: custom((window as any).ethereum) });
             const [address] = await walletClient.requestAddresses();
 
+            let durationSecs = BigInt(newDuration);
+            if (targetEndTime) {
+                const targetMs = new Date(targetEndTime).getTime();
+                const nowMs = Date.now();
+                const diffSecs = Math.floor((targetMs - nowMs) / 1000);
+                if (diffSecs <= 0) {
+                    toast({ title: "Invalid date", message: "Target time must be in the future.", variant: "warning" });
+                    setBetting(false);
+                    return;
+                }
+                durationSecs = BigInt(diffSecs);
+            }
+
             const hash = await walletClient.writeContract({
                 address: marketAddress,
                 abi: PREDICTION_MARKET_ABI,
                 functionName: "createMarket",
-                args: [newQuestion, BigInt(newDuration)],
+                args: [newQuestion, durationSecs],
                 account: address,
             });
 
@@ -2075,12 +2089,12 @@ export default function MarketView() {
                                 </div>
                                 <div className="grid md:grid-cols-2 gap-6">
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Duration (Hours)</label>
+                                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">End Date & Time</label>
                                         <input
-                                            type="number"
-                                            value={durationHours}
-                                            onChange={(e) => setDurationHours(e.target.value)}
-                                            className="w-full premium-input bg-white/[0.01] py-4 font-mono"
+                                            type="datetime-local"
+                                            value={targetEndTime}
+                                            onChange={(e) => setTargetEndTime(e.target.value)}
+                                            className="w-full premium-input bg-white/[0.01] py-4 font-sans text-xs"
                                         />
                                     </div>
                                     <div className="flex items-end">
