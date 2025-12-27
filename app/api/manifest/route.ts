@@ -28,6 +28,7 @@ export async function GET() {
             imageUrl: officialLogoUrl,
             buttonTitle: "Launch App",
             splashImageUrl: officialLogoUrl,
+            splashlImageUrl: officialLogoUrl, // Warpcast table label version
             splashBackgroundColor: "#020617",
             webhookUrl: webhookUrl,
         },
@@ -39,6 +40,7 @@ export async function GET() {
             imageUrl: officialLogoUrl,
             buttonTitle: "Launch App",
             splashImageUrl: officialLogoUrl,
+            splashlImageUrl: officialLogoUrl, // Warpcast table label version
             splashBackgroundColor: "#020617",
             webhookUrl: webhookUrl,
             description: appDescription,
@@ -47,6 +49,7 @@ export async function GET() {
             primaryCategory: "finance",
             tags: ["crypto", "betting", "prediction", "base"],
             heroImageUrl: officialLogoUrl,
+            herolImageUrl: officialLogoUrl, // Warpcast table label version
         },
         // Root level fields for various Farcaster tool versions
         name: "HolyMarket",
@@ -55,6 +58,7 @@ export async function GET() {
         ogTitle: "HolyMarket",
         ogDescription: "Trade your beliefs on Base",
         ogImageUrl: officialLogoUrl,
+        oglImageUrl: officialLogoUrl, // Warpcast table label version
         subtitle: appSubtitle,
         description: appDescription,
         screenshotUrls: [officialLogoUrl],
@@ -62,6 +66,7 @@ export async function GET() {
         tags: ["crypto", "betting", "prediction", "base"],
         tagline: "HolyMarket: Bet on Base",
         heroImageUrl: officialLogoUrl,
+        herolImageUrl: officialLogoUrl, // Warpcast table label version
         castShareUrl: baseUrl,
     };
 

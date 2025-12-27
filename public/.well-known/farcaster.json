@@ -12,6 +12,7 @@
         "imageUrl": "https://baseappholymarket.xyz/icon.png",
         "buttonTitle": "Launch App",
         "splashImageUrl": "https://baseappholymarket.xyz/icon.png",
+        "splashlImageUrl": "https://baseappholymarket.xyz/icon.png",
         "splashBackgroundColor": "#020617",
         "webhookUrl": "https://baseappholymarket.xyz/api/farcaster/webhook"
     },
@@ -23,6 +24,7 @@
         "imageUrl": "https://baseappholymarket.xyz/icon.png",
         "buttonTitle": "Launch App",
         "splashImageUrl": "https://baseappholymarket.xyz/icon.png",
+        "splashlImageUrl": "https://baseappholymarket.xyz/icon.png",
         "splashBackgroundColor": "#020617",
         "webhookUrl": "https://baseappholymarket.xyz/api/farcaster/webhook",
         "description": "HolyMarket is a decentralized prediction market where you can bet on future events using crypto.",
@@ -37,7 +39,8 @@
             "prediction",
             "base"
         ],
-        "heroImageUrl": "https://baseappholymarket.xyz/icon.png"
+        "heroImageUrl": "https://baseappholymarket.xyz/icon.png",
+        "herolImageUrl": "https://baseappholymarket.xyz/icon.png"
     },
     "name": "HolyMarket",
     "iconUrl": "https://baseappholymarket.xyz/icon.png",
@@ -45,6 +48,7 @@
     "ogTitle": "HolyMarket",
     "ogDescription": "Trade your beliefs on Base",
     "ogImageUrl": "https://baseappholymarket.xyz/icon.png",
+    "oglImageUrl": "https://baseappholymarket.xyz/icon.png",
     "subtitle": "Trade your beliefs",
     "description": "HolyMarket is a decentralized prediction market where you can bet on future events using crypto.",
     "screenshotUrls": [
@@ -59,5 +63,6 @@
     ],
     "tagline": "HolyMarket: Bet on Base",
     "heroImageUrl": "https://baseappholymarket.xyz/icon.png",
+    "herolImageUrl": "https://baseappholymarket.xyz/icon.png",
     "castShareUrl": "https://baseappholymarket.xyz/"
 }
