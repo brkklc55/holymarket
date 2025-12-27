@@ -4,28 +4,28 @@ import FarcasterProvider from "./components/FarcasterProvider";
 import TermsGate from "./components/TermsGate";
 import SplashGate from "./components/SplashGate";
 
-const defaultUrl = "https://baseappholymarket.xyz";
-const baseUrl = process.env.NEXT_PUBLIC_URL || defaultUrl;
+const defaultUrl = "https://baseappholymarket.xyz/";
+const baseUrl = (process.env.NEXT_PUBLIC_URL || defaultUrl).replace(/\/?$/, '/');
 
 export const metadata: Metadata = {
   title: "HolyMarket",
   applicationName: "HolyMarket",
-  description: "HolyMarket: The first decentralized prediction market on Base. Trade your beliefs.",
+  description: "Trade your beliefs on Base.",
   metadataBase: new URL(baseUrl),
   icons: {
-    icon: [{ url: `${baseUrl}/icon.png?v=2`, sizes: "any" }],
-    shortcut: [`${baseUrl}/icon.png?v=2`],
-    apple: [{ url: `${baseUrl}/icon.png?v=2`, sizes: "180x180", type: "image/png" }],
+    icon: [{ url: `${baseUrl}icon.png?v=9`, sizes: "any" }],
+    shortcut: [`${baseUrl}icon.png?v=9`],
+    apple: [{ url: `${baseUrl}icon.png?v=9`, sizes: "180x180", type: "image/png" }],
   },
 
   openGraph: {
     title: "HolyMarket",
-    description: "HolyMarket: The first decentralized prediction market on Base. Trade your beliefs.",
+    description: "Trade your beliefs on Base.",
     url: "/",
     siteName: "HolyMarket",
     images: [
       {
-        url: `https://placehold.co/1200x630/020617/white?text=HolyMarket+OG+1.91:1`,
+        url: `${baseUrl}og.png?v=9`,
         width: 1200,
         height: 630,
         type: 'image/png',
@@ -37,10 +37,10 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "HolyMarket",
-    description: "HolyMarket: The first decentralized prediction market on Base. Trade your beliefs.",
-    images: [`https://placehold.co/1200x630/020617/white?text=HolyMarket+Twitter+1.91:1`],
+    description: "Trade your beliefs on Base.",
+    images: [`${baseUrl}og.png?v=9`],
   },
-  manifest: "/manifest.json?v=8",
+  manifest: "/manifest.json?v=9",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
