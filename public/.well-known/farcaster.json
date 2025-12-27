@@ -9,9 +9,9 @@
         "name": "HolyMarket",
         "iconUrl": "https://baseappholymarket.xyz/icon.png",
         "homeUrl": "https://baseappholymarket.xyz/",
-        "imageUrl": "https://baseappholymarket.xyz/og-frame.png",
+        "imageUrl": "https://placehold.co/1200x630/020617/white?text=HolyMarket+Frame+1.91:1",
         "buttonTitle": "Launch App",
-        "splashImageUrl": "https://baseappholymarket.xyz/splash.png",
+        "splashImageUrl": "https://baseappholymarket.xyz/icon.png",
         "splashBackgroundColor": "#020617",
         "webhookUrl": "https://baseappholymarket.xyz/api/farcaster/webhook",
         "description": "HolyMarket: The first decentralized prediction market on Base. Trade your beliefs on future events with crypto.",
@@ -26,16 +26,16 @@
             "prediction",
             "base"
         ],
-        "heroImageUrl": "https://baseappholymarket.xyz/miniapp-embed.png"
+        "heroImageUrl": "https://placehold.co/1200x630/020617/white?text=HolyMarket+Hero+1.91:1"
     },
     "miniapp": {
         "version": "1",
         "name": "HolyMarket",
         "iconUrl": "https://baseappholymarket.xyz/icon.png",
         "homeUrl": "https://baseappholymarket.xyz/",
-        "imageUrl": "https://baseappholymarket.xyz/miniapp-embed.png",
+        "imageUrl": "https://placehold.co/1200x800/020617/white?text=HolyMarket+MiniApp+3:2",
         "buttonTitle": "Launch App",
-        "splashImageUrl": "https://baseappholymarket.xyz/splash.png",
+        "splashImageUrl": "https://baseappholymarket.xyz/icon.png",
         "splashBackgroundColor": "#020617",
         "webhookUrl": "https://baseappholymarket.xyz/api/farcaster/webhook",
         "description": "HolyMarket: The first decentralized prediction market on Base. Trade your beliefs on future events with crypto.",
@@ -50,14 +50,14 @@
             "prediction",
             "base"
         ],
-        "heroImageUrl": "https://baseappholymarket.xyz/miniapp-embed.png"
+        "heroImageUrl": "https://placehold.co/1200x630/020617/white?text=HolyMarket+Hero+1.91:1"
     },
     "name": "HolyMarket",
     "iconUrl": "https://baseappholymarket.xyz/icon.png",
     "webhookUrl": "https://baseappholymarket.xyz/api/farcaster/webhook",
     "ogTitle": "HolyMarket",
     "ogDescription": "Trade your beliefs on Base",
-    "ogImageUrl": "https://baseappholymarket.xyz/og-frame.png",
+    "ogImageUrl": "https://placehold.co/1200x630/020617/white?text=HolyMarket+OG+1.91:1",
     "subtitle": "Trade your beliefs on Base",
     "description": "HolyMarket: The first decentralized prediction market on Base. Trade your beliefs on future events with crypto.",
     "screenshotUrls": [
@@ -71,6 +71,6 @@
         "base"
     ],
     "tagline": "HolyMarket: Bet on Base",
-    "heroImageUrl": "https://baseappholymarket.xyz/miniapp-embed.png",
+    "heroImageUrl": "https://placehold.co/1200x630/020617/white?text=HolyMarket+Hero+1.91:1",
     "castShareUrl": "https://baseappholymarket.xyz/"
 }
