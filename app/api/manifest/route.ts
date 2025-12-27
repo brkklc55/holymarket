@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 
-export async function GET() {
-    const domain = "baseappholymarket.xyz";
-    const baseUrl = `https://${domain}`;
-    const officialLogoUrl = `${baseUrl}/icon.png`;
+export async function GET(req: Request) {
+    const host = req.headers.get("host") || "baseappholymarket.xyz";
+    const domain = host.includes("www.") ? "baseappholymarket.xyz" : host; // Keep apex domain for payload consistency
+    const baseUrl = `https://${host}`;
+    const officialLogoUrl = `https://baseappholymarket.xyz/icon.png`;
 
     // Hardcoded correct values for baseappholymarket.xyz to bypass incorrect Vercel Env Vars
     const header = "eyJmaWQiOjEzOTU5NjEsInR5cGUiOiJhdXRoIiwia2V5IjoiMHgzNWU5OEZiQTZmNTAzNEQyNTJhNzczRjM2ZDA1OWFlMUE1NjQwOTgwIn0";
