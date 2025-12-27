@@ -1274,8 +1274,8 @@ export default function MarketView() {
     return (
         <div className="w-full max-w-2xl lg:max-w-4xl mx-auto space-y-6">
             {/* Header & Wallet */}
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-                <div className="premium-card p-1.5 bg-slate-900/50">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div className="p-1 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
                     <div className="flex flex-wrap gap-1">
                         {[
                             { id: "market", label: "Market" },
@@ -1294,11 +1294,11 @@ export default function MarketView() {
                                         if ((tab as any).disabled) return;
                                         setActiveTab(tab.id as any);
                                     }}
-                                    className={`px-3 py-2 rounded-xl text-[10px] font-bold transition-all flex items-center justify-center gap-2 ${(tab as any).disabled ? "opacity-60 cursor-not-allowed" : ""} ${activeTab === tab.id ? "bg-sky-500 text-white shadow-lg shadow-sky-500/20" : "text-slate-400 hover:text-white hover:bg-slate-800"}`}
+                                    className={`nav-tab ${(tab as any).disabled ? "opacity-40 cursor-not-allowed" : ""} ${activeTab === tab.id ? "nav-tab-active" : ""}`}
                                 >
                                     <span>{tab.label}</span>
                                     {(tab as any).badge && (
-                                        <span className="ml-1 px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 text-[8px] font-black border border-slate-700">
+                                        <span className="ml-1.5 px-1.5 py-0.5 rounded-md bg-white/10 text-[8px] font-black border border-white/10">
                                             {(tab as any).badge}
                                         </span>
                                     )}
@@ -1307,25 +1307,23 @@ export default function MarketView() {
                         ))}
                     </div>
                 </div>
-                <div className="flex justify-end">
+                <div className="flex justify-end scale-90 origin-right">
                     <ConnectButton accountStatus="avatar" chainStatus="icon" showBalance={false} />
                 </div>
             </div>
 
-            <div className="premium-card p-4 bg-slate-900/30 border border-slate-800">
-                <div className="flex items-start justify-between gap-4">
-                    <div className="flex gap-3">
-                        <div className="mt-0.5 px-2 py-1 rounded-lg bg-sky-500/10 text-sky-400 text-[10px] font-black border border-sky-500/20">
-                            BETA
-                        </div>
-                        <div>
-                            <div className="text-sm font-extrabold text-white">Beta test</div>
-                            <div className="text-xs text-slate-400 mt-1">
-                                This app is in beta. Testnet funds are for testing only. Earned points may be used for future airdrop eligibility.
-                            </div>
-                            <div className="text-xs text-slate-500 mt-1">
-                                Winnings claims include a <span className="text-slate-200 font-bold">5%</span> protocol fee.
-                            </div>
+            <div className="premium-card p-5 overflow-hidden">
+                <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/5 blur-3xl -mr-12 -mt-12" />
+                <div className="flex items-start gap-4 relative z-10">
+                    <div className="mt-1 px-2.5 py-1 rounded-lg bg-blue-500/10 text-blue-400 text-[10px] font-black border border-blue-500/20 tracking-wider">
+                        BETA
+                    </div>
+                    <div>
+                        <div className="text-sm font-bold text-white mb-1">Platform Rules & Disclaimer</div>
+                        <div className="text-xs text-slate-400 leading-relaxed">
+                            HolyMarket is currently in beta. All trades use Base Sepolia testnet ETH.
+                            Active participation earns <span className="text-white font-bold">Protocol Points</span> which may qualify for future rewards.
+                            <span className="block mt-1.5 text-slate-500 font-medium italic">Note: A 5% protocol fee applies to winning claims.</span>
                         </div>
                     </div>
                 </div>
@@ -1396,120 +1394,115 @@ export default function MarketView() {
 
                             return (
                                 <>
-                                    <div className="flex flex-col md:flex-row md:items-center gap-3 mb-4">
-                                        <div className="flex-1">
+                                    <div className="flex flex-col md:flex-row md:items-center gap-4 mb-6">
+                                        <div className="flex-1 relative">
                                             <input
                                                 value={marketSearch}
                                                 onChange={(e) => setMarketSearch(e.target.value)}
-                                                placeholder="Search markets"
-                                                className="w-full px-3 py-2 rounded-xl bg-slate-900/40 border border-slate-800 text-xs text-slate-200 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-sky-500/30"
+                                                placeholder="Search by question..."
+                                                className="w-full premium-input pl-10 pr-4 py-2.5 text-sm"
                                             />
+                                            <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500">
+                                                <Info size={16} />
+                                            </div>
                                         </div>
                                         <div className="flex flex-wrap items-center gap-2">
-                                            <button
-                                                type="button"
-                                                onClick={() => setMarketFilter("all")}
-                                                className={`px-3 py-2 rounded-xl text-[10px] font-black border transition-all ${marketFilter === "all" ? "bg-sky-500/10 text-sky-400 border-sky-500/20" : "bg-slate-900/40 text-slate-400 border-slate-800 hover:border-slate-700 hover:text-white"}`}
-                                            >
-                                                ALL
-                                            </button>
-                                            <button
-                                                type="button"
-                                                onClick={() => setMarketFilter("live")}
-                                                className={`px-3 py-2 rounded-xl text-[10px] font-black border transition-all ${marketFilter === "live" ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" : "bg-slate-900/40 text-slate-400 border-slate-800 hover:border-slate-700 hover:text-white"}`}
-                                            >
-                                                LIVE
-                                            </button>
-                                            <button
-                                                type="button"
-                                                onClick={() => setMarketFilter("ended")}
-                                                className={`px-3 py-2 rounded-xl text-[10px] font-black border transition-all ${marketFilter === "ended" ? "bg-slate-900/60 text-slate-300 border-slate-800" : "bg-slate-900/40 text-slate-400 border-slate-800 hover:border-slate-700 hover:text-white"}`}
-                                            >
-                                                ENDED
-                                            </button>
-                                            <button
-                                                type="button"
-                                                onClick={() => setMarketFilter("cancelled")}
-                                                className={`px-3 py-2 rounded-xl text-[10px] font-black border transition-all ${marketFilter === "cancelled" ? "bg-amber-500/10 text-amber-400 border-amber-500/20" : "bg-slate-900/40 text-slate-400 border-slate-800 hover:border-slate-700 hover:text-white"}`}
-                                            >
-                                                CANCELLED
-                                            </button>
-
-                                            <div className="flex items-center gap-2">
-                                                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Sort</span>
-                                                <select
-                                                    value={marketSort}
-                                                    onChange={(e) => setMarketSort(e.target.value as any)}
-                                                    className="px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-[10px] font-black text-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-500/40"
+                                            {[
+                                                { id: "all", label: "ALL" },
+                                                { id: "live", label: "LIVE" },
+                                                { id: "ended", label: "ENDED" },
+                                                { id: "cancelled", label: "CANCELLED" },
+                                            ].map((btn) => (
+                                                <button
+                                                    key={btn.id}
+                                                    type="button"
+                                                    onClick={() => setMarketFilter(btn.id as any)}
+                                                    className={`px-3 py-1.5 rounded-lg text-[10px] font-black tracking-wider transition-all border ${marketFilter === btn.id ? "bg-blue-500/10 text-blue-400 border-blue-500/30" : "bg-slate-900/40 text-slate-500 border-slate-800 hover:border-slate-700 hover:text-slate-300"}`}
                                                 >
-                                                    <option value="newest" className="bg-slate-950 text-slate-100">Newest</option>
-                                                    <option value="ending" className="bg-slate-950 text-slate-100">Ending soon</option>
-                                                    <option value="volume" className="bg-slate-950 text-slate-100">Top volume</option>
-                                                </select>
-                                            </div>
+                                                    {btn.label}
+                                                </button>
+                                            ))}
                                         </div>
                                     </div>
 
-                                    <div className="flex gap-3 overflow-x-auto pb-6 mb-6 custom-scrollbar no-scrollbar">
+                                    <div className="flex gap-4 overflow-x-auto pb-4 mb-8 no-scrollbar touch-pan-x">
                                         {filtered.map((m) => (
                                             <button
                                                 key={m.id.toString()}
                                                 onClick={() => setSelectedMarketId(m.id)}
-                                                className={`flex-shrink-0 w-48 p-3 rounded-xl border transition-all text-left ${selectedMarketId === m.id ? "border-sky-500 bg-sky-500/10" : "border-slate-800 bg-slate-900/40 hover:border-slate-700"}`}
+                                                className={`flex-shrink-0 w-52 p-4 rounded-[20px] border transition-all text-left relative overflow-hidden group ${selectedMarketId === m.id ? "bg-blue-500/5 border-blue-500/40 ring-1 ring-blue-500/20" : "bg-white/[0.02] border-white/5 hover:border-white/20"}`}
                                             >
-                                                <div className="flex justify-between items-center mb-1">
+                                                {selectedMarketId === m.id && (
+                                                    <div className="absolute top-0 left-0 w-1 h-full bg-blue-500" />
+                                                )}
+                                                <div className="flex justify-between items-center mb-3">
                                                     <span
-                                                        className={`text-[8px] font-black px-1.5 py-0.5 rounded border ${m.cancelled
-                                                            ? "bg-amber-500/10 text-amber-400 border-amber-500/20"
+                                                        className={`text-[8px] font-black px-1.5 py-0.5 rounded uppercase tracking-tighter border ${m.cancelled
+                                                            ? "bg-amber-500/10 text-amber-500 border-amber-500/10"
                                                             : m.resolved
-                                                                ? "bg-slate-900/60 text-slate-400 border-slate-800"
-                                                                : "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                                                                ? "bg-slate-800/50 text-slate-500 border-slate-700/50"
+                                                                : "bg-emerald-500/10 text-emerald-500 border-emerald-500/10"
                                                             }`}
                                                     >
-                                                        {m.cancelled ? "CANCELLED" : m.resolved ? `ENDED • ${m.outcome ? "YES" : "NO"}` : "LIVE"}
+                                                        {m.cancelled ? "CANCELLED" : m.resolved ? "ENDED" : "LIVE"}
                                                     </span>
-                                                    <span className="text-[8px] font-mono text-slate-600">#{m.id.toString()}</span>
+                                                    <span className="text-[9px] font-mono text-slate-600 font-bold">#{m.id.toString()}</span>
                                                 </div>
-                                                <p className="text-[10px] font-bold text-slate-200 truncate mb-2">{m.question}</p>
-                                                <div className="text-[9px] font-black text-sky-400">
-                                                    {(Number(m.yesPool + m.noPool) / 1e18).toFixed(3)} ETH
-                                                </div>
-                                                <div className="mt-1 flex justify-between text-[9px] font-bold text-slate-500">
-                                                    <span>YES {(Number(m.yesPool) / 1e18).toFixed(3)}</span>
-                                                    <span>NO {(Number(m.noPool) / 1e18).toFixed(3)}</span>
-                                                </div>
-                                                <div className="mt-2 h-1.5 w-full rounded-full bg-slate-800 overflow-hidden">
-                                                    {(() => {
-                                                        const y = Number(m.yesPool);
-                                                        const n = Number(m.noPool);
-                                                        const total = y + n;
-                                                        const pct = total > 0 ? Math.max(4, Math.min(96, (y / total) * 100)) : 50;
-                                                        return <div className="h-full bg-emerald-500/70" style={{ width: `${pct}%` }} />;
-                                                    })()}
+                                                <p className="text-xs font-bold text-slate-200 line-clamp-2 mb-4 min-h-[2.5rem] leading-snug group-hover:text-white transition-colors">
+                                                    {m.question}
+                                                </p>
+                                                <div className="space-y-3">
+                                                    <div className="flex justify-between items-end">
+                                                        <div className="flex flex-col">
+                                                            <span className="text-[8px] text-slate-500 font-bold uppercase tracking-widest mb-0.5">Total Volume</span>
+                                                            <span className="text-xs font-black text-blue-400">
+                                                                {(Number(m.yesPool + m.noPool) / 1e18).toFixed(3)} <span className="text-[9px] opacity-70">ETH</span>
+                                                            </span>
+                                                        </div>
+                                                        {m.resolved && (
+                                                            <div className="text-right">
+                                                                <span className="text-[8px] text-slate-500 font-bold uppercase tracking-widest mb-0.5">Outcome</span>
+                                                                <span className={`text-[10px] font-black uppercase ${m.outcome ? "text-emerald-500" : "text-rose-500"}`}>
+                                                                    {m.outcome ? "YES" : "NO"}
+                                                                </span>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                    <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
+                                                        {(() => {
+                                                            const y = Number(m.yesPool);
+                                                            const n = Number(m.noPool);
+                                                            const total = y + n;
+                                                            const pct = total > 0 ? (y / total) * 100 : 50;
+                                                            return <div className="h-full bg-blue-500/60 transition-all duration-500" style={{ width: `${pct}%` }} />;
+                                                        })()}
+                                                    </div>
                                                 </div>
                                             </button>
                                         ))}
                                         {filtered.length === 0 && (
-                                            <div className="flex-shrink-0 w-full p-6 rounded-2xl bg-slate-900/30 border border-dashed border-slate-800 text-center">
-                                                <div className="text-sm font-black text-slate-200">No markets found</div>
-                                                <div className="mt-1 text-xs text-slate-500">Try clearing filters or search.</div>
+                                            <div className="w-full py-12 px-6 rounded-2xl bg-white/[0.01] border border-dashed border-white/5 text-center">
+                                                <div className="text-sm font-bold text-slate-400">No matching markets found</div>
+                                                <div className="mt-1.5 text-xs text-slate-600">Refine your search or filters.</div>
                                             </div>
                                         )}
                                     </div>
                                 </>
                             );
                         })()}
-                        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-6">
-                            <div className="flex-1 min-w-0">
-                                <div className="flex flex-wrap items-center gap-2 mb-2">
-                                    <span className="px-2 py-0.5 bg-sky-500/10 text-sky-500 rounded text-[10px] font-extrabold uppercase border border-sky-500/20">Market #{selectedMarketId.toString()}</span>
-                                    <span className={`px-2 py-0.5 rounded text-[10px] font-extrabold border ${timeLeft === "ENDED" ? "bg-red-500/10 text-red-500 border-red-500/20" : "bg-amber-500/10 text-amber-500 border-amber-500/20"}`}>
-                                        {timeLeft === "ENDED" ? "EXPIRED" : timeLeft}
-                                    </span>
+                        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 mb-8 mt-4">
+                            <div className="flex-1 space-y-4">
+                                <div className="flex flex-wrap items-center gap-2">
+                                    <span className="px-2.5 py-1 bg-blue-500/10 text-blue-400 rounded-lg text-[10px] font-black tracking-widest border border-blue-500/20 uppercase">Market #{selectedMarketId.toString()}</span>
+                                    {!market.resolved && (
+                                        <span className={`px-2.5 py-1 rounded-lg text-[10px] font-black tracking-widest border uppercase ${timeLeft === "ENDED" ? "bg-rose-500/10 text-rose-500 border-rose-500/20" : "bg-amber-500/10 text-amber-500 border-amber-500/20"}`}>
+                                            {timeLeft === "ENDED" ? "EXPIRED" : timeLeft}
+                                        </span>
+                                    )}
                                 </div>
-                                <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-white leading-tight break-words">{market.question}</h2>
+                                <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white leading-[1.15] tracking-tight">{market.question}</h2>
                             </div>
-                            <div className="flex gap-2 md:pt-1">
+                            <div className="flex gap-2.5 shrink-0">
                                 <button
                                     onClick={() => {
                                         const shareUrl = getMarketShareUrl() || (typeof window !== "undefined" ? window.location.href : "");
@@ -1517,10 +1510,10 @@ export default function MarketView() {
                                             `https://warpcast.com/~/compose?text=Predicting on HolyMarket: ${market.question}&embeds[]=${encodeURIComponent(shareUrl)}`
                                         );
                                     }}
-                                    className="p-2.5 rounded-xl bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 transition-all"
+                                    className="p-3 rounded-xl bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 transition-all border border-white/5 active:scale-95"
                                     title="Share on Warpcast"
                                 >
-                                    <Share2 size={18} />
+                                    <Share2 size={20} />
                                 </button>
                                 <button
                                     onClick={() => {
@@ -1529,161 +1522,171 @@ export default function MarketView() {
                                             `https://twitter.com/intent/tweet?text=I'm predicting on HolyMarket: ${market.question}&url=${encodeURIComponent(shareUrl)}`
                                         );
                                     }}
-                                    className="p-2.5 rounded-xl bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 transition-all"
+                                    className="p-3 rounded-xl bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 transition-all border border-white/5 active:scale-95"
                                     title="Share on Twitter"
                                 >
-                                    <Twitter size={18} />
+                                    <Twitter size={20} />
                                 </button>
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4 mb-8">
-                            <div className="p-4 rounded-2xl bg-emerald-500/5 border border-emerald-500/10 flex flex-col">
-                                <span className="text-[10px] font-bold text-emerald-500 mb-2 uppercase tracking-tighter">YES Pool ({calculateMultiplier(true)}x)</span>
-                                <div className="flex items-baseline gap-1">
-                                    <span className="text-2xl font-black text-white">{(Number(market.yesPool) / 1e18).toFixed(3)}</span>
-                                    <span className="text-xs text-slate-500 font-bold">ETH</span>
+                        <div className="grid grid-cols-2 gap-4 mb-10">
+                            <div className="p-5 rounded-[24px] bg-emerald-500/[0.03] border border-emerald-500/10 flex flex-col relative overflow-hidden group hover:border-emerald-500/30 transition-all">
+                                <div className="absolute top-0 right-0 w-16 h-16 bg-emerald-500/5 blur-2xl -mr-8 -mt-8" />
+                                <span className="text-[10px] font-black text-emerald-500/70 mb-3 uppercase tracking-widest relative z-10">YES POOL • {calculateMultiplier(true)}x</span>
+                                <div className="flex items-baseline gap-1.5 relative z-10">
+                                    <span className="text-3xl font-black text-white">{Number(formatEther(market.yesPool)).toFixed(3)}</span>
+                                    <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">ETH</span>
                                 </div>
-                                <div className="mt-3 pt-3 border-t border-emerald-500/10">
-                                    <span className="text-[10px] text-slate-500 block mb-1">Potential Payout</span>
-                                    <span className="text-xs font-bold text-emerald-400">{calculatePotentialProfit(true)} ETH</span>
+                                <div className="mt-4 pt-4 border-t border-emerald-500/10 relative z-10">
+                                    <span className="text-[9px] text-slate-500 font-bold uppercase tracking-widest block mb-1">Potential Payout</span>
+                                    <span className="text-sm font-black text-emerald-400">{calculatePotentialProfit(true)} <span className="text-[10px] opacity-70">ETH</span></span>
                                 </div>
                             </div>
-                            <div className="p-4 rounded-2xl bg-rose-500/5 border border-rose-500/10 flex flex-col">
-                                <span className="text-[10px] font-bold text-rose-500 mb-2 uppercase tracking-tighter">NO Pool ({calculateMultiplier(false)}x)</span>
-                                <div className="flex items-baseline gap-1">
-                                    <span className="text-2xl font-black text-white">{(Number(market.noPool) / 1e18).toFixed(3)}</span>
-                                    <span className="text-xs text-slate-500 font-bold">ETH</span>
+                            <div className="p-5 rounded-[24px] bg-rose-500/[0.03] border border-rose-500/10 flex flex-col relative overflow-hidden group hover:border-rose-500/30 transition-all">
+                                <div className="absolute top-0 right-0 w-16 h-16 bg-rose-500/5 blur-2xl -mr-8 -mt-8" />
+                                <span className="text-[10px] font-black text-rose-500/70 mb-3 uppercase tracking-widest relative z-10">NO POOL • {calculateMultiplier(false)}x</span>
+                                <div className="flex items-baseline gap-1.5 relative z-10">
+                                    <span className="text-3xl font-black text-white">{Number(formatEther(market.noPool)).toFixed(3)}</span>
+                                    <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">ETH</span>
                                 </div>
-                                <div className="mt-3 pt-3 border-t border-rose-500/10">
-                                    <span className="text-[10px] text-slate-500 block mb-1">Potential Payout</span>
-                                    <span className="text-xs font-bold text-rose-400">{calculatePotentialProfit(false)} ETH</span>
+                                <div className="mt-4 pt-4 border-t border-rose-500/10 relative z-10">
+                                    <span className="text-[9px] text-slate-500 font-bold uppercase tracking-widest block mb-1">Potential Payout</span>
+                                    <span className="text-sm font-black text-rose-400">{calculatePotentialProfit(false)} <span className="text-[10px] opacity-70">ETH</span></span>
                                 </div>
                             </div>
                         </div>
 
                         <div className="mt-auto">
                             {market.resolved ? (
-                                <div className="p-6 rounded-2xl bg-slate-800/50 border border-slate-700 flex flex-col items-center text-center">
-                                    <span className="text-[10px] font-bold text-slate-500 mb-4 uppercase tracking-widest">Winning Outcome</span>
-                                    <div className={`text-4xl font-black mb-6 ${market.outcome ? "text-emerald-400" : "text-rose-500"}`}>
-                                        {market.outcome ? "YES ✓" : "NO ✓"}
-                                    </div>
+                                <>
+                                    <div className="p-8 rounded-[32px] bg-white/[0.02] border border-white/5 flex flex-col items-center text-center relative overflow-hidden">
+                                        <div className={`absolute top-0 inset-x-0 h-1 ${market.outcome ? "bg-emerald-500" : "bg-rose-500"}`} />
+                                        <span className="text-[10px] font-black text-slate-500 mb-6 uppercase tracking-[0.3em]">Market Result</span>
+                                        <div className={`text-5xl font-black mb-8 filter drop-shadow-lg ${market.outcome ? "text-emerald-400" : "text-rose-500"}`}>
+                                            {market.outcome ? "YES" : "NO"} <span className="text-3xl ml-1">✓</span>
+                                        </div>
 
-                                    <div className="w-full p-4 rounded-2xl bg-slate-900/40 border border-slate-800 text-left mb-4">
-                                        <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Your bet</div>
-                                        <div className="mt-2 flex justify-between gap-4">
-                                            <div className="text-xs font-bold text-emerald-400">YES: {userBet ? Number(formatEther(userBet.yesAmount)).toFixed(4) : "0.0000"} ETH</div>
-                                            <div className="text-xs font-bold text-rose-400">NO: {userBet ? Number(formatEther(userBet.noAmount)).toFixed(4) : "0.0000"} ETH</div>
+                                        <div className="w-full p-5 rounded-2xl bg-white/[0.03] border border-white/5 text-left mb-6">
+                                            <div className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-3">Your Final Position</div>
+                                            <div className="flex justify-between items-center">
+                                                <div className="space-y-1">
+                                                    <div className="text-[10px] text-slate-500 font-bold uppercase">YES Prediction</div>
+                                                    <div className="text-sm font-black text-white">{userBet ? Number(formatEther(userBet.yesAmount)).toFixed(4) : "0.0000"} <span className="text-[10px] opacity-60">ETH</span></div>
+                                                </div>
+                                                <div className="space-y-1 text-right">
+                                                    <div className="text-[10px] text-slate-500 font-bold uppercase">NO Prediction</div>
+                                                    <div className="text-sm font-black text-white">{userBet ? Number(formatEther(userBet.noAmount)).toFixed(4) : "0.0000"} <span className="text-[10px] opacity-60">ETH</span></div>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    {userBet?.claimed ? (
-                                        <div className="w-full p-4 rounded-2xl bg-slate-900/40 border border-slate-800 text-sm text-slate-300 font-bold">
-                                            Already claimed.
-                                        </div>
-                                    ) : (userBet && userBet.yesAmount === 0n && userBet.noAmount === 0n) ? (
-                                        <div className="w-full p-4 rounded-2xl bg-slate-900/40 border border-slate-800 text-sm text-slate-400 font-bold">
-                                            You did not place a bet in this market.
-                                        </div>
-                                    ) : parseFloat(claimableAmount) <= 0 ? (
-                                        <div className="w-full p-4 rounded-2xl bg-slate-900/40 border border-slate-800 text-sm text-slate-400 font-bold">
-                                            No winnings for this wallet.
-                                        </div>
-                                    ) : (
-                                        <button
-                                            onClick={handleClaim}
-                                            disabled={betting || needsNetworkSwitch || !isConnected || parseFloat(claimableAmount) <= 0}
-                                            className="w-full premium-btn py-4 bg-white text-slate-900 hover:bg-slate-100 disabled:opacity-60 disabled:cursor-not-allowed"
-                                        >
-                                            {betting ? "Processing..." : `Claim ${Number(claimableAmount).toFixed(4)} ETH Reward`}
-                                        </button>
-                                    )}
+                                        {userBet?.claimed ? (
+                                            <div className="w-full py-4 px-6 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-bold text-sm">
+                                                Reward Successfully Claimed
+                                            </div>
+                                        ) : (userBet && userBet.yesAmount === 0n && userBet.noAmount === 0n) ? (
+                                            <div className="w-full py-4 px-6 rounded-2xl bg-white/5 border border-white/10 text-slate-500 font-bold text-sm">
+                                                No bets placed in this market
+                                            </div>
+                                        ) : parseFloat(claimableAmount) <= 0 ? (
+                                            <div className="w-full py-4 px-6 rounded-2xl bg-white/5 border border-white/10 text-slate-500 font-bold text-sm">
+                                                No winnings to claim
+                                            </div>
+                                        ) : (
+                                            <button
+                                                onClick={handleClaim}
+                                                disabled={betting || needsNetworkSwitch || !isConnected}
+                                                className="w-full premium-btn py-4 text-slate-950 bg-white hover:bg-slate-100 shadow-[0_0_40px_rgba(255,255,255,0.1)]"
+                                            >
+                                                {betting ? "Processing..." : `Claim ${Number(claimableAmount).toFixed(4)} ETH Reward`}
+                                            </button>
+                                        )}
+                                    </div>
                                     {(!isConnected || needsNetworkSwitch) && (
-                                        <div className="mt-3 text-[11px] text-slate-500">
+                                        <div className="mt-3 text-[11px] text-slate-500 text-center">
                                             Connect your wallet and switch to Base Sepolia to claim.
                                         </div>
                                     )}
-                                </div>
+                                </>
                             ) : (
-                                <div className="space-y-6">
-                                    <div className="space-y-3">
+                                <div className="space-y-8">
+                                    <div className="space-y-4">
                                         <div className="flex items-center justify-between px-1">
-                                            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Amount</div>
-                                            <div className="flex items-center gap-2">
+                                            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em]">Prediction Amount</div>
+                                            <div className="flex items-center gap-3">
                                                 {walletBalanceLoading ? (
-                                                    <span className="text-[10px] font-bold text-slate-500">Loading...</span>
+                                                    <span className="text-[10px] font-bold text-slate-500 animate-pulse">Checking balance...</span>
                                                 ) : walletBalance !== null ? (
-                                                    <span className="text-[10px] font-bold text-slate-500">Available: {Number(formatEther(walletBalance)).toFixed(4)} ETH</span>
+                                                    <span className="text-[10px] font-bold text-slate-500">Balance: <span className="text-slate-300">{Number(formatEther(walletBalance)).toFixed(4)}</span> ETH</span>
                                                 ) : (
-                                                    <span className="text-[10px] font-bold text-slate-600">Available: —</span>
+                                                    <span className="text-[10px] font-bold text-slate-600">Balance: —</span>
                                                 )}
                                                 <button
                                                     type="button"
                                                     disabled={walletBalance === null || walletBalanceLoading || needsNetworkSwitch || !isConnected}
                                                     onClick={() => {
                                                         if (walletBalance === null) return;
-                                                        const reserve = parseEther("0.0002");
+                                                        const reserve = parseEther("0.0003");
                                                         const max = walletBalance > reserve ? walletBalance - reserve : 0n;
                                                         if (max <= 0n) {
-                                                            toast({ title: "Insufficient balance", message: "Not enough ETH for a bet (after gas reserve).", variant: "warning" });
+                                                            toast({ title: "Low Balance", message: "Insufficient ETH for gas and bet.", variant: "warning" });
                                                             return;
                                                         }
-                                                        const maxStr = formatEther(max);
-                                                        setAmount(maxStr);
+                                                        setAmount(formatEther(max));
                                                     }}
-                                                    className="px-2 py-1 rounded-lg bg-slate-900/60 border border-slate-800 text-[10px] font-extrabold text-slate-300 hover:border-slate-700 hover:text-white disabled:opacity-60 disabled:cursor-not-allowed"
+                                                    className="px-2 py-0.5 rounded bg-blue-500/10 border border-blue-500/20 text-[9px] font-black text-blue-400 hover:bg-blue-500 hover:text-white transition-all disabled:opacity-50"
                                                 >
                                                     MAX
                                                 </button>
                                             </div>
                                         </div>
-                                        <div className="flex flex-wrap gap-2">
-                                            {[
-                                                { label: "0.001", value: "0.001" },
-                                                { label: "0.005", value: "0.005" },
-                                                { label: "0.01", value: "0.01" },
-                                                { label: "0.05", value: "0.05" },
-                                            ].map((chip) => (
-                                                <button
-                                                    key={chip.value}
-                                                    type="button"
-                                                    onClick={() => setAmount(chip.value)}
-                                                    className={`px-3 py-1.5 rounded-full text-[10px] font-extrabold border transition-all ${amount === chip.value ? "bg-sky-500/15 text-sky-300 border-sky-500/30" : "bg-slate-900/40 text-slate-400 border-slate-800 hover:border-slate-700 hover:text-slate-200"}`}
-                                                >
-                                                    {chip.label} ETH
-                                                </button>
-                                            ))}
-                                        </div>
-                                        <div className="relative">
+
+                                        <div className="relative group">
                                             <input
                                                 type="number"
                                                 value={amount}
                                                 onChange={(e) => setAmount(e.target.value)}
-                                                className="w-full premium-input py-4 text-xl pr-16 bg-slate-900/80"
+                                                className="w-full premium-input py-5 text-2xl font-black pr-16 bg-white/[0.02]"
+                                                placeholder="0.00"
                                             />
-                                            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 font-bold">ETH</span>
+                                            <span className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-500 font-black text-sm tracking-widest">ETH</span>
+                                        </div>
+
+                                        <div className="flex flex-wrap gap-2">
+                                            {["0.001", "0.005", "0.01", "0.05"].map((val) => (
+                                                <button
+                                                    key={val}
+                                                    type="button"
+                                                    onClick={() => setAmount(val)}
+                                                    className={`px-4 py-2 rounded-xl text-[10px] font-black transition-all border ${amount === val ? "bg-white text-slate-950 border-white" : "bg-white/5 text-slate-400 border-white/5 hover:border-white/20 hover:text-white"}`}
+                                                >
+                                                    {val} ETH
+                                                </button>
+                                            ))}
                                         </div>
                                     </div>
+
                                     <div className="grid grid-cols-2 gap-4">
                                         <button
                                             onClick={() => handleBet(true)}
                                             disabled={betting || needsNetworkSwitch || !isConnected}
-                                            className={`premium-btn py-4 bg-emerald-600 hover:bg-emerald-500 shadow-xl shadow-emerald-600/20 ${betting || needsNetworkSwitch || !isConnected ? "opacity-60 cursor-not-allowed hover:transform-none" : ""}`}
+                                            className="premium-btn py-5 bg-emerald-500 hover:bg-emerald-400 shadow-[0_0_30px_rgba(16,185,129,0.15)] active:scale-95 disabled:grayscale"
                                         >
-                                            {betting ? "Processing..." : "VOTE YES"}
+                                            {betting ? "Confirming..." : "PREDICT YES"}
                                         </button>
                                         <button
                                             onClick={() => handleBet(false)}
                                             disabled={betting || needsNetworkSwitch || !isConnected}
-                                            className={`premium-btn py-4 bg-rose-600 hover:bg-rose-500 shadow-xl shadow-rose-600/20 ${betting || needsNetworkSwitch || !isConnected ? "opacity-60 cursor-not-allowed hover:transform-none" : ""}`}
+                                            className="premium-btn py-5 bg-rose-500 hover:bg-rose-400 shadow-[0_0_30px_rgba(244,63,94,0.15)] active:scale-95 disabled:grayscale"
                                         >
-                                            {betting ? "Processing..." : "VOTE NO"}
+                                            {betting ? "Confirming..." : "PREDICT NO"}
                                         </button>
                                     </div>
+
                                     {!isConnected && (
-                                        <div className="text-center text-xs text-slate-500">
-                                            Connect your wallet to place a vote.
+                                        <div className="p-4 rounded-xl bg-blue-500/5 border border-blue-500/10 text-center">
+                                            <p className="text-[11px] font-bold text-blue-400 uppercase tracking-widest">Connect wallet to start trading</p>
                                         </div>
                                     )}
                                 </div>
@@ -1693,83 +1696,85 @@ export default function MarketView() {
                 )}
 
                 {activeTab === "airdrop" && (
-                    <div className="animate-in fade-in duration-500 flex flex-col items-center justify-center min-h-[360px] text-center">
-                        <div className="w-full max-w-md premium-card p-8 bg-slate-900/40">
-                            <div className="w-14 h-14 rounded-2xl bg-slate-800/60 border border-slate-700 mx-auto flex items-center justify-center text-slate-300 font-black text-lg">
-                                ⏳
+                    <div className="animate-in fade-in zoom-in duration-500 flex flex-col items-center justify-center min-h-[480px] text-center px-4">
+                        <div className="w-full max-w-sm premium-card p-10 bg-white/[0.02] border border-white/5 relative overflow-hidden group">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 blur-3xl -mr-16 -mt-16" />
+                            <div className="w-20 h-20 rounded-3xl bg-blue-500 shadow-[0_0_40px_rgba(59,130,246,0.3)] mx-auto flex items-center justify-center text-white mb-8 group-hover:scale-110 transition-transform duration-500">
+                                <Sparkles size={40} />
                             </div>
-                            <h3 className="mt-5 text-xl font-black text-white">Airdrop</h3>
-                            <p className="mt-2 text-sm text-slate-400">Soon.</p>
-                            <div className="mt-6 text-[11px] text-slate-500">
-                                This section is disabled during test phase.
+                            <h3 className="text-2xl font-black text-white mb-3">Governance Airdrop</h3>
+                            <p className="text-[10px] text-blue-400 font-extrabold uppercase tracking-[0.4em] mb-6">Coming Soon • Q1 2026</p>
+                            <div className="space-y-4 text-left">
+                                <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/5">
+                                    <p className="text-[11px] text-slate-400 leading-relaxed">
+                                        Strategic allocation for early adopters and market makers. Your <span className="text-white font-bold">PTS</span> will determine your governance rights.
+                                    </p>
+                                </div>
+                                <div className="flex items-center gap-3 px-1">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+                                    <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Snapshot Period: ACTIVE</span>
+                                </div>
                             </div>
                         </div>
                     </div>
                 )}
 
                 {activeTab === "faucet" && (
-                    <div className="space-y-6 animate-in fade-in">
-                        <div className="flex items-start justify-between gap-4">
-                            <div>
-                                <h3 className="text-lg font-bold text-white">Faucet</h3>
-                                <div className="mt-1 text-[11px] text-slate-500">
-                                    Need test ETH to place bets? Use a faucet and fund your wallet.
-                                </div>
-                            </div>
-                            <span className="px-2 py-1 rounded-full bg-amber-500/10 text-amber-400 text-[10px] font-black border border-amber-500/20">
-                                TESTNET
-                            </span>
-                        </div>
-
-                        <div className="p-5 rounded-2xl bg-slate-900/40 border border-slate-800">
-                            <div className="mt-0 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                <a
-                                    href="https://portal.cdp.coinbase.com/products/faucet"
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="p-4 rounded-xl bg-slate-950/40 border border-slate-800 hover:border-slate-700 transition-all"
-                                >
-                                    <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Official</div>
-                                    <div className="mt-1 text-sm font-black text-slate-200">Base Sepolia Faucet</div>
-                                    <div className="mt-1 text-[11px] text-slate-500">portal.cdp.coinbase.com</div>
-                                </a>
-                                <a
-                                    href="https://thirdweb.com/base-sepolia-testnet"
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="p-4 rounded-xl bg-slate-950/40 border border-slate-800 hover:border-slate-700 transition-all"
-                                >
-                                    <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Alt</div>
-                                    <div className="mt-1 text-sm font-black text-slate-200">Base Sepolia Faucet</div>
-                                    <div className="mt-1 text-[11px] text-slate-500">thirdweb.com</div>
-                                </a>
-                            </div>
-
-                            <div className="mt-4 p-3 rounded-xl bg-slate-950/30 border border-slate-800">
-                                <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Your wallet address</div>
-                                <div className="mt-2 flex items-center gap-2">
-                                    <div className="flex-1 font-mono text-[11px] text-slate-300 break-all">
-                                        {userAddress ? userAddress : "Connect your wallet to copy your address"}
+                    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-6">
+                        <div className="p-8 rounded-[32px] bg-white/[0.02] border border-white/5 relative overflow-hidden group">
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 blur-[100px] -mr-32 -mt-32" />
+                            <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
+                                <div className="space-y-4 max-w-md">
+                                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                        <span className="text-[9px] font-black text-emerald-400 uppercase tracking-widest">Testnet Utility</span>
                                     </div>
+                                    <div>
+                                        <h3 className="text-3xl font-black text-white mb-2">Institutional Faucet</h3>
+                                        <p className="text-[11px] text-slate-400 leading-relaxed font-medium">
+                                            Request <span className="text-white font-bold">0.01 Base Sepolia ETH</span> to participate in the predictive economy. Available once every 24 hours per authenticated wallet.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="shrink-0">
                                     <button
-                                        type="button"
-                                        disabled={!userAddress}
-                                        className="premium-btn py-2 px-3 text-xs disabled:opacity-60 disabled:cursor-not-allowed"
-                                        onClick={async () => {
-                                            if (!userAddress) return;
-                                            try {
-                                                await navigator.clipboard.writeText(userAddress);
-                                                toast({ title: "Copied", message: "Wallet address copied.", variant: "success" });
-                                            } catch {
-                                                toast({ title: "Copy failed", message: userAddress, variant: "warning" });
-                                            }
-                                        }}
+                                        onClick={handleFaucetRequest}
+                                        disabled={faucetLoading || needsNetworkSwitch || !isConnected}
+                                        className="premium-btn px-10 py-5 bg-white text-slate-950 hover:bg-slate-100 shadow-[0_0_50px_rgba(255,255,255,0.1)] active:scale-95 disabled:grayscale"
                                     >
-                                        Copy
+                                        {faucetLoading ? "AUTHORIZING..." : "REQUEST CAPITAL"}
                                     </button>
                                 </div>
-                                <div className="mt-2 text-[11px] text-slate-500">
-                                    Make sure your wallet network is set to <span className="text-slate-200 font-bold">Base Sepolia</span>.
+                            </div>
+                        </div>
+
+                        <div className="grid md:grid-cols-2 gap-6">
+                            <div className="p-6 rounded-[24px] bg-white/[0.01] border border-white/5">
+                                <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] mb-4">Network Status</h4>
+                                <div className="space-y-3">
+                                    <div className="flex justify-between items-center text-xs font-bold">
+                                        <span className="text-slate-400">Environment</span>
+                                        <span className="text-white">Base Sepolia</span>
+                                    </div>
+                                    <div className="flex justify-between items-center text-xs font-bold">
+                                        <span className="text-slate-400">Gas Price</span>
+                                        <span className="text-emerald-400">Optimal</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="p-6 rounded-[24px] bg-white/[0.01] border border-white/5">
+                                <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] mb-4">Requirements</h4>
+                                <div className="space-y-3">
+                                    <div className="flex items-center gap-2 text-xs font-bold">
+                                        <div className="w-1 h-1 rounded-full bg-blue-500" />
+                                        <span className="text-slate-400">Connected Wallet</span>
+                                        <span className={`ml-auto ${isConnected ? "text-emerald-400" : "text-rose-400"}`}>{isConnected ? "YES" : "NO"}</span>
+                                    </div>
+                                    <div className="flex items-center gap-2 text-xs font-bold">
+                                        <div className="w-1 h-1 rounded-full bg-blue-500" />
+                                        <span className="text-slate-400">Base Sepolia Network</span>
+                                        <span className={`ml-auto ${!needsNetworkSwitch ? "text-emerald-400" : "text-rose-400"}`}>{!needsNetworkSwitch ? "YES" : "NO"}</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1777,79 +1782,80 @@ export default function MarketView() {
                 )}
 
                 {activeTab === "profile" && (
-                    <div className="space-y-6 animate-in fade-in">
-                        <div className="p-6 rounded-3xl bg-sky-500/10 border border-sky-500/20 mb-8 flex items-center justify-between">
-                            <div>
-                                <h3 className="text-xl font-black text-white mb-1">Your Dashboard</h3>
-                                <p className="text-xs text-sky-400 font-bold uppercase tracking-widest">{userHistory.length} Predictions Made</p>
-                                <p className="text-[11px] text-slate-300 font-bold mt-2">Points: <span className="text-white">{userPoints}</span></p>
-                                <p className="text-[11px] text-slate-500 mt-2">
-                                    Points are important for future airdrops. Winnings claims have a <span className="text-slate-200 font-bold">5%</span> protocol fee.
-                                </p>
-                            </div>
-                            <div className="w-12 h-12 bg-sky-500/20 rounded-2xl flex items-center justify-center text-sky-400">
-                                <TrendingUp size={24} />
+                    <div className="space-y-6 animate-in fade-in duration-500">
+                        <div className="p-8 rounded-[32px] bg-white/[0.02] border border-white/5 relative overflow-hidden group">
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 blur-[100px] -mr-32 -mt-32 transition-all group-hover:bg-blue-500/10" />
+                            <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                                <div className="space-y-4">
+                                    <div>
+                                        <h3 className="text-2xl font-black text-white mb-1">Your Dashboard</h3>
+                                        <p className="text-[10px] text-blue-400 font-extrabold uppercase tracking-[0.3em]">Institutional Grade Trading</p>
+                                    </div>
+                                    <div className="flex flex-wrap gap-4">
+                                        <div className="px-4 py-2 rounded-xl bg-white/5 border border-white/5">
+                                            <div className="text-[9px] text-slate-500 font-bold uppercase tracking-widest mb-1">Total Points</div>
+                                            <div className="text-lg font-black text-white">{userPoints} <span className="text-[10px] text-blue-400 ml-0.5">PTS</span></div>
+                                        </div>
+                                        <div className="px-4 py-2 rounded-xl bg-white/5 border border-white/5">
+                                            <div className="text-lg font-black text-white">{userHistory.length}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="w-16 h-16 bg-blue-500 shadow-[0_0_30px_rgba(59,130,246,0.3)] rounded-2xl flex items-center justify-center text-white">
+                                    <TrendingUp size={32} />
+                                </div>
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-                            <div className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800">
-                                <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Open</div>
-                                <div className="mt-2 text-xl font-black text-white">{positionsSummary.openCount}</div>
-                            </div>
-                            <div className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800">
-                                <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Closed</div>
-                                <div className="mt-2 text-xl font-black text-white">{positionsSummary.closedCount}</div>
-                            </div>
-                            <div className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800">
-                                <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Claimable</div>
-                                <div className="mt-2 text-xl font-black text-white">{positionsSummary.claimableCount}</div>
-                                <div className="mt-1 text-[11px] text-slate-500">{positionsSummary.claimableTotalEth} ETH</div>
-                            </div>
-                            <div className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800">
-                                <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Total wagered</div>
-                                <div className="mt-2 text-xl font-black text-white">{positionsSummary.totalWageredEth}</div>
-                                <div className="mt-1 text-[11px] text-slate-500">ETH</div>
-                            </div>
+                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                            {[
+                                { label: "Open", value: positionsSummary.openCount },
+                                { label: "Closed", value: positionsSummary.closedCount },
+                                { label: "Claimable", value: positionsSummary.claimableCount, sub: `${positionsSummary.claimableTotalEth} ETH`, highlight: true },
+                                { label: "Total Volume", value: positionsSummary.totalWageredEth, sub: "ETH" },
+                            ].map((stat, i) => (
+                                <div key={i} className="p-5 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-white/10 transition-colors">
+                                    <div className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-3">{stat.label}</div>
+                                    <div className={`text-2xl font-black ${stat.highlight ? "text-emerald-400" : "text-white"}`}>{stat.value}</div>
+                                    {stat.sub && <div className="mt-1 text-[10px] text-slate-500 font-bold uppercase tracking-tight">{stat.sub}</div>}
+                                </div>
+                            ))}
                         </div>
 
                         {claimablePositions.length > 0 && (
-                            <div className="p-5 rounded-2xl bg-slate-900/40 border border-slate-800">
-                                <div className="flex items-center justify-between gap-4">
-                                    <div>
-                                        <div className="text-xs font-extrabold text-white">Claimable</div>
-                                        <div className="mt-1 text-[11px] text-slate-500">Tap a market to claim your winnings.</div>
+                            <div className="p-6 rounded-[24px] bg-emerald-500/[0.03] border border-emerald-500/10">
+                                <div className="flex items-center justify-between gap-4 mb-6">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                                        <h4 className="text-sm font-black text-white uppercase tracking-widest">Winnings Ready</h4>
                                     </div>
                                     <button
                                         type="button"
-                                        className="px-3 py-1.5 rounded-full bg-slate-900/40 border border-slate-800 text-[10px] font-extrabold text-slate-400 hover:text-white hover:border-slate-700 transition-all"
-                                        onClick={() => {
-                                            fetchUserHistory();
-                                        }}
+                                        className="px-3 py-1 bg-white/5 text-[9px] font-black text-slate-400 rounded-lg hover:text-white transition-colors border border-white/5"
+                                        onClick={() => fetchUserHistory()}
                                     >
-                                        Refresh
+                                        REFRESH
                                     </button>
                                 </div>
 
-                                <div className="mt-4 space-y-2">
-                                    {claimablePositions.slice(0, 20).map((p) => (
+                                <div className="space-y-3">
+                                    {claimablePositions.slice(0, 5).map((p) => (
                                         <button
                                             key={p.id.toString()}
-                                            type="button"
                                             onClick={() => {
                                                 setSelectedMarketId(p.id);
                                                 setActiveTab("market");
                                             }}
-                                            className="w-full text-left p-4 rounded-xl bg-slate-950/30 border border-slate-800 hover:border-slate-700 transition-all"
+                                            className="w-full text-left p-4 rounded-xl bg-white/[0.03] border border-white/5 hover:border-emerald-500/40 hover:bg-emerald-500/5 transition-all group"
                                         >
-                                            <div className="flex items-start justify-between gap-4">
-                                                <div className="min-w-0">
-                                                    <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Market #{p.id.toString()}</div>
-                                                    <div className="mt-1 text-xs font-bold text-slate-200 truncate">{p.question}</div>
+                                            <div className="flex items-center justify-between">
+                                                <div className="min-w-0 flex-1">
+                                                    <div className="text-[9px] font-bold text-slate-500 uppercase mb-1">MARKET #{p.id.toString()}</div>
+                                                    <div className="text-xs font-bold text-white truncate pr-4 group-hover:text-emerald-400 transition-colors">{p.question}</div>
                                                 </div>
-                                                <div className="text-right">
-                                                    <div className="text-sm font-black text-emerald-400">{p.amountEth} ETH</div>
-                                                    <div className="text-[10px] text-slate-600 font-bold">CLAIM</div>
+                                                <div className="text-right shrink-0">
+                                                    <div className="text-sm font-black text-emerald-400">+{p.amountEth} <span className="text-[10px]">ETH</span></div>
+                                                    <div className="text-[8px] text-emerald-500/70 font-black uppercase tracking-widest">TAP TO CLAIM</div>
                                                 </div>
                                             </div>
                                         </button>
@@ -1859,75 +1865,68 @@ export default function MarketView() {
                         )}
 
                         {userAddress && (
-                            <div className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800">
-                                <div className="flex items-center justify-between gap-4">
-                                    <div>
-                                        <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Your referral link</div>
-                                        <div className="mt-2 font-mono text-[11px] text-slate-300 break-all">
-                                            {`${typeof window !== "undefined" ? window.location.origin : ""}/?ref=${userAddress}`}
-                                        </div>
+                            <div className="p-6 rounded-[24px] bg-blue-500/[0.03] border border-blue-500/10 relative overflow-hidden group">
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 blur-3xl -mr-16 -mt-16" />
+                                <div className="relative z-10">
+                                    <div className="flex items-center justify-between mb-4">
+                                        <div className="text-[10px] font-black text-blue-400 uppercase tracking-[0.2em]">Affiliate Network</div>
+                                        <button
+                                            type="button"
+                                            className="px-3 py-1.5 bg-blue-500 text-[10px] font-black text-white rounded-lg shadow-lg shadow-blue-500/20 active:scale-95 transition-all"
+                                            onClick={async () => {
+                                                const link = `${window.location.origin}/?ref=${userAddress}`;
+                                                try {
+                                                    await navigator.clipboard.writeText(link);
+                                                    toast({ title: "Copied!", message: "Your institutional referral link is ready.", variant: "success" });
+                                                } catch {
+                                                    toast({ title: "Failed", message: "Manual copy required.", variant: "warning" });
+                                                }
+                                            }}
+                                        >
+                                            COPY LINK
+                                        </button>
                                     </div>
-                                    <button
-                                        type="button"
-                                        className="premium-btn py-2 px-3 text-xs"
-                                        onClick={async () => {
-                                            const link = `${window.location.origin}/?ref=${userAddress}`;
-                                            try {
-                                                await navigator.clipboard.writeText(link);
-                                                toast({ title: "Copied", message: "Referral link copied.", variant: "success" });
-                                            } catch {
-                                                toast({ title: "Copy failed", message: link, variant: "warning" });
-                                            }
-                                        }}
-                                    >
-                                        Copy
-                                    </button>
-                                </div>
-                                <div className="mt-3 text-[11px] text-slate-500">
-                                    When someone joins with your link: both sides get <span className="text-slate-200 font-bold">+50</span> points.
-                                    You also earn <span className="text-slate-200 font-bold">10%</span> of their future points.
+                                    <div className="p-3 rounded-xl bg-black/20 border border-white/5 font-mono text-[10px] text-slate-400 break-all mb-4">
+                                        {`${typeof window !== "undefined" ? window.location.origin : ""}/?ref=${userAddress}`}
+                                    </div>
+                                    <div className="flex items-start gap-3 bg-white/5 p-4 rounded-xl border border-white/5">
+                                        <div className="mt-0.5 text-blue-400 h-4 w-4 shrink-0">
+                                            <Info size={16} />
+                                        </div>
+                                        <p className="text-[11px] text-slate-400 leading-relaxed font-medium">
+                                            Refer traders and earn <span className="text-white font-bold">10%</span> of their earned points + a <span className="text-white font-bold">+50 PTS</span> initial bonus for both parties.
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                         )}
 
                         <div className="space-y-4">
-                            <h4 className="text-xs font-bold text-slate-500 uppercase tracking-[0.2em] ml-1">Betting History</h4>
-                            <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                            <div className="flex items-center justify-between">
+                                <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-1">Trade History</h4>
+                                <div className="h-px flex-1 bg-white/5 mx-4" />
+                            </div>
+                            <div className="space-y-2.5 max-h-[500px] overflow-y-auto pr-2 no-scrollbar">
                                 {userHistory.map((bet, i) => (
-                                    <div key={i} className="p-4 rounded-2xl bg-slate-900/50 border border-slate-800 flex items-center justify-between">
-                                        <div className="flex flex-col">
-                                            <span className="text-[10px] text-slate-500 font-bold mb-1">MARKET #{bet.marketId.toString()}</span>
-                                            <span className={`text-xs font-black ${bet.outcome ? "text-emerald-400" : "text-rose-400"}`}>
-                                                Voted {bet.outcome ? "YES" : "NO"}
-                                            </span>
-                                            {(() => {
-                                                const idStr = bet.marketId.toString();
-                                                const ub = historyUserBets[idStr];
-                                                const withdrawable = ub ? ub.yesAmount + ub.noAmount : 0n;
-                                                const cancelled = Boolean(historyCancelled[idStr]);
-                                                const show = cancelled && ub && !ub.claimed && withdrawable > 0n;
-                                                if (!show) return null;
-                                                return (
-                                                    <button
-                                                        type="button"
-                                                        disabled={betting || needsNetworkSwitch || !isConnected}
-                                                        onClick={() => handleEmergencyWithdraw(bet.marketId)}
-                                                        className="mt-2 inline-flex w-fit px-3 py-1.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[10px] font-extrabold hover:bg-amber-500/15 disabled:opacity-60 disabled:cursor-not-allowed"
-                                                    >
-                                                        Emergency Withdraw
-                                                    </button>
-                                                );
-                                            })()}
+                                    <div key={i} className="p-4 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-white/10 transition-all flex items-center justify-between group">
+                                        <div className="space-y-1">
+                                            <div className="text-[9px] text-slate-500 font-bold uppercase tracking-widest">MARKET #{bet.marketId.toString()}</div>
+                                            <div className={`text-xs font-black uppercase tracking-tight ${bet.outcome ? "text-emerald-400" : "text-rose-400"}`}>
+                                                Predicted {bet.outcome ? "YES" : "NO"}
+                                            </div>
                                         </div>
-                                        <div className="text-right">
-                                            <span className="text-sm font-black text-white">{Number(formatEther(bet.amount)).toFixed(4)} ETH</span>
-                                            <span className="block text-[10px] text-slate-600">Block #{bet.blockNumber.toString()}</span>
+                                        <div className="text-right space-y-1">
+                                            <div className="text-sm font-black text-white group-hover:text-blue-400 transition-colors">
+                                                {Number(formatEther(bet.amount)).toFixed(4)} <span className="text-[10px] opacity-60">ETH</span>
+                                            </div>
+                                            <div className="text-[9px] text-slate-600 font-bold">BLOCK {bet.blockNumber.toString()}</div>
                                         </div>
                                     </div>
                                 ))}
                                 {userHistory.length === 0 && (
-                                    <div className="text-center py-20 bg-slate-900/30 rounded-2xl border border-dashed border-slate-800">
-                                        <p className="text-slate-500 text-sm">No activity found for this wallet.</p>
+                                    <div className="text-center py-20 bg-white/[0.01] rounded-3xl border border-dashed border-white/5">
+                                        <p className="text-slate-600 font-bold text-sm uppercase tracking-widest">Vault Empty</p>
+                                        <p className="text-[10px] text-slate-700 mt-2 uppercase">Your trading history starts here</p>
                                     </div>
                                 )}
                             </div>
@@ -1936,358 +1935,261 @@ export default function MarketView() {
                 )}
 
                 {activeTab === "leaderboard" && (
-                    <div className="space-y-6 animate-in fade-in">
-                        <div className="flex justify-between items-center">
-                            <h3 className="text-lg font-bold text-white">Leaderboard</h3>
+                    <div className="space-y-6 animate-in fade-in duration-500">
+                        <div className="flex justify-between items-end mb-4">
+                            <div>
+                                <h3 className="text-2xl font-black text-white">Leaderboard</h3>
+                                <p className="text-[10px] text-slate-500 font-bold uppercase tracking-[0.2em] mt-1">Institutional Rankings</p>
+                            </div>
                             <button
                                 type="button"
                                 onClick={() => fetchPoints()}
                                 disabled={leaderboardLoading}
-                                className="px-3 py-1.5 rounded-full bg-slate-900/40 border border-slate-800 text-[10px] font-extrabold text-slate-400 hover:text-white hover:border-slate-700 transition-all"
+                                className="px-4 py-2 bg-white/5 text-[9px] font-black text-slate-400 rounded-xl hover:text-white border border-white/5 transition-all"
                             >
-                                Refresh
+                                REFRESH DATA
                             </button>
                         </div>
-                        <div className="text-[11px] text-slate-500">
-                            Points are tracked for potential future airdrops. Winnings claims have a <span className="text-slate-200 font-bold">5%</span> protocol fee.
-                        </div>
-                        <div className="space-y-2">
+
+                        <div className="space-y-2.5">
                             {pointsLeaderboard.map((entry, i) => (
-                                <div key={i} className="flex items-center justify-between p-4 bg-slate-900/50 rounded-xl border border-slate-800/50 hover:border-slate-700 transition-colors">
-                                    <div className="flex items-center gap-4">
-                                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-black text-sm ${i === 0 ? "bg-amber-500/20 text-amber-500" : i === 1 ? "bg-slate-300/20 text-slate-300" : i === 2 ? "bg-orange-500/20 text-orange-400" : "bg-slate-800 text-slate-500"}`}>
+                                <div key={i} className="flex items-center justify-between p-4 bg-white/[0.02] rounded-[20px] border border-white/5 hover:border-blue-500/30 transition-all group overflow-hidden relative">
+                                    <div className="flex items-center gap-5 relative z-10">
+                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-lg transition-all ${i === 0 ? "bg-amber-500 shadow-[0_0_20px_rgba(245,158,11,0.3)] text-slate-950" : i === 1 ? "bg-slate-300 text-slate-900" : i === 2 ? "bg-orange-600 text-white" : "bg-white/5 text-slate-500"}`}>
                                             {i + 1}
                                         </div>
-                                        <span className="text-sm font-mono text-slate-300">{entry.user.slice(0, 8)}...{entry.user.slice(-4)}</span>
+                                        <div className="space-y-0.5">
+                                            <span className="text-sm font-bold text-white block">{entry.user.slice(0, 10)}...{entry.user.slice(-6)}</span>
+                                            <span className="text-[8px] text-slate-600 font-black uppercase tracking-widest">Authenticated Trader</span>
+                                        </div>
                                     </div>
-                                    <div className="text-right">
-                                        <span className="text-sm font-black text-sky-400">{entry.points}</span>
-                                        <span className="text-[10px] text-slate-600 ml-1 font-bold">PTS</span>
+                                    <div className="text-right relative z-10">
+                                        <div className="text-lg font-black text-blue-400 group-hover:text-blue-300 transition-colors">{entry.points}</div>
+                                        <div className="text-[9px] text-slate-600 font-black uppercase tracking-tight">CUMULATIVE PTS</div>
                                     </div>
+                                    {i === 0 && <div className="absolute top-0 right-0 w-32 h-full bg-amber-500/5 blur-3xl -mr-16" />}
                                 </div>
                             ))}
                             {pointsLeaderboard.length === 0 && (
-                                <div className="text-center py-20 bg-slate-900/30 rounded-2xl border border-dashed border-slate-800">
-                                    <p className="text-slate-500 text-sm">No points yet.</p>
+                                <div className="text-center py-20 bg-white/[0.01] rounded-3xl border border-dashed border-white/5">
+                                    <p className="text-slate-600 font-bold text-sm uppercase tracking-widest">No rankings available</p>
                                 </div>
                             )}
                         </div>
-                        <div className="flex items-center justify-between gap-3">
+
+                        <div className="flex items-center justify-between gap-4 pt-4">
                             <button
                                 type="button"
                                 onClick={() => fetchLeaderboardPage(leaderboardPage - 1)}
                                 disabled={leaderboardLoading || leaderboardPage <= 1}
-                                className="flex-1 py-3 rounded-xl bg-slate-900/40 border border-slate-800 text-xs font-bold text-slate-300 hover:border-slate-700 hover:text-white transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                                className="flex-1 py-3.5 rounded-2xl bg-white/5 border border-white/5 text-[10px] font-black text-slate-400 hover:text-white hover:bg-white/10 transition-all disabled:opacity-40"
                             >
-                                Prev
+                                PREVIOUS
                             </button>
-                            <div className="px-3 py-2 rounded-xl bg-slate-900/30 border border-slate-800 text-xs font-bold text-slate-400">
-                                Page {leaderboardPage}
+                            <div className="px-6 py-3.5 rounded-2xl bg-white/[0.02] border border-white/5 text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                                PAGE <span className="text-white ml-2">{leaderboardPage}</span>
                             </div>
                             <button
                                 type="button"
                                 onClick={() => fetchLeaderboardPage(leaderboardPage + 1)}
                                 disabled={leaderboardLoading || !leaderboardHasMore}
-                                className="flex-1 py-3 rounded-xl bg-slate-900/40 border border-slate-800 text-xs font-bold text-slate-300 hover:border-slate-700 hover:text-white transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                                className="flex-1 py-3.5 rounded-2xl bg-white/5 border border-white/5 text-[10px] font-black text-slate-400 hover:text-white hover:bg-white/10 transition-all disabled:opacity-40"
                             >
-                                Next
+                                NEXT
                             </button>
                         </div>
                     </div>
                 )}
 
                 {activeTab === "activity" && (
-                    <div className="space-y-6 animate-in fade-in">
-                        <div className="flex justify-between items-center">
-                            <h3 className="text-lg font-bold text-white">Live Activity</h3>
-                            <div className="flex items-center gap-1.5 bg-sky-500/10 px-2 py-1 rounded-full text-sky-500 text-[10px] font-bold">
-                                <div className="w-1.5 h-1.5 bg-sky-500 rounded-full animate-pulse"></div>
-                                LIVE
+                    <div className="space-y-6 animate-in fade-in duration-500">
+                        <div className="flex justify-between items-end mb-6">
+                            <div>
+                                <h3 className="text-2xl font-black text-white">Live Activity</h3>
+                                <div className="flex items-center gap-2 mt-1.5">
+                                    <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(59,130,246,0.5)]"></div>
+                                    <span className="text-[10px] text-blue-400 font-extrabold uppercase tracking-[0.3em]">Institutional Grade Discovery</span>
+                                </div>
                             </div>
                         </div>
-                        <div className="space-y-3">
+
+                        <div className="grid gap-2.5">
                             {recentBets.length === 0 ? (
-                                <p className="text-slate-500 text-center py-20">Monitoring blockchain activity...</p>
+                                <div className="text-center py-24 bg-white/[0.01] rounded-3xl border border-dashed border-white/5">
+                                    <div className="animate-spin w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+                                    <p className="text-slate-600 font-bold text-xs uppercase tracking-widest">Awaiting Transactions...</p>
+                                </div>
                             ) : recentBets.map((bet, i) => (
-                                <div key={i} className="flex items-center justify-between p-4 bg-slate-900/30 rounded-xl border border-slate-800 transition-all hover:bg-slate-900/50">
-                                    <div className="flex items-center gap-3">
-                                        <span className={`px-2 py-0.5 rounded text-[8px] font-black uppercase border ${bet.outcome ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20" : "bg-rose-500/10 text-rose-500 border-rose-500/20"}`}>
+                                <div key={i} className="flex items-center justify-between p-4 bg-white/[0.02] rounded-[20px] border border-white/5 hover:border-white/10 transition-all group relative overflow-hidden">
+                                    <div className="flex items-center gap-4 relative z-10">
+                                        <div className={`px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest border ${bet.outcome ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" : "bg-rose-500/10 text-rose-400 border-rose-500/20"}`}>
                                             {bet.outcome ? "YES" : "NO"}
-                                        </span>
-                                        <span className="text-xs font-mono text-slate-400">{bet.user.slice(0, 6)}...</span>
+                                        </div>
+                                        <div className="space-y-0.5">
+                                            <span className="text-[10px] font-bold text-white block">{bet.user.slice(0, 8)}...</span>
+                                            <span className="text-[8px] text-slate-600 font-black uppercase tracking-widest">Market Predictive</span>
+                                        </div>
                                     </div>
-                                    <div className="text-right">
-                                        <span className="text-xs font-bold text-white">+{Number(formatEther(bet.amount)).toFixed(4)} ETH</span>
+                                    <div className="text-right shrink-0 relative z-10">
+                                        <div className="text-sm font-black text-white group-hover:text-blue-400 transition-colors">+{Number(formatEther(bet.amount)).toFixed(4)} <span className="text-[10px] opacity-60">ETH</span></div>
                                     </div>
+                                    <div className="absolute inset-y-0 left-0 w-1 bg-gradient-to-b from-transparent via-blue-500/20 to-transparent" />
                                 </div>
                             ))}
                         </div>
                     </div>
                 )}
 
-                {activeTab === "admin" && (
-                    <div className="space-y-8 animate-in zoom-in-95 duration-300">
-                        <div className="p-6 rounded-2xl bg-slate-900/50 border border-slate-800">
-                            <div className="flex items-start justify-between gap-4">
-                                <div>
-                                    <h3 className="text-sm font-bold text-slate-300 uppercase tracking-widest">Admin Access</h3>
-                                    <div className="mt-2 text-xs text-slate-400">
-                                        Your role: <span className="text-slate-200 font-bold">{adminRole ? adminRole : "none"}</span>
-                                    </div>
-                                    <div className="mt-1 text-[11px] text-slate-500">
-                                        Only <span className="text-slate-200 font-bold">superadmin</span> can add/remove admins or change roles.
-                                    </div>
-                                </div>
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        fetchAdminRole();
-                                        fetchAdmins();
-                                    }}
-                                    disabled={!userAddress || !adminRole}
-                                    className="px-3 py-1.5 rounded-full bg-slate-900/40 border border-slate-800 text-[10px] font-extrabold text-slate-400 hover:text-white hover:border-slate-700 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
-                                >
-                                    Refresh
-                                </button>
+                {activeTab === "admin" && isAdmin && (
+                    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-white/5">
+                            <div>
+                                <h3 className="text-3xl font-black text-white">Admin Terminal</h3>
+                                <p className="text-[10px] text-blue-400 font-extrabold uppercase tracking-[0.4em] mt-2">Protocol Governance</p>
                             </div>
-
-                            {!adminRole && (
-                                <div className="mt-6 text-[11px] text-slate-500">
-                                    You don't have admin access.
+                            <div className="flex gap-2">
+                                <div className="px-3 py-1 rounded-lg bg-white/5 border border-white/5 text-[9px] font-black text-slate-400 uppercase tracking-widest">
+                                    Role: Super Admin
                                 </div>
-                            )}
-
-                            {adminRole && (
-                                <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-4">
-                                    <div className="p-4 rounded-xl bg-slate-900/30 border border-slate-800">
-                                        <div className="flex items-center justify-between mb-3">
-                                            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Admins</div>
-                                            <div className="text-[10px] font-bold text-slate-600">{admins.length}</div>
-                                        </div>
-                                        <div className="space-y-2 max-h-[220px] overflow-y-auto pr-2 custom-scrollbar">
-                                            {admins.map((a) => (
-                                                <div key={a.address} className="flex items-center justify-between gap-3 p-3 rounded-lg bg-slate-900/40 border border-slate-800">
-                                                    <div className="min-w-0">
-                                                        <div className="text-xs font-mono text-slate-300 truncate">{a.address}</div>
-                                                        <div className="mt-1">
-                                                            <span
-                                                                className={`inline-flex items-center px-2 py-0.5 rounded text-[9px] font-black uppercase border ${a.role === "superadmin"
-                                                                    ? "bg-amber-500/10 text-amber-400 border-amber-500/20"
-                                                                    : "bg-sky-500/10 text-sky-400 border-sky-500/20"
-                                                                    }`}
-                                                            >
-                                                                {a.role}
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                    <button
-                                                        type="button"
-                                                        disabled={adminRole !== "superadmin" || adminMgmtBusy}
-                                                        onClick={() => adminRemove(a.address)}
-                                                        className="px-3 py-2 rounded-lg bg-rose-500/10 text-rose-500 border border-rose-500/20 text-[10px] font-extrabold hover:bg-rose-600 hover:text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                                                    >
-                                                        Remove
-                                                    </button>
-                                                </div>
-                                            ))}
-                                            {admins.length === 0 && (
-                                                <div className="text-center py-10 bg-slate-900/20 rounded-xl border border-dashed border-slate-800">
-                                                    <p className="text-slate-500 text-xs">No admins found.</p>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-
-                                    <div className="p-4 rounded-xl bg-slate-900/30 border border-slate-800">
-                                        <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">Add / Update Admin</div>
-                                        <div className="space-y-3">
-                                            <div className="space-y-1">
-                                                <label className="text-[10px] font-bold text-slate-600 uppercase tracking-widest ml-1">Wallet address</label>
-                                                <input
-                                                    value={adminMgmtTarget}
-                                                    onChange={(e) => setAdminMgmtTarget(e.target.value)}
-                                                    placeholder="0x..."
-                                                    className="w-full premium-input focus:bg-slate-900"
-                                                    disabled={adminRole !== "superadmin" || adminMgmtBusy}
-                                                />
-                                            </div>
-                                            <div className="space-y-1">
-                                                <label className="text-[10px] font-bold text-slate-600 uppercase tracking-widest ml-1">Role</label>
-                                                <select
-                                                    value={adminMgmtRole}
-                                                    onChange={(e) => setAdminMgmtRole(e.target.value as any)}
-                                                    className="w-full premium-input focus:bg-slate-900"
-                                                    disabled={adminRole !== "superadmin" || adminMgmtBusy}
-                                                >
-                                                    <option value="admin">admin</option>
-                                                    <option value="superadmin">superadmin</option>
-                                                </select>
-                                            </div>
-                                            <button
-                                                type="button"
-                                                onClick={() => adminUpsert()}
-                                                disabled={adminRole !== "superadmin" || adminMgmtBusy || !adminMgmtTarget.trim()}
-                                                className="w-full premium-btn py-3 disabled:opacity-60 disabled:cursor-not-allowed"
-                                            >
-                                                {adminMgmtBusy ? "Saving..." : "Save Admin"}
-                                            </button>
-
-                                            {adminRole !== "superadmin" && (
-                                                <div className="text-[11px] text-slate-500">
-                                                    You need <span className="text-slate-200 font-bold">superadmin</span> role to manage admins.
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
+                            </div>
                         </div>
 
-                        <div className="p-6 rounded-2xl bg-sky-500/5 border border-sky-500/10">
-                            <h3 className="text-lg font-bold text-white mb-6">New Discovery Market</h3>
-                            <form onSubmit={handleCreateMarket} className="space-y-6">
+                        {/* Quick Create Market */}
+                        <div className="p-8 rounded-[32px] bg-white/[0.02] border border-white/5 relative overflow-hidden">
+                            <h4 className="text-sm font-black text-white uppercase tracking-widest mb-6 flex items-center gap-3">
+                                <div className="w-2 h-2 rounded-full bg-blue-500" />
+                                Provision New Market
+                            </h4>
+                            <div className="space-y-6">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Market Question</label>
+                                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Market Question</label>
                                     <input
                                         type="text"
-                                        required
-                                        value={newQuestion}
-                                        onChange={(e) => setNewQuestion(e.target.value)}
-                                        placeholder="e.g., Will BTC hit $100k this month?"
-                                        className="w-full premium-input focus:bg-slate-900"
+                                        value={newMarketQuestion}
+                                        onChange={(e) => setNewMarketQuestion(e.target.value)}
+                                        placeholder="Will ETH hit 5k before Feb 2026?"
+                                        className="w-full premium-input bg-white/[0.01] py-4"
                                     />
                                 </div>
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Duration</label>
-                                    <div className="grid grid-cols-3 gap-2">
-                                        <div className="space-y-1">
-                                            <label className="text-[9px] font-bold text-slate-600 uppercase tracking-widest ml-1">Days</label>
-                                            <input
-                                                type="number"
-                                                min={0}
-                                                value={durationDays}
-                                                onChange={(e) => setDurationDays(e.target.value)}
-                                                className="w-full premium-input focus:bg-slate-900"
-                                            />
-                                        </div>
-                                        <div className="space-y-1">
-                                            <label className="text-[9px] font-bold text-slate-600 uppercase tracking-widest ml-1">Hours</label>
-                                            <input
-                                                type="number"
-                                                min={0}
-                                                value={durationHours}
-                                                onChange={(e) => setDurationHours(e.target.value)}
-                                                className="w-full premium-input focus:bg-slate-900"
-                                            />
-                                        </div>
-                                        <div className="space-y-1">
-                                            <label className="text-[9px] font-bold text-slate-600 uppercase tracking-widest ml-1">Minutes</label>
-                                            <input
-                                                type="number"
-                                                min={0}
-                                                value={durationMinutes}
-                                                onChange={(e) => setDurationMinutes(e.target.value)}
-                                                className="w-full premium-input focus:bg-slate-900"
-                                            />
-                                        </div>
+                                <div className="grid md:grid-cols-2 gap-6">
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Duration (Hours)</label>
+                                        <input
+                                            type="number"
+                                            value={newMarketDuration}
+                                            onChange={(e) => setNewMarketDuration(e.target.value)}
+                                            className="w-full premium-input bg-white/[0.01] py-4 font-mono"
+                                        />
                                     </div>
-                                    <div className="mt-3 p-3 rounded-xl bg-slate-900/30 border border-slate-800 flex items-center justify-between">
-                                        <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Total seconds</div>
-                                        <div className="text-xs font-mono text-slate-300">{newDuration}</div>
-                                    </div>
-                                    <div className="mt-4 grid grid-cols-5 gap-2">
-                                        <button type="button" onClick={() => setDurationPresetSeconds(15 * 60)} className="py-1.5 bg-slate-800 text-[10px] rounded-lg hover:bg-slate-700 font-bold transition-all">15m</button>
-                                        <button type="button" onClick={() => setDurationPresetSeconds(60 * 60)} className="py-1.5 bg-slate-800 text-[10px] rounded-lg hover:bg-slate-700 font-bold transition-all">1h</button>
-                                        <button type="button" onClick={() => setDurationPresetSeconds(6 * 60 * 60)} className="py-1.5 bg-slate-800 text-[10px] rounded-lg hover:bg-slate-700 font-bold transition-all">6h</button>
-                                        <button type="button" onClick={() => setDurationPresetSeconds(24 * 60 * 60)} className="py-1.5 bg-slate-800 text-[10px] rounded-lg hover:bg-slate-700 font-bold transition-all">24h</button>
-                                        <button type="button" onClick={() => setDurationPresetSeconds(7 * 24 * 60 * 60)} className="py-1.5 bg-slate-800 text-[10px] rounded-lg hover:bg-slate-700 font-bold transition-all">7d</button>
+                                    <div className="flex items-end">
+                                        <button
+                                            onClick={handleCreateMarket}
+                                            disabled={betting || needsNetworkSwitch || !isConnected}
+                                            className="w-full premium-btn py-4 bg-blue-500 hover:bg-blue-400 shadow-lg shadow-blue-500/20 active:scale-95 disabled:grayscale"
+                                        >
+                                            {betting ? "INITIALIZING..." : "INITIALIZE MARKET"}
+                                        </button>
                                     </div>
                                 </div>
-
-                                <button
-                                    type="submit"
-                                    disabled={betting || needsNetworkSwitch || !isConnected || adminRole !== "superadmin"}
-                                    className="w-full premium-btn py-4 shadow-xl shadow-sky-500/20 disabled:opacity-60 disabled:cursor-not-allowed"
-                                >
-                                    {betting ? "Simulating..." : "Launch Discovery Market "}
-                                </button>
-
-                                {(!isConnected || needsNetworkSwitch) && (
-                                    <div className="mt-4 text-[11px] text-slate-500">
-                                        Connect your wallet and switch to Base Sepolia to use admin actions.
-                                    </div>
-                                )}
-                                {isConnected && !needsNetworkSwitch && adminRole !== "superadmin" && (
-                                    <div className="mt-4 text-[11px] text-slate-500">
-                                        Only <span className="text-slate-200 font-bold">superadmin</span> can create markets.
-                                    </div>
-                                )}
-                            </form>
+                            </div>
                         </div>
 
-                        {!market?.resolved && (
-                            <div className="p-6 rounded-2xl bg-slate-900/50 border border-slate-800">
-                                <h3 className="text-sm font-bold text-slate-300 mb-6 uppercase tracking-widest text-center">Resolve Market Discovery</h3>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <button
-                                        onClick={() => handleResolve(true)}
-                                        disabled={betting || needsNetworkSwitch || !isConnected || adminRole !== "superadmin"}
-                                        className="py-3 bg-emerald-600/10 text-emerald-500 border border-emerald-500/20 rounded-xl text-xs font-bold hover:bg-emerald-600 hover:text-white transition-all disabled:opacity-60 disabled:cursor-not-allowed"
-                                    >
-                                        YES Outcome
-                                    </button>
-                                    <button
-                                        onClick={() => handleResolve(false)}
-                                        disabled={betting || needsNetworkSwitch || !isConnected || adminRole !== "superadmin"}
-                                        className="py-3 bg-rose-600/10 text-rose-500 border border-rose-500/20 rounded-xl text-xs font-bold hover:bg-rose-600 hover:text-white transition-all disabled:opacity-60 disabled:cursor-not-allowed"
-                                    >
-                                        NO Outcome
-                                    </button>
-                                </div>
-                                {isConnected && !needsNetworkSwitch && adminRole !== "superadmin" && (
-                                    <div className="mt-4 text-[11px] text-slate-500">
-                                        Only <span className="text-slate-200 font-bold">superadmin</span> can resolve markets.
+                        <div className="grid lg:grid-cols-2 gap-8">
+                            {/* Manage Admins */}
+                            <div className="space-y-6">
+                                <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-1">Advisory Board</h4>
+                                <div className="p-6 rounded-[28px] bg-white/[0.01] border border-white/5 space-y-6">
+                                    <div className="flex gap-2">
+                                        <input
+                                            type="text"
+                                            placeholder="0x... address"
+                                            value={adminToManage}
+                                            onChange={(e) => setAdminToManage(e.target.value)}
+                                            className="flex-1 premium-input bg-transparent py-3 text-xs font-mono"
+                                        />
+                                        <button
+                                            onClick={() => handleManageAdmin(true)}
+                                            className="px-4 py-2 bg-emerald-500 text-[10px] font-black text-white rounded-xl active:scale-95 shadow-lg shadow-emerald-500/20"
+                                        >
+                                            ADD
+                                        </button>
+                                        <button
+                                            onClick={() => handleManageAdmin(false)}
+                                            className="px-4 py-2 bg-rose-500 text-[10px] font-black text-white rounded-xl active:scale-95 shadow-lg shadow-rose-500/20"
+                                        >
+                                            REMOVE
+                                        </button>
                                     </div>
-                                )}
-                            </div>
-                        )}
-
-                        <div className="p-6 rounded-2xl bg-rose-500/5 border border-rose-500/10">
-                            <h3 className="text-sm font-bold text-rose-500 mb-4 uppercase tracking-widest">Protocol Safety</h3>
-                            <button
-                                onClick={handleEmergencyCancelMarket}
-                                disabled={betting || needsNetworkSwitch || !isConnected || adminRole !== "superadmin"}
-                                className="w-full py-3 bg-rose-500/10 text-rose-500 border border-rose-500/20 rounded-xl text-xs font-bold hover:bg-rose-600 hover:text-white transition-all disabled:opacity-60 disabled:cursor-not-allowed"
-                            >
-                                CANCEL SELECTED MARKET
-                            </button>
-                            {isConnected && !needsNetworkSwitch && adminRole !== "superadmin" && (
-                                <div className="mt-4 text-[11px] text-slate-500">
-                                    Only <span className="text-slate-200 font-bold">superadmin</span> can use emergency actions.
+                                    <div className="space-y-2 max-h-[220px] overflow-y-auto pr-2 no-scrollbar">
+                                        {admins.map((addr, i) => (
+                                            <div key={i} className="flex justify-between items-center p-3 rounded-xl bg-white/[0.02] border border-white/5">
+                                                <span className="text-[11px] font-mono text-slate-400">{addr.slice(0, 16)}...</span>
+                                                <span className="text-[9px] font-black text-emerald-400 uppercase tracking-widest">AUTHORIZED</span>
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
-                            )}
+                            </div>
+
+                            {/* Emergency Protocols */}
+                            <div className="space-y-6">
+                                <h4 className="text-[10px] font-black text-rose-500/50 uppercase tracking-[0.3em] ml-1">Emergency Protocols</h4>
+                                <div className="p-6 rounded-[28px] bg-rose-500/[0.03] border border-rose-500/10 space-y-6">
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Target Market ID</label>
+                                        <input
+                                            type="number"
+                                            value={emergencyMarketId}
+                                            onChange={(e) => setEmergencyMarketId(e.target.value)}
+                                            className="w-full premium-input bg-transparent py-3"
+                                        />
+                                    </div>
+                                    <div className="grid grid-cols-3 gap-3">
+                                        <button
+                                            onClick={() => handleEmergencyAction("resolve", true)}
+                                            className="py-3 bg-emerald-600 text-[9px] font-black text-white rounded-xl active:scale-95 hover:bg-emerald-500 transition-colors uppercase tracking-widest"
+                                        >
+                                            RES YES
+                                        </button>
+                                        <button
+                                            onClick={() => handleEmergencyAction("resolve", false)}
+                                            className="py-3 bg-rose-600 text-[9px] font-black text-white rounded-xl active:scale-95 hover:bg-rose-500 transition-colors uppercase tracking-widest"
+                                        >
+                                            RES NO
+                                        </button>
+                                        <button
+                                            onClick={() => handleEmergencyAction("cancel", false)}
+                                            className="py-3 bg-slate-700 text-[9px] font-black text-white rounded-xl active:scale-95 hover:bg-slate-600 transition-colors uppercase tracking-widest"
+                                        >
+                                            VOID
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 )}
             </div>
 
             {sharePromptOpen && sharePromptTxHash && sharePromptAmountBnb && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
-                    <div className="w-full max-w-md premium-card p-6 border border-slate-800 bg-slate-950">
-                        <div className="text-lg font-extrabold text-white">Claim 2x points</div>
-                        <div className="mt-2 text-sm text-slate-400">
-                            Share your bet on Twitter, Farcaster, or Base to claim a one-time 2x points bonus for this bet.
-                        </div>
-                        <div className="mt-4 p-3 rounded-xl bg-slate-900/40 border border-slate-800">
-                            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Bet tx</div>
-                            <div className="mt-1 text-xs font-mono text-slate-300 break-all">{sharePromptTxHash}</div>
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm px-4">
+                    <div className="w-full max-w-sm premium-card p-10 bg-slate-950 border border-white/10 relative overflow-hidden animate-in zoom-in duration-300">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 blur-3xl -mr-16 -mt-16" />
+
+                        <div className="w-20 h-20 rounded-3xl bg-blue-500 shadow-[0_0_40px_rgba(59,130,246,0.3)] mx-auto flex items-center justify-center text-white mb-8">
+                            <Sparkles size={40} />
                         </div>
 
-                        <div className="mt-5 grid grid-cols-1 gap-2">
+                        <h3 className="text-2xl font-black text-white text-center mb-2">Claim 2X Boost</h3>
+                        <p className="text-[11px] text-slate-400 text-center leading-relaxed font-medium mb-8">
+                            Share your market prediction with the community to double your <span className="text-white font-bold">PTS</span> allocation.
+                        </p>
+
+                        <div className="space-y-3 mb-8">
                             <button
                                 type="button"
                                 disabled={shareBoostBusy}
-                                className="w-full premium-btn py-3 disabled:opacity-60 disabled:cursor-not-allowed"
+                                className="w-full premium-btn py-4 bg-white text-slate-950 hover:bg-slate-100 flex items-center justify-center gap-2 group disabled:grayscale"
                                 onClick={async () => {
                                     const text = `I just placed a prediction on HolyMarket: ${market?.question || ""}`;
                                     const url = getMarketShareUrl() || window.location.href;
@@ -2296,13 +2198,13 @@ export default function MarketView() {
                                     setSharePromptOpen(false);
                                 }}
                             >
-                                Share on Twitter + Claim 2x
+                                <span className="text-xs font-black uppercase tracking-widest">Share on X</span>
                             </button>
 
                             <button
                                 type="button"
                                 disabled={shareBoostBusy}
-                                className="w-full premium-btn py-3 disabled:opacity-60 disabled:cursor-not-allowed"
+                                className="w-full premium-btn py-4 bg-white/[0.05] text-white border border-white/10 hover:bg-white/[0.1] disabled:grayscale"
                                 onClick={async () => {
                                     const text = `Predicting on HolyMarket: ${market?.question || ""}`;
                                     const url = getMarketShareUrl() || window.location.href;
@@ -2311,40 +2213,18 @@ export default function MarketView() {
                                     setSharePromptOpen(false);
                                 }}
                             >
-                                Share on Farcaster + Claim 2x
-                            </button>
-
-                            <button
-                                type="button"
-                                disabled={shareBoostBusy}
-                                className="w-full premium-btn py-3 disabled:opacity-60 disabled:cursor-not-allowed"
-                                onClick={async () => {
-                                    const text = `I just placed a prediction on HolyMarket: ${market?.question || ""}`;
-                                    const url = getMarketShareUrl() || window.location.href;
-                                    window.open(`https://base.app/?text=${encodeURIComponent(text)}`);
-                                    await claimShareBoost(sharePromptTxHash, sharePromptAmountBnb);
-                                    setSharePromptOpen(false);
-                                }}
-                            >
-                                Share on Base + Claim 2x
+                                <span className="text-xs font-black uppercase tracking-widest text-blue-400">Share on Warpcast</span>
                             </button>
                         </div>
 
-                        <div className="mt-4 flex gap-2">
-                            <button
-                                type="button"
-                                className="flex-1 py-2.5 rounded-xl bg-slate-900/60 border border-slate-800 text-xs font-bold text-slate-300 hover:bg-slate-900 transition-all"
-                                onClick={() => {
-                                    setSharePromptOpen(false);
-                                }}
-                                disabled={shareBoostBusy}
-                            >
-                                Skip
-                            </button>
-                        </div>
-                        <div className="mt-3 text-[11px] text-slate-500">
-                            Note: This bonus is best-effort and can be claimed once per bet transaction.
-                        </div>
+                        <button
+                            type="button"
+                            className="w-full text-[10px] font-black text-slate-600 hover:text-slate-400 uppercase tracking-[0.3em] transition-colors"
+                            onClick={() => setSharePromptOpen(false)}
+                            disabled={shareBoostBusy}
+                        >
+                            Skip Bonus
+                        </button>
                     </div>
                 </div>
             )}

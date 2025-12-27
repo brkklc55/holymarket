@@ -4,15 +4,7 @@ const baseUrl = (process.env.NEXT_PUBLIC_URL || 'https://baseappholymarket.xyz')
 const appOrigin = baseUrl + '/';
 const imageUrl = `${baseUrl}/og.png`;
 
-const frameMetadataList: Record<string, string> = {
-  'fc:frame': 'vNext',
-  'fc:frame:image': imageUrl,
-  'fc:frame:image:aspect_ratio': '1.91:1',
-  'fc:frame:post_url': `${baseUrl}/api/frame`,
-  'fc:frame:button:1': 'Enter HolyMarket',
-};
-
-const manifestUrl = `${baseUrl}/.well-known/farcaster.json`;
+const manifestUrl = `${baseUrl}/farcaster.json`;
 
 export const metadata: Metadata = {
   title: 'HolyMarket',
@@ -40,7 +32,8 @@ export const metadata: Metadata = {
     images: [imageUrl],
   },
   other: {
-    ...frameMetadataList,
+    "fc:frame": "vNext",
+    "fc:frame:image": imageUrl,
     "fc:frame:v2": "true",
     "fc:frame:manifest": manifestUrl,
   },
@@ -50,18 +43,32 @@ import MarketView from "./components/MarketView";
 
 export default function Page() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-4 sm:p-6 bg-slate-950">
-      <div className="w-full max-w-3xl space-y-8">
-        <div className="text-center space-y-4">
-          <div className="flex justify-center mb-6">
-            <img src="/icon.png" alt="HolyMarket Logo" className="w-24 h-24 sm:w-32 sm:h-32 rounded-3xl shadow-xl" />
+    <main className="flex min-h-screen flex-col items-center justify-start pt-12 pb-20 px-4 sm:px-6 bg-[#020617] relative overflow-hidden">
+      {/* Background decoration */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-gradient-to-b from-blue-500/10 to-transparent pointer-events-none" />
+
+      <div className="w-full max-w-2xl space-y-10 relative z-10">
+        <div className="text-center space-y-6 animate-fade-in-up">
+          <div className="flex justify-center">
+            <div className="p-1 rounded-[2.5rem] bg-gradient-to-b from-blue-500/20 to-transparent">
+              <img
+                src="/icon.png"
+                alt="HolyMarket Logo"
+                className="w-20 h-20 sm:w-24 sm:h-24 rounded-[2rem] shadow-2xl transition-transform hover:scale-105 duration-300"
+              />
+            </div>
           </div>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tighter text-white leading-none break-words">
-            HOLY<span className="text-gradient">MARKET</span>
-          </h1>
+          <div className="space-y-2">
+            <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white m-0">
+              HOLY<span className="text-gradient">MARKET</span>
+            </h1>
+            <p className="text-slate-400 text-sm sm:text-base font-medium uppercase tracking-[0.2em]">
+              Trade Your Beliefs
+            </p>
+          </div>
         </div>
 
-        <div className="flex justify-center">
+        <div className="animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
           <MarketView />
         </div>
       </div>

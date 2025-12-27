@@ -10,20 +10,13 @@
         "iconUrl": "https://baseappholymarket.xyz/icon.png",
         "homeUrl": "https://baseappholymarket.xyz/",
         "imageUrl": "https://baseappholymarket.xyz/og.png",
-        "buttonTitle": "Launch App",
+        "buttonTitle": "Launch HolyMarket",
         "webhookUrl": "https://baseappholymarket.xyz/api/farcaster/webhook",
         "description": "HolyMarket: Trade your beliefs on Base.",
-        "subtitle": "Trade your beliefs",
         "screenshotUrls": [
             "https://baseappholymarket.xyz/og.png"
         ],
         "primaryCategory": "finance",
-        "tags": [
-            "crypto",
-            "betting",
-            "prediction",
-            "base"
-        ],
         "heroImageUrl": "https://baseappholymarket.xyz/og.png",
         "splashImageUrl": "https://baseappholymarket.xyz/i",
         "splashBackgroundColor": "#020617"
@@ -34,20 +27,13 @@
         "iconUrl": "https://baseappholymarket.xyz/icon.png",
         "homeUrl": "https://baseappholymarket.xyz/",
         "imageUrl": "https://baseappholymarket.xyz/og.png",
-        "buttonTitle": "Launch App",
+        "buttonTitle": "Launch HolyMarket",
         "webhookUrl": "https://baseappholymarket.xyz/api/farcaster/webhook",
         "description": "HolyMarket: Trade your beliefs on Base.",
-        "subtitle": "Trade your beliefs",
         "screenshotUrls": [
             "https://baseappholymarket.xyz/og.png"
         ],
         "primaryCategory": "finance",
-        "tags": [
-            "crypto",
-            "betting",
-            "prediction",
-            "base"
-        ],
         "heroImageUrl": "https://baseappholymarket.xyz/og.png",
         "splashImageUrl": "https://baseappholymarket.xyz/i",
         "splashBackgroundColor": "#020617"
@@ -55,17 +41,13 @@
     "name": "HolyMarket",
     "iconUrl": "https://baseappholymarket.xyz/icon.png",
     "description": "HolyMarket: Trade your beliefs on Base.",
-    "subtitle": "Trade your beliefs",
+    "subtitle": "Trade your beliefs on Base.",
     "heroImageUrl": "https://baseappholymarket.xyz/og.png",
     "tagline": "HolyMarket: Bet on Base",
     "screenshotUrls": [
         "https://baseappholymarket.xyz/og.png"
     ],
     "primaryCategory": "finance",
-    "tags": [
-        "crypto",
-        "base"
-    ],
     "ogTitle": "HolyMarket | Base Prediction",
     "ogDescription": "Trade your beliefs on Base.",
     "ogImageUrl": "https://baseappholymarket.xyz/og.png",
