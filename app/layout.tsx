@@ -10,22 +10,22 @@ const baseUrl = (process.env.NEXT_PUBLIC_URL || defaultUrl).replace(/\/?$/, '');
 export const metadata: Metadata = {
   title: "HolyMarket",
   applicationName: "HolyMarket",
-  description: "HolyMarket: Trade your beliefs on Base. Decentralized Prediction Markets.",
+  description: "HolyMarket: Trade your beliefs on Base. Decentralized, Secure, Trustless.",
   metadataBase: new URL(baseUrl + '/'),
   icons: {
-    icon: [{ url: `${baseUrl}/icon.png?v=18`, sizes: "any" }],
-    shortcut: [`${baseUrl}/icon.png?v=18`],
-    apple: [{ url: `${baseUrl}/icon.png?v=18`, sizes: "180x180", type: "image/png" }],
+    icon: [{ url: `${baseUrl}/icon.png?v=19`, sizes: "any" }],
+    shortcut: [`${baseUrl}/icon.png?v=19`],
+    apple: [{ url: `${baseUrl}/icon.png?v=19`, sizes: "180x180", type: "image/png" }],
   },
 
   openGraph: {
     title: "HolyMarket",
-    description: "HolyMarket: Trade your beliefs on Base. Decentralized Prediction Markets.",
+    description: "HolyMarket: Trade your beliefs on Base. Decentralized, Secure, Trustless.",
     url: "/",
     siteName: "HolyMarket",
     images: [
       {
-        url: `${baseUrl}/embed.png?v=18`,
+        url: `${baseUrl}/v19-preview.png`,
         width: 1200,
         height: 630,
         type: 'image/png',
@@ -37,10 +37,10 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "HolyMarket",
-    description: "HolyMarket: Trade your beliefs on Base. Decentralized Prediction Markets.",
-    images: [`${baseUrl}/embed.png?v=18`],
+    description: "HolyMarket: Trade your beliefs on Base. Decentralized, Secure, Trustless.",
+    images: [`${baseUrl}/v19-preview.png`],
   },
-  manifest: "/manifest.json?v=18",
+  manifest: "/manifest.json?v=19",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
