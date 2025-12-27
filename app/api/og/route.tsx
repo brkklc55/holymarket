@@ -5,9 +5,8 @@ export const runtime = 'edge';
 
 export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
-    const question = searchParams.get('question') || "Will Base reach 10B TVL?";
-    const yes = searchParams.get('yes') || "50";
-    const no = searchParams.get('no') || "50";
+    const question = searchParams.get('question') || "HolyMarket";
+    const sub = searchParams.get('sub') || "Base Prediction Market";
 
     try {
         return new ImageResponse(
@@ -23,21 +22,21 @@ export async function GET(req: NextRequest) {
                         backgroundColor: '#020617',
                         color: 'white',
                         padding: '40px',
-                        border: '2px solid #334155',
+                        border: '8px solid #334155',
+                        backgroundImage: 'radial-gradient(circle at center, #1e293b 0%, #020617 100%)',
                     }}
                 >
-                    <div style={{ display: 'flex', fontSize: 60, fontWeight: 'bold', marginBottom: 40, textAlign: 'center' }}>
+                    <div style={{ display: 'flex', fontSize: 120, fontWeight: 'bold', marginBottom: 20, textAlign: 'center', letterSpacing: '-0.05em' }}>
                         {question}
                     </div>
-                    <div style={{ display: 'flex', gap: 40 }}>
-                        <div style={{ display: 'flex', backgroundColor: '#22c55e', padding: '20px 40px', borderRadius: 12, fontSize: 32 }}>
-                            YES: {yes}%
-                        </div>
-                        <div style={{ display: 'flex', backgroundColor: '#ef4444', padding: '20px 40px', borderRadius: 12, fontSize: 32 }}>
-                            NO: {no}%
-                        </div>
+                    <div style={{ display: 'flex', fontSize: 48, color: '#94a3b8', marginBottom: 60 }}>
+                        {sub}
                     </div>
-                    <div style={{ marginTop: 40, fontSize: 24, color: '#94a3b8' }}>
+                    <div style={{ display: 'flex', gap: 20, alignItems: 'center' }}>
+                        <div style={{ width: 12, height: 12, borderRadius: 6, backgroundColor: '#22c55e' }} />
+                        <div style={{ fontSize: 24, color: '#22c55e', fontWeight: 'bold' }}>LIVE ON BASE</div>
+                    </div>
+                    <div style={{ marginTop: 40, fontSize: 24, color: '#94a3b8', display: 'flex' }}>
                         HolyMarket • Predict the Future
                     </div>
                 </div>
