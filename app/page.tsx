@@ -59,6 +59,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
       images: [imageUrl],
     },
     other: {
+      "apple-touch-icon": `${baseUrl}/icon.png`,
       "fc:frame": "vNext",
       "fc:frame:v2": "true",
       "fc:frame:image": imageUrl,
@@ -68,11 +69,21 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
         version: "1",
         name: "HolyMarket",
         iconUrl: `${baseUrl}/icon.png`,
-        buttonTitle: "Play",
-        homeUrl: baseUrl,
+        buttonTitle: "Play HolyMarket",
+        homeUrl: `${baseUrl}`,
         imageUrl: imageUrl,
         splashImageUrl: `${baseUrl}/icon.png`,
-        splashBackgroundColor: "#020617"
+        splashBackgroundColor: "#050b1a"
+      }),
+      "fc:miniapp": JSON.stringify({
+        version: "1",
+        name: "HolyMarket",
+        iconUrl: `${baseUrl}/icon.png`,
+        homeUrl: `${baseUrl}`,
+        imageUrl: imageUrl,
+        buttonTitle: "Play HolyMarket",
+        splashImageUrl: `${baseUrl}/icon.png`,
+        splashBackgroundColor: "#050b1a",
       })
     },
   };
