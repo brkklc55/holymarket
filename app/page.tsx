@@ -67,6 +67,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
       "fc:frame:launch_app": JSON.stringify({
         version: "1",
         name: "HolyMarket",
+        iconUrl: `${baseUrl}/icon.png`,
         buttonTitle: "Play",
         homeUrl: baseUrl,
         imageUrl: imageUrl,
