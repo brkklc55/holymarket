@@ -7,16 +7,16 @@
     "miniapp": {
         "version": "next",
         "name": "HolyMarket",
-        "iconUrl": "https://www.baseappholymarket.xyz/icon.png?v=8",
+        "iconUrl": "https://www.baseappholymarket.xyz/icon.png?v=9",
         "homeUrl": "https://www.baseappholymarket.xyz",
-        "imageUrl": "https://www.baseappholymarket.xyz/og.png?v=8",
+        "imageUrl": "https://www.baseappholymarket.xyz/og.png?v=9",
         "buttonTitle": "Play HolyMarket",
-        "splashImageUrl": "https://www.baseappholymarket.xyz/icon.png?v=8",
+        "splashImageUrl": "https://www.baseappholymarket.xyz/icon.png?v=9",
         "splashBackgroundColor": "#050b1a",
         "subtitle": "HolyMarket",
         "description": "HolyMarket: Bet your beliefs on Base. Join the market.",
         "screenshotUrls": [
-            "https://www.baseappholymarket.xyz/og.png?v=8"
+            "https://www.baseappholymarket.xyz/og.png?v=9"
         ],
         "primaryCategory": "finance",
         "tags": [
@@ -25,11 +25,11 @@
             "base",
             "finance"
         ],
-        "heroImageUrl": "https://www.baseappholymarket.xyz/og.png?v=8",
+        "heroImageUrl": "https://www.baseappholymarket.xyz/og.png?v=9",
         "tagline": "Bet your beliefs on Base",
         "ogTitle": "HolyMarket",
         "ogDescription": "Bet your beliefs on Base. Join the market",
-        "ogImageUrl": "https://www.baseappholymarket.xyz/og.png?v=8",
+        "ogImageUrl": "https://www.baseappholymarket.xyz/og.png?v=9",
         "castShareUrl": "https://www.baseappholymarket.xyz"
     }
 }
