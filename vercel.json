@@ -1,0 +1,9 @@
+{
+    "rewrites": [
+        {
+            "source": "/farcaster.json",
+            "destination": "/.well-known/farcaster.json"
+        }
+    ],
+    "redirects": []
+}

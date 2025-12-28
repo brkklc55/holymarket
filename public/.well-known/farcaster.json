@@ -5,7 +5,7 @@
         "signature": "aJXo93UhDyy7/hJGiamw2jzqKkIN02Mb5fYsayIa8FoG97V+L0MJlVNlduj5M4rSLVO409qM12GjQZU5dFr2DRs="
     },
     "frame": {
-        "version": "1",
+        "version": "next",
         "name": "HolyMarket",
         "iconUrl": "https://baseappholymarket.xyz/icon.png",
         "homeUrl": "https://baseappholymarket.xyz",
@@ -33,7 +33,7 @@
         "castShareUrl": "https://baseappholymarket.xyz"
     },
     "miniapp": {
-        "version": "1",
+        "version": "next",
         "name": "HolyMarket",
         "iconUrl": "https://baseappholymarket.xyz/icon.png",
         "homeUrl": "https://baseappholymarket.xyz",
@@ -59,9 +59,5 @@
         "ogDescription": "Bet your beliefs on Base. Join the market",
         "ogImageUrl": "https://baseappholymarket.xyz/api/og",
         "castShareUrl": "https://baseappholymarket.xyz"
-    },
-    "name": "HolyMarket",
-    "iconUrl": "https://baseappholymarket.xyz/icon.png",
-    "description": "HolyMarket Bet Your Beliefs",
-    "primaryCategory": "finance"
+    }
 }
