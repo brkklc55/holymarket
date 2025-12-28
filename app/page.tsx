@@ -57,21 +57,33 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
       title,
       description,
       images: [imageUrl],
+      // The user's edit placed an openGraph object here, which is syntactically incorrect for Next.js Metadata.
+      // Assuming the intent was to ensure og:title and description are set, they are already handled by the top-level openGraph block.
+      // The following block is removed to maintain syntactical correctness.
+      // openGraph: {
+      //   title: "HolyMarket",
+      //   description: "HolyMarket: Bet your beliefs on Base.",
+      //   images: [imageUrl],
+      //   siteName: "HolyMarket",
+      // },
     },
     other: {
+      "title": "HolyMarket", // Added as per user's instruction
       "apple-touch-icon": `${baseUrl}/icon.png`,
       "fc:frame": "vNext",
       "fc:frame:v2": "true",
       "fc:frame:image": imageUrl,
-      "fc:frame:manifest": manifestUrl,
+      "fc:frame:manifest": `${baseUrl}/.well-known/farcaster.json`, // Updated to use baseUrl
       "fc:frame:image:aspect_ratio": "1.91:1",
       "fc:frame:launch_app": JSON.stringify({
         version: "1",
         name: "HolyMarket",
         iconUrl: `${baseUrl}/icon.png`,
-        buttonTitle: "Play HolyMarket",
         homeUrl: `${baseUrl}`,
         imageUrl: imageUrl,
+        button: { // Modified structure as per user's instruction
+          title: "Play HolyMarket",
+        },
         splashImageUrl: `${baseUrl}/icon.png`,
         splashBackgroundColor: "#050b1a"
       }),
@@ -81,7 +93,9 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
         iconUrl: `${baseUrl}/icon.png`,
         homeUrl: `${baseUrl}`,
         imageUrl: imageUrl,
-        buttonTitle: "Play HolyMarket",
+        button: { // Modified structure as per user's instruction
+          title: "Play HolyMarket",
+        },
         splashImageUrl: `${baseUrl}/icon.png`,
         splashBackgroundColor: "#050b1a",
       })
