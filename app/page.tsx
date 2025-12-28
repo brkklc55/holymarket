@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import MarketView from "./components/MarketView";
 
 type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -102,14 +103,19 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
 
 export default function Page() {
   return (
-    <main className="min-h-screen bg-black">
-      <div className="flex flex-col items-center justify-center min-h-screen p-4 text-center">
-        <h1 className="text-4xl font-bold text-white mb-4">HolyMarket</h1>
-        <p className="text-gray-400 mb-8 max-w-md">
-          Bet your beliefs on Base. The prediction market for the Farcaster ecosystem.
-        </p>
-        <div className="bg-blue-600 text-white px-6 py-3 rounded-full font-bold">
-          Launch in Base App
+    <main className="flex min-h-screen flex-col items-center justify-center p-4 sm:p-6 bg-slate-950">
+      <div className="w-full max-w-3xl space-y-8">
+        <div className="text-center space-y-4">
+          <div className="flex justify-center mb-6">
+            <img src="/icon.png" alt="HolyMarket Logo" className="w-24 h-24 sm:w-32 sm:h-32 rounded-3xl shadow-xl" />
+          </div>
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tighter text-white leading-none break-words">
+            HOLY<span className="text-gradient">MARKET</span>
+          </h1>
+        </div>
+
+        <div className="flex justify-center">
+          <MarketView />
         </div>
       </div>
     </main>
