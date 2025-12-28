@@ -10,8 +10,7 @@
         "iconUrl": "https://baseappholymarket.xyz/icon.png",
         "homeUrl": "https://baseappholymarket.xyz",
         "imageUrl": "https://baseappholymarket.xyz/og.png",
-        "buttonTitle": "Play HolyMarket",
-        "webhookUrl": "https://baseappholymarket.xyz/api/farcaster/webhook",
+        "buttonTitle": "Play",
         "description": "HolyMarket: Bet your beliefs on Base.",
         "splashImageUrl": "https://baseappholymarket.xyz/icon.png",
         "splashBackgroundColor": "#020617"
