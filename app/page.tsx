@@ -7,7 +7,7 @@ type Props = {
 
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
   const params = await searchParams;
-  const baseUrl = "https://baseappholymarket.xyz";
+  const baseUrl = "https://www.baseappholymarket.xyz";
   const appOrigin = baseUrl + "/";
 
   const question = typeof params.question === 'string' ? params.question : undefined;

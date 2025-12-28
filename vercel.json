@@ -5,5 +5,17 @@
             "destination": "/.well-known/farcaster.json"
         }
     ],
-    "redirects": []
+    "redirects": [
+        {
+            "source": "/(.*)",
+            "has": [
+                {
+                    "type": "host",
+                    "value": "baseappholymarket.xyz"
+                }
+            ],
+            "destination": "https://www.baseappholymarket.xyz/$1",
+            "permanent": true
+        }
+    ]
 }
