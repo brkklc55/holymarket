@@ -88,8 +88,8 @@ export async function GET(req: NextRequest) {
         );
     } catch (e: any) {
         console.error('OG Image Error:', e);
-        return new Response(`Failed to generate the image: ${e?.message || 'Unknown error'}`, {
-            status: 500,
-        });
+        // Fallback to static OG image on error to prevent broken link icons on Warpcast
+        const baseUrl = (process.env.NEXT_PUBLIC_URL || 'https://baseappholymarket.xyz').replace(/\/?$/, '');
+        return Response.redirect(`${baseUrl}/og.png`, 302);
     }
 }
