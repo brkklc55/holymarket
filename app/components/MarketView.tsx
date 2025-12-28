@@ -5,10 +5,12 @@ import { createPublicClient, http, parseEther, createWalletClient, custom, forma
 import { baseSepolia } from "viem/chains";
 import { useAccount, useChainId } from "wagmi";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { TrendingUp, Share2, Twitter, Info, Sparkles, Search } from "lucide-react";
+import { TrendingUp, Share2, Twitter, Info, Sparkles, Search, Gift } from "lucide-react";
 import { sdk } from "@farcaster/miniapp-sdk";
 import { PREDICTION_MARKET_ADDRESS, PREDICTION_MARKET_ABI } from "../constants";
 import { useToast } from "./ui/ToastProvider";
+import DailyLottery from "./DailyLottery";
+import NotificationBell from "./NotificationBell";
 
 export default function MarketView() {
     const { address: userAddress, isConnected } = useAccount();
@@ -61,6 +63,7 @@ export default function MarketView() {
     const [marketFilter, setMarketFilter] = useState<"all" | "live" | "ended" | "cancelled">("all");
     const [marketSort, setMarketSort] = useState<"newest" | "ending" | "volume">("newest");
     const [showHowToPlay, setShowHowToPlay] = useState(false);
+    const [showLottery, setShowLottery] = useState(false);
 
     const formatTimeLeft = (totalSeconds: number) => {
         if (!Number.isFinite(totalSeconds) || totalSeconds <= 0) return "ENDED";
@@ -1328,8 +1331,27 @@ export default function MarketView() {
                         ))}
                     </div>
                 </div>
-                <div className="flex justify-end scale-90 origin-right">
-                    <ConnectButton accountStatus="avatar" chainStatus="icon" showBalance={false} />
+                <div className="flex items-center gap-2">
+                    {/* Daily Lottery Button */}
+                    <button
+                        onClick={() => setShowLottery(true)}
+                        className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 hover:border-purple-500/50 transition-all group"
+                    >
+                        <Gift size={16} className="text-purple-400 group-hover:animate-bounce" />
+                        <span className="text-[10px] font-black text-purple-400 uppercase tracking-wider hidden sm:inline">Daily</span>
+                    </button>
+
+                    {/* Notification Bell */}
+                    <NotificationBell
+                        userAddress={userAddress}
+                        markets={allMarkets as any}
+                        userBets={historyUserBets as any}
+                        onOpenLottery={() => setShowLottery(true)}
+                    />
+
+                    <div className="scale-90 origin-right">
+                        <ConnectButton accountStatus="avatar" chainStatus="icon" showBalance={false} />
+                    </div>
                 </div>
             </div>
 
@@ -2375,6 +2397,18 @@ export default function MarketView() {
                         </div>
                     </div>
                 </div>
+            )}
+
+            {/* Daily Lottery Modal */}
+            {showLottery && (
+                <DailyLottery
+                    userAddress={userAddress}
+                    onClose={() => setShowLottery(false)}
+                    onWin={(amount: number) => {
+                        toast({ title: "Congratulations!", message: `You won ${amount} PTS!`, variant: "success" });
+                        fetchPoints();
+                    }}
+                />
             )}
         </div >
     );
