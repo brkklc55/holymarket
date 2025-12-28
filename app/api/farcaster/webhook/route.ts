@@ -59,39 +59,28 @@ export async function POST(request: NextRequest) {
     const userAgent = String(request.headers.get("user-agent") || "");
 
     const raw = await request.text().catch(() => "");
+
+    // Warpcast verification probe check (empty body or very small)
+    if (!raw || raw.length < 2) {
+        console.log("miniapp_webhook:empty_body_probe", { at: nowIso(), userAgent });
+        return NextResponse.json({ success: true, message: "Probe received" });
+    }
+
     let requestJson: any = null;
     try {
-        requestJson = raw ? JSON.parse(raw) : null;
+        requestJson = JSON.parse(raw);
     } catch {
-        requestJson = null;
-    }
-
-    if (!requestJson) {
-        try {
-            console.log("miniapp_webhook:invalid_json", {
-                at: nowIso(),
-                contentType,
-                userAgent,
-                rawLength: raw.length,
-                rawPreview: raw.slice(0, 200),
-            });
-        } catch {
-            // ignore
-        }
-
-        return NextResponse.json({ success: false, error: "Invalid JSON" }, { status: 400 });
-    }
-
-    try {
-        console.log("miniapp_webhook:received", {
-            at: nowIso(),
-            hasBody: true,
-        });
-    } catch {
-        // ignore
+        console.log("miniapp_webhook:invalid_json_probe", { at: nowIso(), raw: raw.slice(0, 100) });
+        return NextResponse.json({ success: true, message: "Invalid JSON but accepted for probe" });
     }
 
     if (!process.env.NEYNAR_API_KEY) {
+        console.error("miniapp_webhook:missing_neynar_key");
+        // For verification phase, we might still want to return 200 if it's just a probe
+        // But for actual events, we need the key.
+        if (requestJson?.event?.event === "test") {
+            return NextResponse.json({ success: true, message: "Test accepted without key" });
+        }
         return NextResponse.json(
             { success: false, error: "Missing NEYNAR_API_KEY" },
             { status: 500 }
