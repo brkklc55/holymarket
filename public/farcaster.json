@@ -7,23 +7,23 @@
     "frame": {
         "version": "1",
         "name": "HolyMarket",
-        "iconUrl": "https://baseappholymarket.xyz/icon.png",
-        "homeUrl": "https://baseappholymarket.xyz",
-        "imageUrl": "https://baseappholymarket.xyz/og.png",
+        "iconUrl": "https://www.baseappholymarket.xyz/icon.png",
+        "homeUrl": "https://www.baseappholymarket.xyz",
+        "imageUrl": "https://www.baseappholymarket.xyz/og.png",
         "buttonTitle": "Play HolyMarket",
-        "splashImageUrl": "https://baseappholymarket.xyz/icon.png",
+        "splashImageUrl": "https://www.baseappholymarket.xyz/icon.png",
         "splashBackgroundColor": "#050b1a"
     },
     "miniapp": {
         "version": "1",
         "name": "HolyMarket",
-        "iconUrl": "https://baseappholymarket.xyz/icon.png",
-        "homeUrl": "https://baseappholymarket.xyz",
-        "splashImageUrl": "https://baseappholymarket.xyz/icon.png",
+        "iconUrl": "https://www.baseappholymarket.xyz/icon.png",
+        "homeUrl": "https://www.baseappholymarket.xyz",
+        "splashImageUrl": "https://www.baseappholymarket.xyz/icon.png",
         "splashBackgroundColor": "#050b1a"
     },
     "name": "HolyMarket",
-    "iconUrl": "https://baseappholymarket.xyz/icon.png",
+    "iconUrl": "https://www.baseappholymarket.xyz/icon.png",
     "description": "HolyMarket Bet Your Beliefs",
     "primaryCategory": "finance"
 }

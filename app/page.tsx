@@ -1,14 +1,13 @@
 import type { Metadata } from 'next';
 
-const baseUrl = (process.env.NEXT_PUBLIC_URL || 'https://baseappholymarket.xyz').replace(/\/?$/, '');
-const appOrigin = baseUrl + '/';
-
 type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
   const params = await searchParams;
+  const baseUrl = "https://www.baseappholymarket.xyz";
+  const appOrigin = baseUrl + "/";
 
   const question = typeof params.question === 'string' ? params.question : undefined;
   const choice = typeof params.choice === 'string' ? params.choice : undefined;
@@ -26,8 +25,6 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     urlParams.set('volume', volume);
     imageUrl = `${baseUrl}/api/og?${urlParams.toString()}`;
   }
-
-  const manifestUrl = `${baseUrl}/.well-known/farcaster.json`;
 
   const title = question ? `HolyMarket | ${question}` : 'HolyMarket';
   const description = question ? `Will it happen? Predict now on HolyMarket.` : 'HolyMarket: Bet your beliefs on Base.';
@@ -57,44 +54,44 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
       title,
       description,
       images: [imageUrl],
-      // The user's edit placed an openGraph object here, which is syntactically incorrect for Next.js Metadata.
-      // Assuming the intent was to ensure og:title and description are set, they are already handled by the top-level openGraph block.
-      // The following block is removed to maintain syntactical correctness.
-      // openGraph: {
-      //   title: "HolyMarket",
-      //   description: "HolyMarket: Bet your beliefs on Base.",
-      //   images: [imageUrl],
-      //   siteName: "HolyMarket",
-      // },
     },
     other: {
-      "title": "HolyMarket", // Added as per user's instruction
       "apple-touch-icon": `${baseUrl}/icon.png`,
       "fc:frame": "vNext",
       "fc:frame:v2": "true",
       "fc:frame:image": imageUrl,
-      "fc:frame:manifest": `${baseUrl}/.well-known/farcaster.json`, // Updated to use baseUrl
+      "fc:frame:manifest": `${baseUrl}/.well-known/farcaster.json`,
       "fc:frame:image:aspect_ratio": "1.91:1",
       "fc:frame:launch_app": JSON.stringify({
-        version: "1",
+        version: "next",
         name: "HolyMarket",
         iconUrl: `${baseUrl}/icon.png`,
         homeUrl: `${baseUrl}`,
         imageUrl: imageUrl,
-        button: { // Modified structure as per user's instruction
+        button: {
           title: "Play HolyMarket",
+          action: {
+            type: "launch_frame",
+            name: "HolyMarket",
+            url: baseUrl,
+          }
         },
         splashImageUrl: `${baseUrl}/icon.png`,
         splashBackgroundColor: "#050b1a"
       }),
       "fc:miniapp": JSON.stringify({
-        version: "1",
+        version: "next",
         name: "HolyMarket",
         iconUrl: `${baseUrl}/icon.png`,
         homeUrl: `${baseUrl}`,
         imageUrl: imageUrl,
-        button: { // Modified structure as per user's instruction
+        button: {
           title: "Play HolyMarket",
+          action: {
+            type: "launch_frame",
+            name: "HolyMarket",
+            url: baseUrl,
+          }
         },
         splashImageUrl: `${baseUrl}/icon.png`,
         splashBackgroundColor: "#050b1a",
@@ -103,37 +100,16 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   };
 }
 
-import MarketView from "./components/MarketView";
-
 export default function Page() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-start pt-12 pb-20 px-4 sm:px-6 bg-[#020617] relative overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-gradient-to-b from-blue-500/10 to-transparent pointer-events-none" />
-
-      <div className="w-full max-w-2xl space-y-10 relative z-10">
-        <div className="text-center space-y-6 animate-fade-in-up">
-          <div className="flex justify-center">
-            <div className="p-1 rounded-[2.5rem] bg-gradient-to-b from-blue-500/20 to-transparent">
-              <img
-                src="/icon.png"
-                alt="HolyMarket Logo"
-                className="w-20 h-20 sm:w-24 sm:h-24 rounded-[2rem] shadow-2xl transition-transform hover:scale-105 duration-300"
-              />
-            </div>
-          </div>
-          <div className="space-y-2">
-            <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white m-0">
-              HOLY<span className="text-gradient">MARKET</span>
-            </h1>
-            <p className="text-slate-400 text-sm sm:text-base font-medium uppercase tracking-[0.2em]">
-              Bet Your Beliefs
-            </p>
-          </div>
-        </div>
-
-        <div className="animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-          <MarketView />
+    <main className="min-h-screen bg-black">
+      <div className="flex flex-col items-center justify-center min-h-screen p-4 text-center">
+        <h1 className="text-4xl font-bold text-white mb-4">HolyMarket</h1>
+        <p className="text-gray-400 mb-8 max-w-md">
+          Bet your beliefs on Base. The prediction market for the Farcaster ecosystem.
+        </p>
+        <div className="bg-blue-600 text-white px-6 py-3 rounded-full font-bold">
+          Launch in Base App
         </div>
       </div>
     </main>
