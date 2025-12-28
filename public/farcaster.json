@@ -11,19 +11,8 @@
         "homeUrl": "https://baseappholymarket.xyz",
         "imageUrl": "https://baseappholymarket.xyz/og.png",
         "buttonTitle": "Play HolyMarket",
-        "webhookUrl": "https://baseappholymarket.xyz/api/farcaster/webhook",
         "description": "HolyMarket: Bet your beliefs on Base.",
-        "screenshotUrls": [
-            "https://baseappholymarket.xyz/og.png"
-        ],
-        "primaryCategory": "finance",
-        "heroImageUrl": "https://baseappholymarket.xyz/og.png",
         "splashImageUrl": "https://baseappholymarket.xyz/icon.png",
         "splashBackgroundColor": "#020617"
-    },
-    "name": "HolyMarket",
-    "iconUrl": "https://baseappholymarket.xyz/icon.png",
-    "description": "HolyMarket: Bet your beliefs on Base.",
-    "attribution": "HolyMarket is a predictive economy on Base",
-    "primaryCategory": "finance"
+    }
 }
