@@ -65,7 +65,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
       "fc:frame:manifest": manifestUrl,
       "fc:frame:image:aspect_ratio": "1.91:1",
       "fc:frame:launch_app": JSON.stringify({
-        version: "next",
+        version: "1",
         name: "HolyMarket",
         buttonTitle: "Play",
         homeUrl: baseUrl,
