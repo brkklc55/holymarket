@@ -4,34 +4,6 @@
         "payload": "eyJkb21haW4iOiJiYXNlYXBwaG9seW1hcmtldC54eXoifQ",
         "signature": "aJXo93UhDyy7/hJGiamw2jzqKkIN02Mb5fYsayIa8FoG97V+L0MJlVNlduj5M4rSLVO409qM12GjQZU5dFr2DRs="
     },
-    "frame": {
-        "version": "next",
-        "name": "HolyMarket",
-        "iconUrl": "https://baseappholymarket.xyz/icon.png",
-        "homeUrl": "https://baseappholymarket.xyz",
-        "imageUrl": "https://baseappholymarket.xyz/api/og",
-        "buttonTitle": "Play HolyMarket",
-        "splashImageUrl": "https://baseappholymarket.xyz/icon.png",
-        "splashBackgroundColor": "#050b1a",
-        "subtitle": "HolyMarket",
-        "description": "HolyMarket: Bet your beliefs on Base. Join the most fluid prediction market in the Farcaster ecosystem.",
-        "screenshotUrls": [
-            "https://baseappholymarket.xyz/api/og"
-        ],
-        "primaryCategory": "finance",
-        "tags": [
-            "prediction",
-            "market",
-            "base",
-            "finance"
-        ],
-        "heroImageUrl": "https://baseappholymarket.xyz/api/og",
-        "tagline": "Bet your beliefs on Base",
-        "ogTitle": "HolyMarket",
-        "ogDescription": "Bet your beliefs on Base. Join the market",
-        "ogImageUrl": "https://baseappholymarket.xyz/api/og",
-        "castShareUrl": "https://baseappholymarket.xyz"
-    },
     "miniapp": {
         "version": "next",
         "name": "HolyMarket",
@@ -42,7 +14,7 @@
         "splashImageUrl": "https://baseappholymarket.xyz/icon.png",
         "splashBackgroundColor": "#050b1a",
         "subtitle": "HolyMarket",
-        "description": "HolyMarket: Bet your beliefs on Base. Join the most fluid prediction market in the Farcaster ecosystem.",
+        "description": "HolyMarket: Bet your beliefs on Base. Join the market.",
         "screenshotUrls": [
             "https://baseappholymarket.xyz/api/og"
         ],
