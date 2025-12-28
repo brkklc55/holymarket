@@ -2400,7 +2400,7 @@ export default function MarketView() {
             )}
 
             {/* Daily Lottery Modal */}
-            {showLottery && userAddress && (
+            {showLottery && (
                 <DailyLottery
                     userAddress={userAddress}
                     onClose={() => setShowLottery(false)}

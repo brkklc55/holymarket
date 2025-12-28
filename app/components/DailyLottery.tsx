@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { Gift, Loader2, Sparkles, Clock, Flame, X } from "lucide-react";
 
 interface DailyLotteryProps {
-    userAddress: string;
+    userAddress?: string;
     onClose: () => void;
     onWin: (amount: number) => void;
 }
@@ -49,6 +49,7 @@ export default function DailyLottery({ userAddress, onClose, onWin }: DailyLotte
             }
         };
         if (userAddress) fetchStatus();
+        else setLoading(false);
     }, [userAddress]);
 
     // Countdown timer
@@ -151,7 +152,21 @@ export default function DailyLottery({ userAddress, onClose, onWin }: DailyLotte
                     </div>
                 )}
 
-                {loading ? (
+                {!userAddress ? (
+                    <div className="text-center py-12">
+                        <div className="w-16 h-16 rounded-full bg-slate-800 flex items-center justify-center mx-auto mb-4">
+                            <Gift size={32} className="text-purple-400" />
+                        </div>
+                        <h3 className="text-lg font-bold text-white mb-2">Connect Wallet</h3>
+                        <p className="text-sm text-slate-400 mb-6">Connect your wallet to spin the wheel and win PTS!</p>
+                        <button
+                            onClick={onClose}
+                            className="px-6 py-3 bg-purple-500 text-white font-bold text-sm rounded-xl active:scale-95 transition-all"
+                        >
+                            Got it
+                        </button>
+                    </div>
+                ) : loading ? (
                     <div className="flex justify-center py-16">
                         <Loader2 size={40} className="animate-spin text-blue-500" />
                     </div>
