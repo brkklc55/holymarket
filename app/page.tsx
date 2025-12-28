@@ -35,6 +35,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   return {
     title,
     description,
+    robots: 'index, follow',
     openGraph: {
       title,
       description,
@@ -59,11 +60,10 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     },
     other: {
       "fc:frame": "vNext",
-      "fc:frame:image": imageUrl,
       "fc:frame:v2": "true",
+      "fc:frame:image": imageUrl,
       "fc:frame:manifest": manifestUrl,
       "fc:frame:image:aspect_ratio": "1.91:1",
-      // v2 specific launch button meta (JSON style)
       "fc:frame:launch_app": JSON.stringify({
         version: "next",
         name: "HolyMarket",
