@@ -39,6 +39,13 @@ const nextConfig = {
         ],
       },
       {
+        source: "/farcaster.json",
+        headers: [
+          { key: "Content-Type", value: "application/json" },
+          { key: "Access-Control-Allow-Origin", value: "*" },
+        ],
+      },
+      {
         source: "/.well-known/:path*",
         headers: [
           { key: "Access-Control-Allow-Origin", value: "*" },
