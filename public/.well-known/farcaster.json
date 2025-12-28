@@ -18,7 +18,7 @@
         ],
         "primaryCategory": "finance",
         "heroImageUrl": "https://baseappholymarket.xyz/og.png",
-        "splashImageUrl": "https://baseappholymarket.xyz/i",
+        "splashImageUrl": "https://baseappholymarket.xyz/icon.png",
         "splashBackgroundColor": "#020617"
     },
     "miniapp": {
@@ -35,21 +35,30 @@
         ],
         "primaryCategory": "finance",
         "heroImageUrl": "https://baseappholymarket.xyz/og.png",
-        "splashImageUrl": "https://baseappholymarket.xyz/i",
-        "splashBackgroundColor": "#020617"
+        "splashImageUrl": "https://baseappholymarket.xyz/icon.png",
+        "splashBackgroundColor": "#020617",
+        "ogTitle": "HolyMarket | Prediction Market",
+        "ogDescription": "Bet your beliefs on Base.",
+        "ogImageUrl": "https://baseappholymarket.xyz/og.png"
     },
     "name": "HolyMarket",
     "iconUrl": "https://baseappholymarket.xyz/icon.png",
     "description": "HolyMarket: Bet your beliefs on Base.",
-    "subtitle": "Bet your beliefs on Base.",
+    "subtitle": "Prediction Market on Base",
     "heroImageUrl": "https://baseappholymarket.xyz/og.png",
-    "tagline": "HolyMarket: Bet on Base",
+    "tagline": "Bet your beliefs on Base",
     "screenshotUrls": [
         "https://baseappholymarket.xyz/og.png"
     ],
     "primaryCategory": "finance",
-    "ogTitle": "HolyMarket | Base Prediction",
-    "ogDescription": "Bet your beliefs on Base.",
+    "ogTitle": "HolyMarket | Prediction Market on Base",
+    "ogDescription": "Bet your beliefs on Base. Join the predictive economy.",
     "ogImageUrl": "https://baseappholymarket.xyz/og.png",
-    "castShareUrl": "https://baseappholymarket.xyz/"
+    "castShareUrl": "https://baseappholymarket.xyz/",
+    "shareUrl": "https://baseappholymarket.xyz/",
+    "embeds": {
+        "imageUrl": "https://baseappholymarket.xyz/og.png",
+        "title": "HolyMarket",
+        "description": "Bet your beliefs on Base."
+    }
 }
