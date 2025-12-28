@@ -58,20 +58,29 @@ export const viewport: Viewport = {
 };
 
 import { Providers } from "./providers";
+import { headers } from "next/headers";
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const heads = await headers();
+  const userAgent = heads.get("user-agent") || "";
+  const isBot = /bot|crawler|spider|warpcast|farcaster/i.test(userAgent);
+
   return (
     <html lang="en">
       <body>
         <Providers>
           <FarcasterProvider>
-            <SplashGate>
-              <TermsGate>{children}</TermsGate>
-            </SplashGate>
+            {isBot ? (
+              <>{children}</>
+            ) : (
+              <SplashGate>
+                <TermsGate>{children}</TermsGate>
+              </SplashGate>
+            )}
           </FarcasterProvider>
         </Providers>
       </body>
