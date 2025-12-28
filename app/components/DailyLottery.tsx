@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Gift, Loader2, Sparkles, Clock, Flame, X } from "lucide-react";
+import { Gift, Loader2, Sparkles, Clock, Flame, X, ArrowLeft } from "lucide-react";
 
 interface DailyLotteryProps {
     userAddress?: string;
@@ -120,14 +120,15 @@ export default function DailyLottery({ userAddress, onClose, onWin }: DailyLotte
     const segmentAngle = 360 / PRIZE_SEGMENTS.length;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md px-4 animate-in fade-in duration-300">
-            <div className="w-full max-w-sm premium-card p-8 bg-slate-950 border border-white/10 relative overflow-hidden animate-in zoom-in duration-300 shadow-[0_0_100px_rgba(59,130,246,0.1)]">
-                {/* Close button */}
+        <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/90 backdrop-blur-md px-4 pt-8 pb-4 overflow-y-auto animate-in fade-in duration-300">
+            <div className="w-full max-w-sm premium-card p-6 bg-slate-950 border border-white/10 relative overflow-hidden animate-in zoom-in duration-300 shadow-[0_0_100px_rgba(59,130,246,0.1)]">
+                {/* Back button */}
                 <button
                     onClick={onClose}
-                    className="absolute top-4 right-4 text-slate-500 hover:text-white transition-colors"
+                    className="flex items-center gap-1 text-slate-400 hover:text-white transition-colors mb-4"
                 >
-                    <X size={20} />
+                    <ArrowLeft size={16} />
+                    <span className="text-xs font-medium">Back</span>
                 </button>
 
                 {/* Background decoration */}
