@@ -3,22 +3,28 @@ import type { Metadata } from 'next';
 const baseUrl = (process.env.NEXT_PUBLIC_URL || 'https://baseappholymarket.xyz').replace(/\/?$/, '');
 const appOrigin = baseUrl + '/';
 
-export async function generateMetadata({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }): Promise<Metadata> {
-  const question = typeof searchParams.question === 'string' ? searchParams.question : undefined;
-  const choice = typeof searchParams.choice === 'string' ? searchParams.choice : undefined;
-  const yesPct = typeof searchParams.yesPct === 'string' ? searchParams.yesPct : '50';
-  const noPct = typeof searchParams.noPct === 'string' ? searchParams.noPct : '50';
-  const volume = typeof searchParams.volume === 'string' ? searchParams.volume : '0.00';
+type Props = {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
+
+export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
+  const params = await searchParams;
+
+  const question = typeof params.question === 'string' ? params.question : undefined;
+  const choice = typeof params.choice === 'string' ? params.choice : undefined;
+  const yesPct = typeof params.yesPct === 'string' ? params.yesPct : '50';
+  const noPct = typeof params.noPct === 'string' ? params.noPct : '50';
+  const volume = typeof params.volume === 'string' ? params.volume : '0.00';
 
   let imageUrl = `${baseUrl}/og.png`;
   if (question) {
-    const params = new URLSearchParams();
-    params.set('question', question);
-    if (choice) params.set('choice', choice);
-    params.set('yesPct', yesPct);
-    params.set('noPct', noPct);
-    params.set('volume', volume);
-    imageUrl = `${baseUrl}/api/og?${params.toString()}`;
+    const urlParams = new URLSearchParams();
+    urlParams.set('question', question);
+    if (choice) urlParams.set('choice', choice);
+    urlParams.set('yesPct', yesPct);
+    urlParams.set('noPct', noPct);
+    urlParams.set('volume', volume);
+    imageUrl = `${baseUrl}/api/og?${urlParams.toString()}`;
   }
 
   const manifestUrl = `${baseUrl}/farcaster.json`;
