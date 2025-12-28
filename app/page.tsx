@@ -63,7 +63,16 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
       "fc:frame:v2": "true",
       "fc:frame:image": imageUrl,
       "fc:frame:manifest": manifestUrl,
-      "fc:frame:image:aspect_ratio": "1.91:1"
+      "fc:frame:image:aspect_ratio": "1.91:1",
+      "fc:frame:launch_app": JSON.stringify({
+        version: "next",
+        name: "HolyMarket",
+        buttonTitle: "Play",
+        homeUrl: baseUrl,
+        imageUrl: imageUrl,
+        splashImageUrl: `${baseUrl}/icon.png`,
+        splashBackgroundColor: "#020617"
+      })
     },
   };
 }
