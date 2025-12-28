@@ -27,7 +27,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     imageUrl = `${baseUrl}/api/og?${urlParams.toString()}`;
   }
 
-  const manifestUrl = `${baseUrl}/.well-known/farcaster.json`;
+  const manifestUrl = `${baseUrl}/farcaster.json`;
 
   const title = question ? `HolyMarket | ${question}` : 'HolyMarket';
   const description = question ? `Will it happen? Predict now on HolyMarket.` : 'HolyMarket: Bet your beliefs on Base.';
@@ -63,16 +63,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
       "fc:frame:v2": "true",
       "fc:frame:image": imageUrl,
       "fc:frame:manifest": manifestUrl,
-      "fc:frame:image:aspect_ratio": "1.91:1",
-      "fc:frame:launch_app": JSON.stringify({
-        version: "next",
-        name: "HolyMarket",
-        buttonTitle: "Play HolyMarket",
-        homeUrl: baseUrl,
-        imageUrl: imageUrl,
-        splashImageUrl: `${baseUrl}/icon.png`,
-        splashBackgroundColor: "#020617"
-      })
+      "fc:frame:image:aspect_ratio": "1.91:1"
     },
   };
 }
