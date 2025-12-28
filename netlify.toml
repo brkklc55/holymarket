@@ -10,15 +10,3 @@
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 
-[[redirects]]
-  from = "/.well-known/farcaster.json"
-  to = "https://api.farcaster.xyz/miniapps/hosted-manifest/019b5be0-bf0c-91b5-c222-59e32c87eb7b"
-  status = 307
-  force = true
-
-[[redirects]]
-  from = "/farcaster.json"
-  to = "https://api.farcaster.xyz/miniapps/hosted-manifest/019b5be0-bf0c-91b5-c222-59e32c87eb7b"
-  status = 307
-  force = true
-
