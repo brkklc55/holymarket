@@ -27,7 +27,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     imageUrl = `${baseUrl}/api/og?${urlParams.toString()}`;
   }
 
-  const manifestUrl = `${baseUrl}/farcaster.json`;
+  const manifestUrl = `${baseUrl}/.well-known/farcaster.json`;
 
   const title = question ? `HolyMarket | ${question}` : 'HolyMarket';
   const description = question ? `Will it happen? Predict now on HolyMarket.` : 'HolyMarket: Bet your beliefs on Base.';
