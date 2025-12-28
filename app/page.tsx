@@ -17,7 +17,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const volume = typeof params.volume === 'string' ? params.volume : '0.00';
 
   // Base dynamic image URL
-  const staticOgImageUrl = `${baseUrl}/api/og`;
+  const staticOgImageUrl = `${baseUrl}/api/og?v=2`;
   let currentImageUrl = staticOgImageUrl;
 
   if (question) {
@@ -27,6 +27,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     urlParams.set('yesPct', yesPct);
     urlParams.set('noPct', noPct);
     urlParams.set('volume', volume);
+    urlParams.set('v', '2');
     currentImageUrl = `${baseUrl}/api/og?${urlParams.toString()}`;
   }
 

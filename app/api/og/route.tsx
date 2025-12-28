@@ -11,14 +11,12 @@ export async function GET(req: NextRequest) {
     const noPct = searchParams.get('noPct') || '50';
     const volume = searchParams.get('volume') || '0.00';
 
-    // Check if it's a static request (no question)
-    const isStatic = !question;
     const baseUrl = 'https://www.baseappholymarket.xyz';
     const premiumImageUrl = `${baseUrl}/og_premium.png`;
 
     try {
-        // Mode 1: Premium Static Image (for Portal and Initial Share)
-        if (isStatic) {
+        // If it's static (shared home link), return ONLY the premium background image
+        if (!question) {
             return new ImageResponse(
                 (
                     <div
@@ -40,7 +38,7 @@ export async function GET(req: NextRequest) {
             );
         }
 
-        // Mode 2: Dynamic Question Card
+        // Mode 2: Dynamic Question Card (Minimalist overlay on Premium Background)
         const isYes = choice?.toUpperCase() === 'YES';
         const choiceColor = isYes ? '#10b981' : '#f43f5e';
         const yesWidth = Math.max(5, Math.min(95, parseInt(yesPct) || 50));
@@ -62,57 +60,42 @@ export async function GET(req: NextRequest) {
                         backgroundPosition: 'center',
                     }}
                 >
-                    {/* Dark Overlay to make text readable on background */}
-                    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(2, 6, 23, 0.85)', display: 'flex' }} />
+                    {/* Minimal Overlay: Light gradient at the bottom only for readability */}
+                    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundImage: 'linear-gradient(to bottom, rgba(2,6,23,0) 0%, rgba(2,6,23,0.8) 100%)', display: 'flex' }} />
 
-                    {/* Header */}
-                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: 40, position: 'relative' }}>
-                        <div style={{ width: 48, height: 48, backgroundColor: '#3b82f6', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: 28, fontWeight: 900 }}>H</div>
-                        <div style={{ fontSize: 32, fontWeight: 900, color: 'white', marginLeft: 16, display: 'flex' }}>HOLYMARKET</div>
-                    </div>
-
-                    {/* Main Content Card */}
-                    <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: 'rgba(15, 23, 42, 0.9)', borderRadius: 24, padding: 48, flex: 1, border: '1px solid rgba(255,255,255,0.1)', position: 'relative' }}>
-                        {/* Question */}
-                        <div style={{ fontSize: 44, fontWeight: 800, color: 'white', lineHeight: 1.2, marginBottom: 32, display: 'flex' }}>
+                    {/* Dynamic Question Content - Positioned to not overlap main logo */}
+                    <div style={{ display: 'flex', flexDirection: 'column', marginTop: 'auto', position: 'relative' }}>
+                        {/* Question Badge/Text */}
+                        <div style={{ fontSize: 40, fontWeight: 900, color: 'white', lineHeight: 1.2, marginBottom: 24, textShadow: '0 2px 10px rgba(0,0,0,0.5)', display: 'flex' }}>
                             {question}
                         </div>
 
                         {/* Choice Badge - only if choice exists */}
                         {choice ? (
-                            <div style={{ display: 'flex', alignItems: 'center', marginBottom: 32, backgroundColor: 'rgba(30, 41, 59, 1)', padding: '12px 24px', borderRadius: 16, border: `2px solid ${choiceColor}` }}>
-                                <div style={{ fontSize: 16, fontWeight: 900, color: choiceColor, marginRight: 12, display: 'flex', letterSpacing: '0.05em' }}>PREDICTION:</div>
-                                <div style={{ fontSize: 32, fontWeight: 900, color: 'white', display: 'flex' }}>{choice.toUpperCase()}</div>
+                            <div style={{ alignSelf: 'flex-start', display: 'flex', alignItems: 'center', marginBottom: 24, backgroundColor: 'rgba(30, 41, 59, 1)', padding: '10px 20px', borderRadius: 12, border: `2px solid ${choiceColor}` }}>
+                                <div style={{ fontSize: 14, fontWeight: 900, color: choiceColor, marginRight: 10, display: 'flex', letterSpacing: '0.05em' }}>PREDICTION:</div>
+                                <div style={{ fontSize: 28, fontWeight: 900, color: 'white', display: 'flex' }}>{choice.toUpperCase()}</div>
                             </div>
                         ) : null}
 
-                        {/* Stats Row */}
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: 'auto' }}>
-                            <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                <div style={{ fontSize: 14, fontWeight: 700, color: '#94a3b8', marginBottom: 8, display: 'flex', letterSpacing: '0.1em' }}>VOLUME</div>
-                                <div style={{ fontSize: 32, fontWeight: 800, color: 'white', display: 'flex' }}>{volume} ETH</div>
-                            </div>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
-                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-                                    <div style={{ fontSize: 24, fontWeight: 900, color: '#10b981', display: 'flex' }}>{yesPct}% YES</div>
+                        {/* Stats & Progress */}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+                                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                    <div style={{ fontSize: 12, fontWeight: 700, color: '#94a3b8', marginBottom: 4, display: 'flex', letterSpacing: '0.1em' }}>VOLUME</div>
+                                    <div style={{ fontSize: 24, fontWeight: 800, color: 'white', display: 'flex' }}>{volume} ETH</div>
                                 </div>
-                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-                                    <div style={{ fontSize: 24, fontWeight: 900, color: '#f43f5e', display: 'flex' }}>{noPct}% NO</div>
+                                <div style={{ display: 'flex', gap: 20 }}>
+                                    <div style={{ fontSize: 20, fontWeight: 900, color: '#10b981', display: 'flex' }}>{yesPct}% YES</div>
+                                    <div style={{ fontSize: 20, fontWeight: 900, color: '#f43f5e', display: 'flex' }}>{noPct}% NO</div>
                                 </div>
                             </div>
+                            {/* Progress Bar */}
+                            <div style={{ display: 'flex', width: '100%', height: 8, backgroundColor: 'rgba(30, 41, 59, 0.5)', borderRadius: 4 }}>
+                                <div style={{ width: `${yesWidth}%`, height: 8, backgroundColor: '#10b981', borderRadius: '4px 0 0 4px' }} />
+                                <div style={{ width: `${noWidth}%`, height: 8, backgroundColor: '#f43f5e', borderRadius: '0 4px 4px 0' }} />
+                            </div>
                         </div>
-
-                        {/* Progress Bar */}
-                        <div style={{ display: 'flex', width: '100%', height: 12, backgroundColor: '#1e293b', borderRadius: 6 }}>
-                            <div style={{ width: `${yesWidth}%`, height: 12, backgroundColor: '#10b981', borderRadius: '6px 0 0 6px' }} />
-                            <div style={{ width: `${noWidth}%`, height: 12, backgroundColor: '#f43f5e', borderRadius: '0 6px 6px 0' }} />
-                        </div>
-                    </div>
-
-                    {/* Footer */}
-                    <div style={{ display: 'flex', alignItems: 'center', marginTop: 24, position: 'relative' }}>
-                        <div style={{ width: 8, height: 8, backgroundColor: '#3b82f6', borderRadius: 4, marginRight: 12 }} />
-                        <div style={{ fontSize: 14, fontWeight: 600, color: '#94a3b8', display: 'flex' }}>PREDICTIVE ECONOMY ON BASE</div>
                     </div>
                 </div>
             ),
