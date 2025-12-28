@@ -16,7 +16,10 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const noPct = typeof params.noPct === 'string' ? params.noPct : '50';
   const volume = typeof params.volume === 'string' ? params.volume : '0.00';
 
-  let imageUrl = `${baseUrl}/og.png`;
+  // Base dynamic image URL
+  const staticOgImageUrl = `${baseUrl}/api/og`;
+  let currentImageUrl = staticOgImageUrl;
+
   if (question) {
     const urlParams = new URLSearchParams();
     urlParams.set('question', question);
@@ -24,7 +27,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     urlParams.set('yesPct', yesPct);
     urlParams.set('noPct', noPct);
     urlParams.set('volume', volume);
-    imageUrl = `${baseUrl}/api/og?${urlParams.toString()}`;
+    currentImageUrl = `${baseUrl}/api/og?${urlParams.toString()}`;
   }
 
   const title = question ? `HolyMarket | ${question}` : 'HolyMarket';
@@ -39,7 +42,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
       description,
       images: [
         {
-          url: imageUrl,
+          url: currentImageUrl,
           width: 1200,
           height: 630,
           type: 'image/png',
@@ -54,13 +57,13 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
       card: 'summary_large_image',
       title,
       description,
-      images: [imageUrl],
+      images: [currentImageUrl],
     },
     other: {
       "apple-touch-icon": `${baseUrl}/icon.png`,
       "fc:frame": "vNext",
       "fc:frame:v2": "true",
-      "fc:frame:image": imageUrl,
+      "fc:frame:image": currentImageUrl,
       "fc:frame:manifest": `${baseUrl}/.well-known/farcaster.json`,
       "fc:frame:image:aspect_ratio": "1.91:1",
       "fc:frame:launch_app": JSON.stringify({
@@ -68,7 +71,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
         name: "HolyMarket",
         iconUrl: `${baseUrl}/icon.png`,
         homeUrl: `${baseUrl}`,
-        imageUrl: `${baseUrl}/og.png`,
+        imageUrl: currentImageUrl,
         button: {
           title: "Play HolyMarket",
           action: {
@@ -81,14 +84,14 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
         splashBackgroundColor: "#050b1a",
         subtitle: "HolyMarket",
         description: "HolyMarket: Bet your beliefs on Base. Join the most fluid prediction market in the Farcaster ecosystem.",
-        screenshotUrls: [`${baseUrl}/og.png`],
+        screenshotUrls: [staticOgImageUrl],
         primaryCategory: "finance",
         tags: ["prediction", "market", "base", "finance"],
-        heroImageUrl: `${baseUrl}/og.png`,
+        heroImageUrl: staticOgImageUrl,
         tagline: "Bet your beliefs on Base",
         ogTitle: "HolyMarket",
         ogDescription: "Bet your beliefs on Base. Join the market",
-        ogImageUrl: `${baseUrl}/og.png`,
+        ogImageUrl: staticOgImageUrl,
         castShareUrl: baseUrl
       }),
       "fc:miniapp": JSON.stringify({
@@ -96,7 +99,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
         name: "HolyMarket",
         iconUrl: `${baseUrl}/icon.png`,
         homeUrl: `${baseUrl}`,
-        imageUrl: `${baseUrl}/og.png`,
+        imageUrl: currentImageUrl,
         button: {
           title: "Play HolyMarket",
           action: {
@@ -109,14 +112,14 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
         splashBackgroundColor: "#050b1a",
         subtitle: "HolyMarket",
         description: "HolyMarket: Bet your beliefs on Base. Join the most fluid prediction market in the Farcaster ecosystem.",
-        screenshotUrls: [`${baseUrl}/og.png`],
+        screenshotUrls: [staticOgImageUrl],
         primaryCategory: "finance",
         tags: ["prediction", "market", "base", "finance"],
-        heroImageUrl: `${baseUrl}/og.png`,
+        heroImageUrl: staticOgImageUrl,
         tagline: "Bet your beliefs on Base",
         ogTitle: "HolyMarket",
         ogDescription: "Bet your beliefs on Base. Join the market",
-        ogImageUrl: `${baseUrl}/og.png`,
+        ogImageUrl: staticOgImageUrl,
         castShareUrl: baseUrl
       })
     },
