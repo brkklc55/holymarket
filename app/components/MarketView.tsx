@@ -1807,7 +1807,7 @@ export default function MarketView() {
                                         <span className="text-[9px] font-black text-emerald-400 uppercase tracking-widest">Testnet Utility</span>
                                     </div>
                                     <div>
-                                        <h3 className="text-3xl font-black text-white mb-2">Institutional Faucet</h3>
+                                        <h3 className="text-3xl font-black text-white mb-2">Official Faucet</h3>
                                         <p className="text-[11px] text-slate-400 leading-relaxed font-medium">
                                             Access the <span className="text-white font-bold">Official Coinbase Faucet</span> to request Base Sepolia ETH. This utility allows you to participate in the predictive economy by providing the necessary initial capital for testing.
                                         </p>
@@ -1865,7 +1865,7 @@ export default function MarketView() {
                                 <div className="space-y-4">
                                     <div>
                                         <h3 className="text-2xl font-black text-white mb-1">Your Dashboard</h3>
-                                        <p className="text-[10px] text-blue-400 font-extrabold uppercase tracking-[0.3em]">Institutional Grade Betting</p>
+                                        <p className="text-[10px] text-blue-400 font-extrabold uppercase tracking-[0.3em]">Official Predictive Market</p>
                                     </div>
                                     <div className="flex flex-wrap gap-4">
                                         <div className="px-4 py-2 rounded-xl bg-white/5 border border-white/5">
@@ -1967,12 +1967,38 @@ export default function MarketView() {
                                             type="button"
                                             className="px-3 py-1.5 bg-blue-500 text-[10px] font-black text-white rounded-lg shadow-lg shadow-blue-500/20 active:scale-95 transition-all"
                                             onClick={async () => {
-                                                const link = `${window.location.origin}/?ref=${userAddress}`;
+                                                const link = `https://baseappholymarket.xyz/?ref=${userAddress}`;
                                                 try {
-                                                    await navigator.clipboard.writeText(link);
-                                                    toast({ title: "Copied!", message: "Your institutional referral link is ready.", variant: "success" });
+                                                    // Try native clipboard API first
+                                                    if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+                                                        await navigator.clipboard.writeText(link);
+                                                        toast({ title: "Copied!", message: "Your referral link is ready to share.", variant: "success" });
+                                                    } else {
+                                                        throw new Error('Clipboard API not available');
+                                                    }
                                                 } catch {
-                                                    toast({ title: "Failed", message: "Manual copy required.", variant: "warning" });
+                                                    // Fallback: create temporary input and select
+                                                    try {
+                                                        const textArea = document.createElement('textarea');
+                                                        textArea.value = link;
+                                                        textArea.style.position = 'fixed';
+                                                        textArea.style.left = '-9999px';
+                                                        textArea.style.top = '0';
+                                                        document.body.appendChild(textArea);
+                                                        textArea.focus();
+                                                        textArea.select();
+                                                        const successful = document.execCommand('copy');
+                                                        document.body.removeChild(textArea);
+                                                        if (successful) {
+                                                            toast({ title: "Copied!", message: "Your referral link is ready to share.", variant: "success" });
+                                                        } else {
+                                                            throw new Error('execCommand failed');
+                                                        }
+                                                    } catch {
+                                                        // Final fallback: prompt user to copy manually
+                                                        prompt('Copy your referral link:', link);
+                                                        toast({ title: "Link Ready", message: "Please copy the link from the dialog.", variant: "info" });
+                                                    }
                                                 }
                                             }}
                                         >
@@ -1980,7 +2006,7 @@ export default function MarketView() {
                                         </button>
                                     </div>
                                     <div className="p-3 rounded-xl bg-black/20 border border-white/5 font-mono text-[10px] text-slate-400 break-all mb-4">
-                                        {`${typeof window !== "undefined" ? window.location.origin : ""}/?ref=${userAddress}`}
+                                        {`https://baseappholymarket.xyz/?ref=${userAddress}`}
                                     </div>
                                     <div className="flex items-start gap-3 bg-white/5 p-4 rounded-xl border border-white/5">
                                         <div className="mt-0.5 text-blue-400 h-4 w-4 shrink-0">
@@ -2032,7 +2058,7 @@ export default function MarketView() {
                         <div className="flex justify-between items-end mb-4">
                             <div>
                                 <h3 className="text-2xl font-black text-white">Leaderboard</h3>
-                                <p className="text-[10px] text-slate-500 font-bold uppercase tracking-[0.2em] mt-1">Institutional Rankings</p>
+                                <p className="text-[10px] text-slate-500 font-bold uppercase tracking-[0.2em] mt-1">Official Rankings</p>
                             </div>
                             <button
                                 type="button"
@@ -2103,7 +2129,7 @@ export default function MarketView() {
                                 <h3 className="text-2xl font-black text-white">Live Activity</h3>
                                 <div className="flex items-center gap-2 mt-1.5">
                                     <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(59,130,246,0.5)]"></div>
-                                    <span className="text-[10px] text-blue-400 font-extrabold uppercase tracking-[0.3em]">Institutional Grade Discovery</span>
+                                    <span className="text-[10px] text-blue-400 font-extrabold uppercase tracking-[0.3em]">Official Market Discovery</span>
                                 </div>
                             </div>
                         </div>
