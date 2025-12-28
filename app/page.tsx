@@ -29,19 +29,22 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
 
   const manifestUrl = `${baseUrl}/farcaster.json`;
 
+  const title = question ? `HolyMarket | ${question}` : 'HolyMarket';
+  const description = question ? `Will it happen? Predict now on HolyMarket.` : 'HolyMarket: Bet your beliefs on Base.';
+
   return {
-    title: 'HolyMarket',
-    description: 'HolyMarket: Bet your beliefs on Base.',
+    title,
+    description,
     openGraph: {
-      title: 'HolyMarket',
-      description: 'HolyMarket: Bet your beliefs on Base.',
+      title,
+      description,
       images: [
         {
           url: imageUrl,
           width: 1200,
           height: 630,
           type: 'image/png',
-          alt: 'HolyMarket',
+          alt: title,
         },
       ],
       url: appOrigin,
@@ -50,8 +53,8 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     },
     twitter: {
       card: 'summary_large_image',
-      title: 'HolyMarket',
-      description: 'HolyMarket: Bet your beliefs on Base.',
+      title,
+      description,
       images: [imageUrl],
     },
     other: {

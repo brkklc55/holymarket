@@ -11,9 +11,9 @@ export async function GET(req: NextRequest) {
     const noPct = searchParams.get('noPct') || '50';
     const volume = searchParams.get('volume') || '0.00';
 
-    const isYes = choice === 'YES';
+    const isYes = choice?.toUpperCase() === 'YES';
     const choiceColor = isYes ? '#10b981' : '#f43f5e';
-    const yesWidth = Math.max(0, Math.min(100, parseInt(yesPct) || 50));
+    const yesWidth = Math.max(5, Math.min(95, parseInt(yesPct) || 50));
     const noWidth = 100 - yesWidth;
 
     try {
@@ -27,6 +27,7 @@ export async function GET(req: NextRequest) {
                         flexDirection: 'column',
                         backgroundColor: '#020617',
                         padding: 60,
+                        fontFamily: 'sans-serif',
                     }}
                 >
                     {/* Header */}
@@ -36,29 +37,33 @@ export async function GET(req: NextRequest) {
                     </div>
 
                     {/* Main Content Card */}
-                    <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: '#0f172a', borderRadius: 24, padding: 48, flex: 1 }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: '#0f172a', borderRadius: 24, padding: 48, flex: 1, border: '1px solid rgba(255,255,255,0.1)' }}>
                         {/* Question */}
-                        <div style={{ fontSize: 42, fontWeight: 800, color: 'white', lineHeight: 1.3, marginBottom: 32, display: 'flex' }}>
+                        <div style={{ fontSize: 44, fontWeight: 800, color: 'white', lineHeight: 1.2, marginBottom: 32, display: 'flex' }}>
                             {question}
                         </div>
 
                         {/* Choice Badge - only if choice exists */}
                         {choice ? (
-                            <div style={{ display: 'flex', alignItems: 'center', marginBottom: 32, backgroundColor: '#1e293b', padding: '12px 24px', borderRadius: 12, border: `2px solid ${choiceColor}` }}>
-                                <div style={{ fontSize: 14, fontWeight: 900, color: choiceColor, marginRight: 12, display: 'flex' }}>PREDICTION:</div>
-                                <div style={{ fontSize: 28, fontWeight: 900, color: 'white', display: 'flex' }}>{choice}</div>
+                            <div style={{ display: 'flex', alignItems: 'center', marginBottom: 32, backgroundColor: 'rgba(30, 41, 59, 0.5)', padding: '12px 24px', borderRadius: 16, border: `2px solid ${choiceColor}` }}>
+                                <div style={{ fontSize: 16, fontWeight: 900, color: choiceColor, marginRight: 12, display: 'flex', letterSpacing: '0.05em' }}>PREDICTION:</div>
+                                <div style={{ fontSize: 32, fontWeight: 900, color: 'white', display: 'flex' }}>{choice.toUpperCase()}</div>
                             </div>
                         ) : null}
 
                         {/* Stats Row */}
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: 'auto' }}>
                             <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                <div style={{ fontSize: 12, fontWeight: 700, color: '#64748b', marginBottom: 4, display: 'flex' }}>VOLUME</div>
-                                <div style={{ fontSize: 28, fontWeight: 800, color: 'white', display: 'flex' }}>{volume} ETH</div>
+                                <div style={{ fontSize: 14, fontWeight: 700, color: '#64748b', marginBottom: 8, display: 'flex', letterSpacing: '0.1em' }}>VOLUME</div>
+                                <div style={{ fontSize: 32, fontWeight: 800, color: 'white', display: 'flex' }}>{volume} ETH</div>
                             </div>
-                            <div style={{ display: 'flex', fontSize: 20, fontWeight: 900 }}>
-                                <span style={{ color: '#10b981', marginRight: 16 }}>{yesPct}% YES</span>
-                                <span style={{ color: '#f43f5e' }}>{noPct}% NO</span>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
+                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                                    <div style={{ fontSize: 24, fontWeight: 900, color: '#10b981', display: 'flex' }}>{yesPct}% YES</div>
+                                </div>
+                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                                    <div style={{ fontSize: 24, fontWeight: 900, color: '#f43f5e', display: 'flex' }}>{noPct}% NO</div>
+                                </div>
                             </div>
                         </div>
 

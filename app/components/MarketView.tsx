@@ -97,7 +97,9 @@ export default function MarketView() {
     const needsNetworkSwitch = isConnected && chainId !== baseSepolia.id;
 
     const getShareBaseUrl = () => {
-        // ALWAYS use our own domain - never the farcaster wrapper
+        // Use environment variable if available, otherwise fallback to default
+        const envUrl = process.env.NEXT_PUBLIC_URL;
+        if (envUrl) return envUrl.replace(/\/?$/, '');
         return "https://baseappholymarket.xyz";
     };
 
