@@ -2,7 +2,7 @@
 
 import React, { createContext, useCallback, useContext, useMemo, useRef, useState } from "react";
 
-type ToastVariant = "default" | "success" | "error" | "warning" | "info";
+type ToastVariant = "default" | "success" | "error" | "warning";
 
 type ToastItem = {
     id: string;
