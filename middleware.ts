@@ -3,9 +3,11 @@ import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
     const url = request.nextUrl.clone();
+    const userAgent = request.headers.get('user-agent')?.toLowerCase() || '';
 
-    // Mandatory Farcaster Domain Verification 307 Redirect
-    if (url.pathname === '/.well-known/farcaster.json' || url.pathname === '/farcaster.json') {
+    // Mandatory Farcaster Domain Verification 307 Redirect ONLY for Warpcast bots
+    if ((url.pathname === '/.well-known/farcaster.json' || url.pathname === '/farcaster.json') &&
+        (userAgent.includes('warpcast') || userAgent.includes('farcaster'))) {
         return NextResponse.redirect(
             'https://api.farcaster.xyz/miniapps/hosted-manifest/019b5be0-bf0c-91b5-c222-59e32c87eb7b',
             { status: 307 }

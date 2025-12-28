@@ -5,22 +5,25 @@
         "signature": "aJXo93UhDyy7/hJGiamw2jzqKkIN02Mb5fYsayIa8FoG97V+L0MJlVNlduj5M4rSLVO409qM12GjQZU5dFr2DRs="
     },
     "frame": {
-        "version": "1",
+        "version": "1.0.0",
         "name": "HolyMarket",
         "iconUrl": "https://baseappholymarket.xyz/icon.png",
         "homeUrl": "https://baseappholymarket.xyz",
         "imageUrl": "https://baseappholymarket.xyz/og.png",
         "buttonTitle": "Play HolyMarket",
         "splashImageUrl": "https://baseappholymarket.xyz/icon.png",
-        "splashBackgroundColor": "#050b1a",
-        "subtitle": "HolyMarket ",
-        "description": "HolyMarket Bet Your Beliefs",
-        "primaryCategory": "finance",
-        "heroImageUrl": "https://baseappholymarket.xyz/og.png",
-        "tagline": "Bet your beliefs on Base",
-        "ogTitle": "HolyMarket Prediction Market",
-        "ogDescription": "Bet your beliefs on Base. Join the market",
-        "ogImageUrl": "https://baseappholymarket.xyz/og.png",
-        "castShareUrl": "https://baseappholymarket.xyz"
-    }
+        "splashBackgroundColor": "#050b1a"
+    },
+    "miniapp": {
+        "version": "1.0.0",
+        "name": "HolyMarket",
+        "iconUrl": "https://baseappholymarket.xyz/icon.png",
+        "homeUrl": "https://baseappholymarket.xyz",
+        "splashImageUrl": "https://baseappholymarket.xyz/icon.png",
+        "splashBackgroundColor": "#050b1a"
+    },
+    "name": "HolyMarket",
+    "iconUrl": "https://baseappholymarket.xyz/icon.png",
+    "description": "HolyMarket Bet Your Beliefs",
+    "primaryCategory": "finance"
 }
