@@ -68,24 +68,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
         name: "HolyMarket",
         iconUrl: `${baseUrl}/icon.png`,
         homeUrl: `${baseUrl}`,
-        imageUrl: imageUrl,
-        button: {
-          title: "Play HolyMarket",
-          action: {
-            type: "launch_frame",
-            name: "HolyMarket",
-            url: baseUrl,
-          }
-        },
-        splashImageUrl: `${baseUrl}/icon.png`,
-        splashBackgroundColor: "#050b1a"
-      }),
-      "fc:miniapp": JSON.stringify({
-        version: "next",
-        name: "HolyMarket",
-        iconUrl: `${baseUrl}/icon.png`,
-        homeUrl: `${baseUrl}`,
-        imageUrl: imageUrl,
+        imageUrl: `${baseUrl}/og.png`,
         button: {
           title: "Play HolyMarket",
           action: {
@@ -96,6 +79,45 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
         },
         splashImageUrl: `${baseUrl}/icon.png`,
         splashBackgroundColor: "#050b1a",
+        subtitle: "HolyMarket",
+        description: "HolyMarket: Bet your beliefs on Base. Join the most fluid prediction market in the Farcaster ecosystem.",
+        screenshotUrls: [`${baseUrl}/og.png`],
+        primaryCategory: "finance",
+        tags: ["prediction", "market", "base", "finance"],
+        heroImageUrl: `${baseUrl}/og.png`,
+        tagline: "Bet your beliefs on Base",
+        ogTitle: "HolyMarket",
+        ogDescription: "Bet your beliefs on Base. Join the market",
+        ogImageUrl: `${baseUrl}/og.png`,
+        castShareUrl: baseUrl
+      }),
+      "fc:miniapp": JSON.stringify({
+        version: "next",
+        name: "HolyMarket",
+        iconUrl: `${baseUrl}/icon.png`,
+        homeUrl: `${baseUrl}`,
+        imageUrl: `${baseUrl}/og.png`,
+        button: {
+          title: "Play HolyMarket",
+          action: {
+            type: "launch_frame",
+            name: "HolyMarket",
+            url: baseUrl,
+          }
+        },
+        splashImageUrl: `${baseUrl}/icon.png`,
+        splashBackgroundColor: "#050b1a",
+        subtitle: "HolyMarket",
+        description: "HolyMarket: Bet your beliefs on Base. Join the most fluid prediction market in the Farcaster ecosystem.",
+        screenshotUrls: [`${baseUrl}/og.png`],
+        primaryCategory: "finance",
+        tags: ["prediction", "market", "base", "finance"],
+        heroImageUrl: `${baseUrl}/og.png`,
+        tagline: "Bet your beliefs on Base",
+        ogTitle: "HolyMarket",
+        ogDescription: "Bet your beliefs on Base. Join the market",
+        ogImageUrl: `${baseUrl}/og.png`,
+        castShareUrl: baseUrl
       })
     },
   };
