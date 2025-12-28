@@ -70,13 +70,7 @@ const nextConfig = {
     ];
   },
   async redirects() {
-    return [
-      {
-        source: "/.well-known/farcaster.json",
-        destination: "https://api.farcaster.xyz/miniapps/hosted-manifest/019b5be0-bf0c-91b5-c222-59e32c87eb7b",
-        permanent: false,
-      },
-    ];
+    return [];
   },
 };
 
