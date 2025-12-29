@@ -98,7 +98,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     },
     other: {
       "fc:miniapp": JSON.stringify(sharedMetadata),
-      "apple-touch-icon": absoluteIconUrl,
+      "base:app_id": "6952a8dc4d3a403912ed8525",
       "fc:frame": "vNext",
       "fc:frame:v2": "true",
       "fc:frame:image": absoluteImageUrl,

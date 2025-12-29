@@ -6,81 +6,42 @@ import SplashGate from "./components/SplashGate";
 
 const baseUrl = "https://www.baseappholymarket.xyz";
 
-// v27: Unified Metadata for Absolute Identity (The "Naked Truth" Fix)
-// Removed title and manifest from here to force manual placement in <head> for priority
-// Strictly using Next.js Metadata API to avoid duplicate tags found in crawler checks.
+// v32: PWA Identity Priorities (The "Shortcut Engine" Fix)
+// Strictly using manual head injection for priority tags expected within the first 1KB.
 const fcMiniappMetadata = {
   version: "1",
   name: "HolyMarket",
   iconUrl: `${baseUrl}/icon-1024.png`,
   homeUrl: `${baseUrl}/`,
-  imageUrl: "https://www.baseappholymarket.xyz/api/og/v31.png",
+  imageUrl: `${baseUrl}/api/og/v31.png`,
   button: {
     title: "Play HolyMarket",
     action: {
       type: "launch_frame",
       name: "HolyMarket",
-      url: "https://www.baseappholymarket.xyz/",
+      url: `${baseUrl}/`,
     }
   }
 };
 
+// SEO-only metadata. Branding removed here to avoid double tags and deep injection.
 export const metadata: Metadata = {
-  title: "HolyMarket",
-  applicationName: "HolyMarket",
   description: "HolyMarket: Bet your beliefs on Base.",
   metadataBase: new URL(baseUrl),
   alternates: {
     canonical: "/",
-  },
-  icons: {
-    icon: [
-      { url: "/favicon.png", sizes: "32x32", type: "image/png" },
-      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
-      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
-      { url: "/icon-1024.png", sizes: "1024x1024", type: "image/png" }
-    ],
-    shortcut: ["/favicon.ico"],
-    apple: [
-      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }
-    ],
   },
   openGraph: {
     title: "HolyMarket",
     description: "HolyMarket: Bet your beliefs on Base.",
     url: "/",
     siteName: "HolyMarket",
-    images: [
-      {
-        url: "/api/og/v31.png",
-        width: 1200,
-        height: 630,
-        type: 'image/png',
-        alt: "HolyMarket",
-      },
-    ],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "HolyMarket",
     description: "HolyMarket: Bet your beliefs on Base.",
-    images: ["/api/og/v31.png"],
-  },
-  manifest: "/manifest.json",
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: "black-translucent",
-    title: "HolyMarket",
-  },
-  other: {
-    "fc:miniapp": JSON.stringify(fcMiniappMetadata),
-    "base:app_id": "6952a8dc4d3a403912ed8525",
-    "apple-mobile-web-app-capable": "yes",
-    "mobile-web-app-capable": "yes",
-    "apple-mobile-web-app-title": "HolyMarket",
-    "application-name": "HolyMarket",
-    "theme-color": "#050b1a"
   }
 };
 
@@ -104,15 +65,30 @@ export default async function RootLayout({
   const heads = await headers();
   const userAgent = heads.get("user-agent") || "";
 
-  // v27: Broad bot detection. Including Toshi (Coinbase's legacy name) and Lighthouse.
   const isBot = /bot|crawler|spider|warpcast|farcaster|google|yandex|bing|facebook|twitter|CoinbaseBot|CoinbaseWallet|Toshi|Lighthouse/i.test(userAgent);
 
   return (
     <html lang="en">
-      {/* 
-        NO MANUAL <HEAD> TAGS HERE. 
-        Next.js Metadata API handles everything correctly to avoid duplicates like "HolyMarketHolyMarket".
-      */}
+      <head>
+        {/* v32: MANUAL PRIORITY TAGS (The absolute top of head) */}
+        <meta charSet="utf-8" />
+        <title>HolyMarket</title>
+        <meta name="apple-mobile-web-app-title" content="HolyMarket" />
+        <meta name="application-name" content="HolyMarket" />
+        <link rel="manifest" href="https://www.baseappholymarket.xyz/manifest.json" />
+        <link rel="apple-touch-icon" href="https://www.baseappholymarket.xyz/apple-touch-icon.png" />
+        <link rel="icon" href="https://www.baseappholymarket.xyz/favicon.png" />
+
+        {/* Legacy Opaque Support */}
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+        {/* Branding Meta */}
+        <meta name="fc:miniapp" content={JSON.stringify(fcMiniappMetadata)} />
+        <meta name="base:app_id" content="6952a8dc4d3a403912ed8525" />
+        <meta name="theme-color" content="#050b1a" />
+      </head>
       <body>
         <Providers>
           <FarcasterProvider>
