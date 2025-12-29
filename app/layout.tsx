@@ -15,9 +15,9 @@ export const metadata: Metadata = {
     canonical: "https://www.baseappholymarket.xyz/",
   },
   icons: {
-    icon: [{ url: "/icon-1024.png", sizes: "any" }],
-    shortcut: ["/icon-1024.png"],
-    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+    icon: [{ url: "https://www.baseappholymarket.xyz/favicon.png", sizes: "any" }],
+    shortcut: ["https://www.baseappholymarket.xyz/favicon.png"],
+    apple: [{ url: "https://www.baseappholymarket.xyz/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
   },
   openGraph: {
     title: "HolyMarket",
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     siteName: "HolyMarket",
     images: [
       {
-        url: "/api/og?v=18",
+        url: "https://www.baseappholymarket.xyz/api/og?v=19",
         width: 1200,
         height: 630,
         type: 'image/png',
@@ -39,9 +39,9 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "HolyMarket",
     description: "HolyMarket: Bet your beliefs on Base.",
-    images: ["/api/og?v=18"],
+    images: ["https://www.baseappholymarket.xyz/api/og?v=19"],
   },
-  manifest: "/manifest.json",
+  manifest: "https://www.baseappholymarket.xyz/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
@@ -52,8 +52,9 @@ export const metadata: Metadata = {
     "apple-mobile-web-app-capable": "yes",
     "application-name": "HolyMarket",
     "apple-mobile-web-app-title": "HolyMarket",
-    "msapplication-starturl": "/",
+    "msapplication-starturl": "https://www.baseappholymarket.xyz/",
     "msapplication-navbutton-color": "#050b1a",
+    "theme-color": "#050b1a"
   }
 };
 
@@ -77,18 +78,18 @@ export default async function RootLayout({
   const heads = await headers();
   const userAgent = heads.get("user-agent") || "";
 
-  // v18 REVISION: Including coinbase and wallet back to bot detection
-  // but keeping actual mobile strings OUT of it.
-  // This ensures Coinbase Pinning Robots see the metadata-only version
-  // and pick up the correct title and icon instantly.
+  // v19: Explicit bot detection including Coinbase/Base App discovery robots
   const isBot = /bot|crawler|spider|warpcast|farcaster|coinbase|wallet|toshi|googlebot|yandexbot/i.test(userAgent);
 
   return (
     <html lang="en">
       <head>
+        <title>HolyMarket</title>
+        <link rel="canonical" href="https://www.baseappholymarket.xyz/" />
+        <link rel="icon" href="https://www.baseappholymarket.xyz/favicon.png" />
+        <link rel="apple-touch-icon" href="https://www.baseappholymarket.xyz/apple-touch-icon.png" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
       </head>
       <body>
         <Providers>

@@ -17,8 +17,8 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const volume = typeof params.volume === 'string' ? params.volume : '0.00';
 
   // Base dynamic image URLs providing strict aspect ratios (Portal requirement)
-  const staticOgImageUrl = `${baseUrl}/api/og?v=18`;
-  const staticIconUrl = `${baseUrl}/icon-1024.png`;
+  const staticOgImageUrl = `https://www.baseappholymarket.xyz/api/og?v=19`;
+  const staticIconUrl = `https://www.baseappholymarket.xyz/icon-1024.png`;
   let currentImageUrl = staticOgImageUrl;
 
   if (question) {
@@ -28,8 +28,8 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     urlParams.set('yesPct', yesPct);
     urlParams.set('noPct', noPct);
     urlParams.set('volume', volume);
-    urlParams.set('v', '18');
-    currentImageUrl = `${baseUrl}/api/og?${urlParams.toString()}`;
+    urlParams.set('v', '19');
+    currentImageUrl = `https://www.baseappholymarket.xyz/api/og?${urlParams.toString()}`;
   }
 
   const title = question ? `HolyMarket | ${question}` : 'HolyMarket';
@@ -39,14 +39,14 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     version: "1",
     name: "HolyMarket",
     iconUrl: staticIconUrl,
-    homeUrl: `${baseUrl}`,
+    homeUrl: `https://www.baseappholymarket.xyz/`,
     imageUrl: currentImageUrl,
     button: {
       title: "Play HolyMarket",
       action: {
         type: "launch_frame",
         name: "HolyMarket",
-        url: baseUrl,
+        url: "https://www.baseappholymarket.xyz/",
       }
     },
     splashImageUrl: staticIconUrl,
@@ -61,7 +61,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     ogTitle: "HolyMarket",
     ogDescription: "Bet your beliefs on Base. Join the market",
     ogImageUrl: staticOgImageUrl,
-    castShareUrl: baseUrl
+    castShareUrl: "https://www.baseappholymarket.xyz/"
   };
 
   return {
@@ -95,7 +95,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
       "fc:frame": "vNext",
       "fc:frame:v2": "true",
       "fc:frame:image": currentImageUrl,
-      "fc:frame:manifest": `${baseUrl}/.well-known/farcaster.json`,
+      "fc:frame:manifest": `https://www.baseappholymarket.xyz/.well-known/farcaster.json`,
       "fc:frame:image:aspect_ratio": "1.91:1",
       "fc:frame:launch_app": JSON.stringify(sharedMetadata),
       "fc:miniapp": JSON.stringify(sharedMetadata)
@@ -109,7 +109,7 @@ export default function Page() {
       <div className="w-full max-w-3xl space-y-8">
         <div className="text-center space-y-4">
           <div className="flex justify-center mb-6">
-            <img src="/icon-1024.png" alt="HolyMarket Logo" className="w-24 h-24 sm:w-32 sm:h-32 rounded-3xl shadow-xl" />
+            <img src="https://www.baseappholymarket.xyz/icon-1024.png" alt="HolyMarket Logo" className="w-24 h-24 sm:w-32 sm:h-32 rounded-3xl shadow-xl" />
           </div>
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tighter text-white leading-none break-words">
             HOLY<span className="text-gradient">MARKET</span>
