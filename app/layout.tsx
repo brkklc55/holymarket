@@ -6,13 +6,13 @@ import SplashGate from "./components/SplashGate";
 
 const baseUrl = "https://www.baseappholymarket.xyz";
 
-// v23: Aerodrome Standard Serialized Metadata for Absolute Identity
+// v24: Aerodrome Standard Serialized Metadata for Absolute Identity
 const fcMiniappMetadata = {
   version: "1",
   name: "HolyMarket",
   iconUrl: "https://www.baseappholymarket.xyz/icon-1024.png",
   homeUrl: "https://www.baseappholymarket.xyz/",
-  imageUrl: "https://www.baseappholymarket.xyz/api/og?v=23",
+  imageUrl: "https://www.baseappholymarket.xyz/api/og?v=24",
   button: {
     title: "Play HolyMarket",
     action: {
@@ -47,7 +47,7 @@ export const metadata: Metadata = {
     siteName: "HolyMarket",
     images: [
       {
-        url: "/api/og?v=23",
+        url: "/api/og?v=24",
         width: 1200,
         height: 630,
         type: 'image/png',
@@ -60,7 +60,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "HolyMarket",
     description: "HolyMarket: Bet your beliefs on Base.",
-    images: ["/api/og?v=23"],
+    images: ["/api/og?v=24"],
   },
   manifest: "/manifest.json",
   appleWebApp: {
@@ -99,10 +99,9 @@ export default async function RootLayout({
   const heads = await headers();
   const userAgent = heads.get("user-agent") || "";
 
-  // v23: Precise bot detection. 
-  // We want pinning bots to see direct content, but REAL users in wallets to see the Splash art.
-  // Including common bot keywords, but EXCLUDING real wallet browser UAs.
-  const isBot = /bot|crawler|spider|warpcast|farcaster|google|yandex|bing|facebook|twitter/i.test(userAgent) && !/CoinbaseWallet/i.test(userAgent);
+  // v24: Strict bot detection. 
+  // CoinbaseBot and common crawlers bypass SplashGate.
+  const isBot = /bot|crawler|spider|warpcast|farcaster|google|yandex|bing|facebook|twitter|CoinbaseBot|CoinbaseWallet/i.test(userAgent);
 
   return (
     <html lang="en">
@@ -112,7 +111,7 @@ export default async function RootLayout({
         <meta name="apple-mobile-web-app-title" content="HolyMarket" />
         <meta name="application-name" content="HolyMarket" />
         <link rel="icon" href={`${baseUrl}/favicon.png`} sizes="32x32" />
-        <link rel="apple-touch-icon" href={`${baseUrl}/apple-touch-icon.png`} />
+        <link rel="apple-touch-icon" href={`${baseUrl}/apple-touch-icon.png`} sizes="180x180" />
         <link rel="manifest" href={`${baseUrl}/manifest.json`} />
         {/* Serialized Identity for Base App Discovery */}
         <meta name="fc:miniapp" content={JSON.stringify(fcMiniappMetadata)} />
