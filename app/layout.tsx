@@ -6,14 +6,13 @@ import SplashGate from "./components/SplashGate";
 
 const baseUrl = "https://www.baseappholymarket.xyz";
 
-// v32: PWA Identity Priorities (The "Shortcut Engine" Fix)
-// Strictly using manual head injection for priority tags expected within the first 1KB.
+// v33: Final Stand (Precise PWA Cache Busting)
 const fcMiniappMetadata = {
   version: "1",
   name: "HolyMarket",
-  iconUrl: `${baseUrl}/icon-1024.png`,
+  iconUrl: `${baseUrl}/icon-1024.png?v=33`,
   homeUrl: `${baseUrl}/`,
-  imageUrl: `${baseUrl}/api/og/v31.png`,
+  imageUrl: `${baseUrl}/api/og/v33.png`,
   button: {
     title: "Play HolyMarket",
     action: {
@@ -24,7 +23,6 @@ const fcMiniappMetadata = {
   }
 };
 
-// SEO-only metadata. Branding removed here to avoid double tags and deep injection.
 export const metadata: Metadata = {
   description: "HolyMarket: Bet your beliefs on Base.",
   metadataBase: new URL(baseUrl),
@@ -37,11 +35,6 @@ export const metadata: Metadata = {
     url: "/",
     siteName: "HolyMarket",
     type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "HolyMarket",
-    description: "HolyMarket: Bet your beliefs on Base.",
   }
 };
 
@@ -70,24 +63,27 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* v32: MANUAL PRIORITY TAGS (The absolute top of head) */}
+        {/* v33: ABSOLUTE TOP PRIORITY (Legacy & Modern PWA Mix) */}
         <meta charSet="utf-8" />
         <title>HolyMarket</title>
         <meta name="apple-mobile-web-app-title" content="HolyMarket" />
         <meta name="application-name" content="HolyMarket" />
-        <link rel="manifest" href="https://www.baseappholymarket.xyz/manifest.json" />
-        <link rel="apple-touch-icon" href="https://www.baseappholymarket.xyz/apple-touch-icon.png" />
-        <link rel="icon" href="https://www.baseappholymarket.xyz/favicon.png" />
 
-        {/* Legacy Opaque Support */}
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        {/* Precise Metadata Position (Coinbase bot expectation) */}
+        <link rel="manifest" href="https://www.baseappholymarket.xyz/manifest.json?v=33" />
+        <link rel="apple-touch-icon" href="https://www.baseappholymarket.xyz/apple-touch-icon.png?v=33" />
+        <link rel="apple-touch-icon-precomposed" href="https://www.baseappholymarket.xyz/apple-touch-icon.png?v=33" />
+        <link rel="icon" type="image/png" sizes="32x32" href="https://www.baseappholymarket.xyz/favicon.png?v=33" />
 
-        {/* Branding Meta */}
+        {/* Branding & Registry */}
         <meta name="fc:miniapp" content={JSON.stringify(fcMiniappMetadata)} />
         <meta name="base:app_id" content="6952a8dc4d3a403912ed8525" />
         <meta name="theme-color" content="#050b1a" />
+
+        {/* Legacy Capabilities */}
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
       </head>
       <body>
         <Providers>
