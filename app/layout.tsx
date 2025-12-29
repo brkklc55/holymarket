@@ -84,7 +84,7 @@ export default async function RootLayout({
   const heads = await headers();
   const userAgent = heads.get("user-agent") || "";
 
-  const isBot = /bot|crawler|spider|warpcast|farcaster|google|yandex|bing|facebook|twitter|Coinbase|Toshi|Lighthouse|Mojo/i.test(userAgent);
+  const isBot = /bot|crawler|spider|google|yandex|bing|slurp|duckduckgo|baiduspider|yacybot|sogou|exabot|facebot|facebookexternalhit|ia_archiver/i.test(userAgent);
 
   return (
     <html lang="en">
