@@ -7,19 +7,20 @@ import SplashGate from "./components/SplashGate";
 const baseUrl = "https://www.baseappholymarket.xyz";
 
 // v27: Unified Metadata for Absolute Identity (The "Naked Truth" Fix)
+// Removed title and manifest from here to force manual placement in <head> for priority
 // Strictly using Next.js Metadata API to avoid duplicate tags found in crawler checks.
 const fcMiniappMetadata = {
   version: "1",
   name: "HolyMarket",
   iconUrl: `${baseUrl}/icon-1024.png`,
   homeUrl: `${baseUrl}/`,
-  imageUrl: "https://www.baseappholymarket.xyz/api/og/v30.png",
+  imageUrl: "https://www.baseappholymarket.xyz/api/og/v31.png",
   button: {
     title: "Play HolyMarket",
     action: {
       type: "launch_frame",
       name: "HolyMarket",
-      url: `${baseUrl}/`,
+      url: "https://www.baseappholymarket.xyz/",
     }
   }
 };
@@ -51,7 +52,7 @@ export const metadata: Metadata = {
     siteName: "HolyMarket",
     images: [
       {
-        url: "/api/og/v30.png",
+        url: "/api/og/v31.png",
         width: 1200,
         height: 630,
         type: 'image/png',
@@ -64,7 +65,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "HolyMarket",
     description: "HolyMarket: Bet your beliefs on Base.",
-    images: ["/api/og/v30.png"],
+    images: ["/api/og/v31.png"],
   },
   manifest: "/manifest.json",
   appleWebApp: {
