@@ -20,6 +20,10 @@
         {
             "source": "/api/og.png",
             "destination": "/api/og"
+        },
+        {
+            "source": "/api/og/:v.png",
+            "destination": "/api/og?v=:v"
         }
     ]
 }

@@ -17,7 +17,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const volume = typeof params.volume === 'string' ? params.volume : '0.00';
 
   // Base dynamic image URLs providing strict aspect ratios (Portal requirement)
-  const staticOgImageUrl = `/api/og.png?v=29`;
+  const staticOgImageUrl = `/api/og/v30.png`;
   const staticIconUrl = `/icon-1024.png`;
   let currentImageUrl = staticOgImageUrl;
 
@@ -28,8 +28,8 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     urlParams.set('yesPct', yesPct);
     urlParams.set('noPct', noPct);
     urlParams.set('volume', volume);
-    urlParams.set('v', '29');
-    currentImageUrl = `/api/og.png?${urlParams.toString()}`;
+    urlParams.set('v', '30');
+    currentImageUrl = `/api/og/${urlParams.toString()}.png`;
   }
 
   const title = question ? `HolyMarket | ${question}` : 'HolyMarket';
@@ -66,6 +66,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     ogTitle: "HolyMarket",
     ogDescription: "Bet your beliefs on Base. Join the market",
     ogImageUrl: absoluteImageUrl,
+    noindex: false,
     castShareUrl: baseUrl
   };
 
