@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     siteName: "HolyMarket",
     images: [
       {
-        url: "/api/og?v=17",
+        url: "/api/og?v=18",
         width: 1200,
         height: 630,
         type: 'image/png',
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "HolyMarket",
     description: "HolyMarket: Bet your beliefs on Base.",
-    images: ["/api/og?v=17"],
+    images: ["/api/og?v=18"],
   },
   manifest: "/manifest.json",
   appleWebApp: {
@@ -77,10 +77,11 @@ export default async function RootLayout({
   const heads = await headers();
   const userAgent = heads.get("user-agent") || "";
 
-  // FIXED: Removed 'iphone' and 'android' from bot detection. 
-  // Being on a phone does NOT make you a bot. 
-  // Treating phones as bots was breaking the Mini App discovery.
-  const isBot = /bot|crawler|spider|warpcast|farcaster|googlebot|yandexbot|binbot/i.test(userAgent);
+  // v18 REVISION: Including coinbase and wallet back to bot detection
+  // but keeping actual mobile strings OUT of it.
+  // This ensures Coinbase Pinning Robots see the metadata-only version
+  // and pick up the correct title and icon instantly.
+  const isBot = /bot|crawler|spider|warpcast|farcaster|coinbase|wallet|toshi|googlebot|yandexbot/i.test(userAgent);
 
   return (
     <html lang="en">
