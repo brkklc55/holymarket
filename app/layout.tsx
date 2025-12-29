@@ -6,13 +6,13 @@ import SplashGate from "./components/SplashGate";
 
 const baseUrl = "https://www.baseappholymarket.xyz";
 
-// v34: Aerodrome Standard (Clean Identity)
+// v35: Deep Identity & Service Worker (Registry Fix)
 const fcMiniappMetadata = {
   version: "1",
   name: "HolyMarket",
-  iconUrl: `${baseUrl}/icon-1024.png?v=34`,
+  iconUrl: `${baseUrl}/icon-1024.png?v=35`,
   homeUrl: `${baseUrl}/`,
-  imageUrl: `${baseUrl}/api/og/v34.png`,
+  imageUrl: `${baseUrl}/api/og/v35.png`,
   button: {
     title: "Play HolyMarket",
     action: {
@@ -58,26 +58,45 @@ export default async function RootLayout({
   const heads = await headers();
   const userAgent = heads.get("user-agent") || "";
 
-  const isBot = /bot|crawler|spider|warpcast|farcaster|google|yandex|bing|facebook|twitter|CoinbaseBot|CoinbaseWallet|Toshi|Lighthouse/i.test(userAgent);
+  // v35: Highly inclusive bot/wallet detection
+  const isBot = /bot|crawler|spider|warpcast|farcaster|google|yandex|bing|facebook|twitter|Coinbase|Toshi|Lighthouse|Mojo/i.test(userAgent);
 
   return (
     <html lang="en">
       <head>
-        {/* v34: AERODROME CLEAN HEAD - PRIORITY ORDER */}
+        {/* v35: PWA CORE IDENTITY (The absolute top) */}
         <meta charSet="utf-8" />
         <title>HolyMarket</title>
         <meta name="apple-mobile-web-app-title" content="HolyMarket" />
+        <meta name="application-name" content="HolyMarket" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="mobile-web-app-capable" content="yes" />
 
-        {/* Branding Assets (v34 Cache Buster) */}
-        <link rel="manifest" href="/manifest.json?v=34" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=34" />
-        <link rel="shortcut icon" href="/favicon.png?v=34" />
+        {/* Strict Absolute Asset Mapping (v35 Cache Buster) */}
+        <link rel="manifest" href={`${baseUrl}/manifest.json?v=35`} />
+        <link rel="apple-touch-icon" href={`${baseUrl}/apple-touch-icon.png?v=35`} />
+        <link rel="shortcut icon" href={`${baseUrl}/favicon.png?v=35`} />
 
-        {/* Third-party Integrations (Lower Priority) */}
+        {/* Registry & Verification */}
         <meta name="fc:miniapp" content={JSON.stringify(fcMiniappMetadata)} />
         <meta name="base:app_id" content="6952a8dc4d3a403912ed8525" />
         <meta name="theme-color" content="#050b1a" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+        {/* PWA Service Worker Registration */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function() {
+                  navigator.serviceWorker.register('/sw.js').catch(function(err) {
+                    console.log('SW registration failed: ', err);
+                  });
+                });
+              }
+            `,
+          }}
+        />
       </head>
       <body>
         <Providers>

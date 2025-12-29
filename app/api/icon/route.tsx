@@ -4,8 +4,13 @@ import { NextRequest } from 'next/server';
 export const runtime = 'edge';
 
 export async function GET(req: NextRequest) {
+    const { searchParams } = new URL(req.url);
+    const size = parseInt(searchParams.get('s') || '512');
+
+    // Using the existing high-quality background
+    // ImageResponse will render this and output a REAL PNG.
     const baseUrl = 'https://www.baseappholymarket.xyz';
-    const iconUrl = `${baseUrl}/hm_icon_v12.png`;
+    const bgUrl = `${baseUrl}/icon-1024.png`; // Our existing base image
 
     return new ImageResponse(
         (
@@ -14,25 +19,16 @@ export async function GET(req: NextRequest) {
                     height: '100%',
                     width: '100%',
                     display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
+                    backgroundImage: `url(${bgUrl})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
                     backgroundColor: '#050b1a',
                 }}
-            >
-                <img
-                    src={iconUrl}
-                    style={{
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
-                        borderRadius: '0%', // Base App manages its own clipping, high res usually stays square
-                    }}
-                />
-            </div>
+            />
         ),
         {
-            width: 1024,
-            height: 1024,
+            width: size,
+            height: size,
         }
     );
 }

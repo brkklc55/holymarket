@@ -17,7 +17,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const volume = typeof params.volume === 'string' ? params.volume : '0.00';
 
   // Base dynamic image URLs providing strict aspect ratios (Portal requirement)
-  const staticOgImageUrl = `/api/og/v34.png`;
+  const staticOgImageUrl = `/api/og/v35.png`;
   const staticIconUrl = `/icon-1024.png`;
   let currentImageUrl = staticOgImageUrl;
 
@@ -28,7 +28,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     urlParams.set('yesPct', yesPct);
     urlParams.set('noPct', noPct);
     urlParams.set('volume', volume);
-    urlParams.set('v', '34');
+    urlParams.set('v', '35');
     currentImageUrl = `/api/og/${urlParams.toString()}.png`;
   }
 
@@ -36,7 +36,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const description = question ? `Will it happen? Predict now on HolyMarket.` : 'HolyMarket: Bet your beliefs on Base.';
 
   // Build absolute URLs carefully to avoid // issue
-  const absoluteIconUrl = `${baseUrl}${staticIconUrl}?v=34`;
+  const absoluteIconUrl = `${baseUrl}${staticIconUrl}?v=35`;
   const absoluteHomeUrl = `${baseUrl}/`;
   const absoluteImageUrl = currentImageUrl.startsWith('http') ? currentImageUrl : `${baseUrl}${currentImageUrl}`;
 
@@ -102,7 +102,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
       "fc:frame": "vNext",
       "fc:frame:v2": "true",
       "fc:frame:image": absoluteImageUrl,
-      "fc:frame:manifest": `${baseUrl}/.well-known/farcaster.json?v=34`,
+      "fc:frame:manifest": `${baseUrl}/.well-known/farcaster.json?v=35`,
       "fc:frame:image:aspect_ratio": "1.91:1",
       "fc:frame:launch_app": JSON.stringify(sharedMetadata),
     },
