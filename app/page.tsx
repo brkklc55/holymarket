@@ -88,7 +88,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
       "fc:frame": "vNext",
       "fc:frame:v2": "true",
       "fc:frame:image": absoluteImageUrl,
-      "fc:frame:manifest": `${baseUrl}/.well-known/farcaster.json?v=37`,
+      "fc:frame:manifest": `${baseUrl}/.well-known/farcaster.json?v=39`,
       "fc:frame:image:aspect_ratio": "1.91:1",
       "fc:frame:launch_app": JSON.stringify(sharedMetadata),
     },

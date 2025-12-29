@@ -8,7 +8,7 @@ export async function GET() {
     return NextResponse.json({
         "name": "HolyMarket",
         "description": "HolyMarket: Bet your beliefs on Base.",
-        "iconUrl": `${baseUrl}/icon-1024.png?v=37`,
+        "iconUrl": `${baseUrl}/icon-1024.png?v=39`,
         "launchUrl": `${baseUrl}/`,
         "contracts": []
     }, {
