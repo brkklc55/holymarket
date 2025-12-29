@@ -12,21 +12,21 @@ export const metadata: Metadata = {
   description: "HolyMarket: Bet your beliefs on Base.",
   metadataBase: new URL(baseUrl),
   alternates: {
-    canonical: "/",
+    canonical: "https://www.baseappholymarket.xyz/",
   },
   icons: {
-    icon: [{ url: `${baseUrl}/icon-1024.png`, sizes: "any" }],
-    shortcut: [`${baseUrl}/icon-1024.png`],
-    apple: [{ url: `${baseUrl}/apple-touch-icon.png`, sizes: "180x180", type: "image/png" }],
+    icon: [{ url: "/icon-1024.png", sizes: "any" }],
+    shortcut: ["/icon-1024.png"],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
   },
   openGraph: {
     title: "HolyMarket",
     description: "HolyMarket: Bet your beliefs on Base.",
-    url: "/",
+    url: "https://www.baseappholymarket.xyz/",
     siteName: "HolyMarket",
     images: [
       {
-        url: `${baseUrl}/api/og?v=16`,
+        url: "/api/og?v=17",
         width: 1200,
         height: 630,
         type: 'image/png',
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "HolyMarket",
     description: "HolyMarket: Bet your beliefs on Base.",
-    images: [`${baseUrl}/api/og?v=16`],
+    images: ["/api/og?v=17"],
   },
   manifest: "/manifest.json",
   appleWebApp: {
@@ -76,13 +76,15 @@ export default async function RootLayout({
 }>) {
   const heads = await headers();
   const userAgent = heads.get("user-agent") || "";
-  // Enhanced bot detection to include Coinbase/Base App pinning crawlers
-  const isBot = /bot|crawler|spider|warpcast|farcaster|coinbase|wallet|iphone|android/i.test(userAgent);
+
+  // FIXED: Removed 'iphone' and 'android' from bot detection. 
+  // Being on a phone does NOT make you a bot. 
+  // Treating phones as bots was breaking the Mini App discovery.
+  const isBot = /bot|crawler|spider|warpcast|farcaster|googlebot|yandexbot|binbot/i.test(userAgent);
 
   return (
     <html lang="en">
       <head>
-        <link rel="canonical" href="https://www.baseappholymarket.xyz/" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />

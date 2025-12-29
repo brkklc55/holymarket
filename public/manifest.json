@@ -1,10 +1,10 @@
 {
     "name": "HolyMarket",
     "short_name": "HolyMarket",
-    "description": "Prediction Market on Base",
-    "id": "com.holymarket.app",
+    "description": "HolyMarket: Bet your beliefs on Base.",
+    "id": "HolyMarket",
     "scope": "/",
-    "start_url": "/",
+    "start_url": "https://www.baseappholymarket.xyz/",
     "display": "standalone",
     "background_color": "#050b1a",
     "theme_color": "#050b1a",
@@ -16,19 +16,13 @@
     ],
     "icons": [
         {
-            "src": "/apple-touch-icon.png",
+            "src": "https://www.baseappholymarket.xyz/apple-touch-icon.png",
             "sizes": "180x180",
             "type": "image/png",
             "purpose": "any"
         },
         {
-            "src": "/icon-1024.png",
-            "sizes": "512x512",
-            "type": "image/png",
-            "purpose": "any"
-        },
-        {
-            "src": "/icon-1024.png",
+            "src": "https://www.baseappholymarket.xyz/icon-1024.png",
             "sizes": "1024x1024",
             "type": "image/png",
             "purpose": "any"
