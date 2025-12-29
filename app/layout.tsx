@@ -6,13 +6,13 @@ import SplashGate from "./components/SplashGate";
 
 const baseUrl = "https://www.baseappholymarket.xyz";
 
-// v33: Final Stand (Precise PWA Cache Busting)
+// v34: Aerodrome Standard (Clean Identity)
 const fcMiniappMetadata = {
   version: "1",
   name: "HolyMarket",
-  iconUrl: `${baseUrl}/icon-1024.png?v=33`,
+  iconUrl: `${baseUrl}/icon-1024.png?v=34`,
   homeUrl: `${baseUrl}/`,
-  imageUrl: `${baseUrl}/api/og/v33.png`,
+  imageUrl: `${baseUrl}/api/og/v34.png`,
   button: {
     title: "Play HolyMarket",
     action: {
@@ -63,27 +63,21 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* v33: ABSOLUTE TOP PRIORITY (Legacy & Modern PWA Mix) */}
+        {/* v34: AERODROME CLEAN HEAD - PRIORITY ORDER */}
         <meta charSet="utf-8" />
         <title>HolyMarket</title>
         <meta name="apple-mobile-web-app-title" content="HolyMarket" />
-        <meta name="application-name" content="HolyMarket" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
 
-        {/* Precise Metadata Position (Coinbase bot expectation) */}
-        <link rel="manifest" href="https://www.baseappholymarket.xyz/manifest.json?v=33" />
-        <link rel="apple-touch-icon" href="https://www.baseappholymarket.xyz/apple-touch-icon.png?v=33" />
-        <link rel="apple-touch-icon-precomposed" href="https://www.baseappholymarket.xyz/apple-touch-icon.png?v=33" />
-        <link rel="icon" type="image/png" sizes="32x32" href="https://www.baseappholymarket.xyz/favicon.png?v=33" />
+        {/* Branding Assets (v34 Cache Buster) */}
+        <link rel="manifest" href="/manifest.json?v=34" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=34" />
+        <link rel="shortcut icon" href="/favicon.png?v=34" />
 
-        {/* Branding & Registry */}
+        {/* Third-party Integrations (Lower Priority) */}
         <meta name="fc:miniapp" content={JSON.stringify(fcMiniappMetadata)} />
         <meta name="base:app_id" content="6952a8dc4d3a403912ed8525" />
         <meta name="theme-color" content="#050b1a" />
-
-        {/* Legacy Capabilities */}
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
       </head>
       <body>
         <Providers>
