@@ -3,7 +3,7 @@
     "short_name": "HolyMarket",
     "description": "HolyMarket: Bet your beliefs on Base.",
     "id": "https://www.baseappholymarket.xyz/",
-    "scope": "/",
+    "scope": "https://www.baseappholymarket.xyz/",
     "start_url": "https://www.baseappholymarket.xyz/",
     "display": "standalone",
     "background_color": "#050b1a",
