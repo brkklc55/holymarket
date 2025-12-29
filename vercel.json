@@ -1,10 +1,4 @@
 {
-    "rewrites": [
-        {
-            "source": "/farcaster.json",
-            "destination": "/.well-known/farcaster.json"
-        }
-    ],
     "redirects": [
         {
             "source": "/(.*)",
@@ -16,6 +10,12 @@
             ],
             "destination": "https://www.baseappholymarket.xyz/$1",
             "permanent": true
+        }
+    ],
+    "rewrites": [
+        {
+            "source": "/farcaster.json",
+            "destination": "/.well-known/farcaster.json"
         }
     ]
 }

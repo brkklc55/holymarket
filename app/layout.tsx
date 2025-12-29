@@ -11,6 +11,9 @@ export const metadata: Metadata = {
   applicationName: "HolyMarket",
   description: "HolyMarket: Bet your beliefs on Base.",
   metadataBase: new URL(baseUrl),
+  alternates: {
+    canonical: "/",
+  },
   icons: {
     icon: [{ url: `${baseUrl}/icon-1024.png`, sizes: "any" }],
     shortcut: [`${baseUrl}/icon-1024.png`],
@@ -23,7 +26,7 @@ export const metadata: Metadata = {
     siteName: "HolyMarket",
     images: [
       {
-        url: `${baseUrl}/api/og?v=15`,
+        url: `${baseUrl}/api/og?v=16`,
         width: 1200,
         height: 630,
         type: 'image/png',
@@ -36,7 +39,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "HolyMarket",
     description: "HolyMarket: Bet your beliefs on Base.",
-    images: [`${baseUrl}/api/og?v=15`],
+    images: [`${baseUrl}/api/og?v=16`],
   },
   manifest: "/manifest.json",
   appleWebApp: {
@@ -79,6 +82,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <head>
+        <link rel="canonical" href="https://www.baseappholymarket.xyz/" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />

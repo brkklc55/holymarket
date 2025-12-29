@@ -2,6 +2,8 @@
     "name": "HolyMarket",
     "short_name": "HolyMarket",
     "description": "Prediction Market on Base",
+    "id": "com.holymarket.app",
+    "scope": "/",
     "start_url": "/",
     "display": "standalone",
     "background_color": "#050b1a",
