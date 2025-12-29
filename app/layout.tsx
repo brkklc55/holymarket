@@ -6,25 +6,27 @@ import SplashGate from "./components/SplashGate";
 
 const baseUrl = "https://www.baseappholymarket.xyz";
 
-// v26: Aerodrome/Uniswap Standard Serialized Metadata
+// v27: Unified Metadata for Absolute Identity (The "Naked Truth" Fix)
+// Strictly using Next.js Metadata API to avoid duplicate tags found in crawler checks.
 const fcMiniappMetadata = {
   version: "1",
   name: "HolyMarket",
-  iconUrl: "https://www.baseappholymarket.xyz/icon-1024.png",
-  homeUrl: "https://www.baseappholymarket.xyz/",
-  imageUrl: "https://www.baseappholymarket.xyz/api/og?v=26",
+  iconUrl: `${baseUrl}/icon-1024.png`,
+  homeUrl: `${baseUrl}/`,
+  imageUrl: `${baseUrl}/api/og?v=27`,
   button: {
     title: "Play HolyMarket",
     action: {
       type: "launch_frame",
       name: "HolyMarket",
-      url: "https://www.baseappholymarket.xyz/",
+      url: `${baseUrl}/`,
     }
   }
 };
 
 export const metadata: Metadata = {
-  // Removed title and manifest from here to force manual placement in <head> for priority
+  title: "HolyMarket",
+  applicationName: "HolyMarket",
   description: "HolyMarket: Bet your beliefs on Base.",
   metadataBase: new URL(baseUrl),
   alternates: {
@@ -34,7 +36,8 @@ export const metadata: Metadata = {
     icon: [
       { url: "/favicon.png", sizes: "32x32", type: "image/png" },
       { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
-      { url: "/icon-512.png", sizes: "512x512", type: "image/png" }
+      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
+      { url: "/icon-1024.png", sizes: "1024x1024", type: "image/png" }
     ],
     shortcut: ["/favicon.ico"],
     apple: [
@@ -48,7 +51,7 @@ export const metadata: Metadata = {
     siteName: "HolyMarket",
     images: [
       {
-        url: "/api/og?v=26",
+        url: "/api/og?v=27",
         width: 1200,
         height: 630,
         type: 'image/png',
@@ -61,8 +64,9 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "HolyMarket",
     description: "HolyMarket: Bet your beliefs on Base.",
-    images: ["/api/og?v=26"],
+    images: ["/api/og?v=27"],
   },
+  manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
@@ -70,8 +74,11 @@ export const metadata: Metadata = {
   },
   other: {
     "fc:miniapp": JSON.stringify(fcMiniappMetadata),
+    "apple-mobile-web-app-capable": "yes",
     "mobile-web-app-capable": "yes",
-    "apple-mobile-web-app-capable": "yes"
+    "apple-mobile-web-app-title": "HolyMarket",
+    "application-name": "HolyMarket",
+    "theme-color": "#050b1a"
   }
 };
 
@@ -95,23 +102,15 @@ export default async function RootLayout({
   const heads = await headers();
   const userAgent = heads.get("user-agent") || "";
 
-  // v26: Strict bot detection for Coinbase Pinning
-  const isBot = /bot|crawler|spider|warpcast|farcaster|google|yandex|bing|facebook|twitter|CoinbaseBot|CoinbaseWallet/i.test(userAgent);
+  // v27: Broad bot detection. Including Toshi (Coinbase's legacy name) and Lighthouse.
+  const isBot = /bot|crawler|spider|warpcast|farcaster|google|yandex|bing|facebook|twitter|CoinbaseBot|CoinbaseWallet|Toshi|Lighthouse/i.test(userAgent);
 
   return (
     <html lang="en">
-      <head>
-        {/* v26: MANDATORY PRIORITY TAGS (Aerodrome Style) */}
-        {/* These must be at the very top of the head to ensure bot parsing */}
-        <meta charSet="utf-8" />
-        <title>HolyMarket</title>
-        <meta name="application-name" content="HolyMarket" />
-        <meta name="apple-mobile-web-app-title" content="HolyMarket" />
-        <link rel="manifest" href="https://www.baseappholymarket.xyz/manifest.json" />
-        <link rel="apple-touch-icon" href="https://www.baseappholymarket.xyz/apple-touch-icon.png" sizes="180x180" />
-        <meta name="fc:miniapp" content={JSON.stringify(fcMiniappMetadata)} />
-        <meta name="theme-color" content="#050b1a" />
-      </head>
+      {/* 
+        NO MANUAL <HEAD> TAGS HERE. 
+        Next.js Metadata API handles everything correctly to avoid duplicates like "HolyMarketHolyMarket".
+      */}
       <body>
         <Providers>
           <FarcasterProvider>
