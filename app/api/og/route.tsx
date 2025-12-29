@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
     const volume = searchParams.get('volume') || '0.00';
 
     const baseUrl = 'https://www.baseappholymarket.xyz';
-    const premiumImageUrl = `${baseUrl}/og_sade_v11.png`;
+    const premiumImageUrl = `${baseUrl}/hm_og_v12.png`;
 
     try {
         // Mode 1: Pure static if no question

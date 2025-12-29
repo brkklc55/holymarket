@@ -17,7 +17,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const volume = typeof params.volume === 'string' ? params.volume : '0.00';
 
   // Base static image providing the exact "Sade" look requested
-  const staticOgImageUrl = `${baseUrl}/og_sade_v11.png`;
+  const staticOgImageUrl = `${baseUrl}/hm_og_v12.png`;
   let currentImageUrl = staticOgImageUrl;
 
   if (question) {
@@ -27,7 +27,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     urlParams.set('yesPct', yesPct);
     urlParams.set('noPct', noPct);
     urlParams.set('volume', volume);
-    urlParams.set('v', '11');
+    urlParams.set('v', '12');
     currentImageUrl = `${baseUrl}/api/og?${urlParams.toString()}`;
   }
 
