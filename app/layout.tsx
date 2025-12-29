@@ -6,13 +6,13 @@ import SplashGate from "./components/SplashGate";
 
 const baseUrl = "https://www.baseappholymarket.xyz";
 
-// v24: Aerodrome Standard Serialized Metadata for Absolute Identity
+// v25: Unified Metadata for Absolute Identity (Coinbase Standard)
 const fcMiniappMetadata = {
   version: "1",
   name: "HolyMarket",
   iconUrl: "https://www.baseappholymarket.xyz/icon-1024.png",
   homeUrl: "https://www.baseappholymarket.xyz/",
-  imageUrl: "https://www.baseappholymarket.xyz/api/og?v=24",
+  imageUrl: "https://www.baseappholymarket.xyz/api/og?v=25",
   button: {
     title: "Play HolyMarket",
     action: {
@@ -34,8 +34,10 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       { url: "/favicon.png", sizes: "32x32", type: "image/png" },
-      { url: "/icon-1024.png", sizes: "192x192", type: "image/png" }
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icon-512.png", sizes: "512x512", type: "image/png" }
     ],
+    shortcut: ["/favicon.ico"],
     apple: [
       { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }
     ],
@@ -47,7 +49,7 @@ export const metadata: Metadata = {
     siteName: "HolyMarket",
     images: [
       {
-        url: "/api/og?v=24",
+        url: "/api/og?v=25",
         width: 1200,
         height: 630,
         type: 'image/png',
@@ -60,7 +62,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "HolyMarket",
     description: "HolyMarket: Bet your beliefs on Base.",
-    images: ["/api/og?v=24"],
+    images: ["/api/og?v=25"],
   },
   manifest: "/manifest.json",
   appleWebApp: {
@@ -72,9 +74,7 @@ export const metadata: Metadata = {
     "fc:miniapp": JSON.stringify(fcMiniappMetadata),
     "mobile-web-app-capable": "yes",
     "apple-mobile-web-app-capable": "yes",
-    "application-name": "HolyMarket",
     "apple-mobile-web-app-title": "HolyMarket",
-    "msapplication-starturl": "/",
     "theme-color": "#050b1a"
   }
 };
@@ -99,23 +99,11 @@ export default async function RootLayout({
   const heads = await headers();
   const userAgent = heads.get("user-agent") || "";
 
-  // v24: Strict bot detection. 
-  // CoinbaseBot and common crawlers bypass SplashGate.
+  // v25: Precise bot detection for Coinbase Pinning
   const isBot = /bot|crawler|spider|warpcast|farcaster|google|yandex|bing|facebook|twitter|CoinbaseBot|CoinbaseWallet/i.test(userAgent);
 
   return (
     <html lang="en">
-      <head>
-        {/* RAW Priority Tags - Final Branding Force */}
-        <title>HolyMarket</title>
-        <meta name="apple-mobile-web-app-title" content="HolyMarket" />
-        <meta name="application-name" content="HolyMarket" />
-        <link rel="icon" href={`${baseUrl}/favicon.png`} sizes="32x32" />
-        <link rel="apple-touch-icon" href={`${baseUrl}/apple-touch-icon.png`} sizes="180x180" />
-        <link rel="manifest" href={`${baseUrl}/manifest.json`} />
-        {/* Serialized Identity for Base App Discovery */}
-        <meta name="fc:miniapp" content={JSON.stringify(fcMiniappMetadata)} />
-      </head>
       <body>
         <Providers>
           <FarcasterProvider>
