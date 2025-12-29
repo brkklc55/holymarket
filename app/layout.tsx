@@ -6,13 +6,13 @@ import SplashGate from "./components/SplashGate";
 
 const baseUrl = process.env.NEXT_PUBLIC_MINIAPP_URL || "https://www.baseappholymarket.xyz";
 
-// v39: Premium Identity (Visual Polish Fix)
+// v42: Ultimate Identity Sync (Final Polish)
 const fcMiniappMetadata = {
   version: "1",
   name: "HolyMarket",
-  iconUrl: `${baseUrl}/icon-1024.png?v=39`,
+  iconUrl: `${baseUrl}/icon-1024.png?v=42`,
   homeUrl: `${baseUrl}/`,
-  imageUrl: `${baseUrl}/api/og/v39.png`,
+  imageUrl: `${baseUrl}/api/og/v42.png`,
   button: {
     title: "Play HolyMarket",
     action: {
@@ -33,16 +33,16 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/favicon.png?v=39", sizes: "32x32", type: "image/png" },
-      { url: "/icon-192.png?v=39", sizes: "192x192", type: "image/png" },
-      { url: "/icon-512.png?v=39", sizes: "512x512", type: "image/png" },
-      { url: "/icon-1024.png?v=39", sizes: "1024x1024", type: "image/png" }
+      { url: "/favicon.png?v=42", sizes: "32x32", type: "image/png" },
+      { url: "/icon-192.png?v=42", sizes: "192x192", type: "image/png" },
+      { url: "/icon-512.png?v=42", sizes: "512x512", type: "image/png" },
+      { url: "/icon-1024.png?v=42", sizes: "1024x1024", type: "image/png" }
     ],
     apple: [
-      { url: "/apple-touch-icon.png?v=39", sizes: "180x180", type: "image/png" }
+      { url: "/apple-touch-icon.png?v=42", sizes: "180x180", type: "image/png" }
     ],
   },
-  manifest: "/manifest.json?v=39",
+  manifest: "/manifest.json?v=42",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
@@ -54,7 +54,7 @@ export const metadata: Metadata = {
     url: "/",
     siteName: "HolyMarket",
     type: "website",
-    images: ["/api/og/v39.png"]
+    images: ["/api/og/v42.png"]
   },
   other: {
     "fc:miniapp": JSON.stringify(fcMiniappMetadata),

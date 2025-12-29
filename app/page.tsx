@@ -17,7 +17,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const volume = typeof params.volume === 'string' ? params.volume : '0.00';
 
   // Base dynamic image URLs providing strict aspect ratios (Portal requirement)
-  const staticOgImageUrl = `/api/og/v37.png`;
+  const staticOgImageUrl = `/api/og/v42.png`;
   const staticIconUrl = `/icon-1024.png`;
   let currentImageUrl = staticOgImageUrl;
 
@@ -28,7 +28,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     urlParams.set('yesPct', yesPct);
     urlParams.set('noPct', noPct);
     urlParams.set('volume', volume);
-    urlParams.set('v', '37');
+    urlParams.set('v', '42');
     currentImageUrl = `/api/og/${urlParams.toString()}.png`;
   }
 
@@ -36,7 +36,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const description = question ? `Will it happen? Predict now on HolyMarket.` : 'HolyMarket: Bet your beliefs on Base.';
 
   // Build absolute URLs carefully to avoid // issue
-  const absoluteIconUrl = `${baseUrl}${staticIconUrl}?v=37`;
+  const absoluteIconUrl = `${baseUrl}${staticIconUrl}?v=42`;
   const absoluteHomeUrl = `${baseUrl}/`;
   const absoluteImageUrl = currentImageUrl.startsWith('http') ? currentImageUrl : `${baseUrl}${currentImageUrl}`;
 
