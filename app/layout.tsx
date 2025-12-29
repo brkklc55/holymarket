@@ -13,7 +13,7 @@ const fcMiniappMetadata = {
   name: "HolyMarket",
   iconUrl: `${baseUrl}/icon-1024.png`,
   homeUrl: `${baseUrl}/`,
-  imageUrl: `${baseUrl}/api/og?v=27`,
+  imageUrl: "https://www.baseappholymarket.xyz/api/og.png?v=29",
   button: {
     title: "Play HolyMarket",
     action: {
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
     siteName: "HolyMarket",
     images: [
       {
-        url: "/api/og?v=27",
+        url: "/api/og.png?v=29",
         width: 1200,
         height: 630,
         type: 'image/png',
@@ -64,7 +64,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "HolyMarket",
     description: "HolyMarket: Bet your beliefs on Base.",
-    images: ["/api/og?v=27"],
+    images: ["/api/og.png?v=29"],
   },
   manifest: "/manifest.json",
   appleWebApp: {

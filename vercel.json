@@ -16,6 +16,10 @@
         {
             "source": "/farcaster.json",
             "destination": "/.well-known/farcaster.json"
+        },
+        {
+            "source": "/api/og.png",
+            "destination": "/api/og"
         }
     ]
 }
