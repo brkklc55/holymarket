@@ -16,8 +16,9 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const noPct = typeof params.noPct === 'string' ? params.noPct : '50';
   const volume = typeof params.volume === 'string' ? params.volume : '0.00';
 
-  // Base static image providing the exact "Sade" look requested
-  const staticOgImageUrl = `${baseUrl}/hm_og_v12.png`;
+  // Base dynamic image URLs providing strict aspect ratios (Portal requirement)
+  const staticOgImageUrl = `${baseUrl}/api/og?v=13`;
+  const staticIconUrl = `${baseUrl}/api/icon?v=13`;
   let currentImageUrl = staticOgImageUrl;
 
   if (question) {
@@ -27,12 +28,41 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     urlParams.set('yesPct', yesPct);
     urlParams.set('noPct', noPct);
     urlParams.set('volume', volume);
-    urlParams.set('v', '12');
+    urlParams.set('v', '13');
     currentImageUrl = `${baseUrl}/api/og?${urlParams.toString()}`;
   }
 
   const title = question ? `HolyMarket | ${question}` : 'HolyMarket';
   const description = question ? `Will it happen? Predict now on HolyMarket.` : 'HolyMarket: Bet your beliefs on Base.';
+
+  const sharedMetadata = {
+    version: "next",
+    name: "HolyMarket",
+    iconUrl: staticIconUrl,
+    homeUrl: `${baseUrl}`,
+    imageUrl: currentImageUrl,
+    button: {
+      title: "Play HolyMarket",
+      action: {
+        type: "launch_frame",
+        name: "HolyMarket",
+        url: baseUrl,
+      }
+    },
+    splashImageUrl: staticIconUrl,
+    splashBackgroundColor: "#050b1a",
+    subtitle: "HolyMarket",
+    description: "HolyMarket: Bet your beliefs on Base. Join the market.",
+    screenshotUrls: [staticOgImageUrl],
+    primaryCategory: "finance",
+    tags: ["prediction", "market", "base", "finance"],
+    heroImageUrl: staticOgImageUrl,
+    tagline: "Bet your beliefs on Base",
+    ogTitle: "HolyMarket",
+    ogDescription: "Bet your beliefs on Base. Join the market",
+    ogImageUrl: staticOgImageUrl,
+    castShareUrl: baseUrl
+  };
 
   return {
     title,
@@ -61,68 +91,14 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
       images: [currentImageUrl],
     },
     other: {
-      "apple-touch-icon": `${baseUrl}/icon.png`,
+      "apple-touch-icon": staticIconUrl,
       "fc:frame": "vNext",
       "fc:frame:v2": "true",
       "fc:frame:image": currentImageUrl,
       "fc:frame:manifest": `${baseUrl}/.well-known/farcaster.json`,
       "fc:frame:image:aspect_ratio": "1.91:1",
-      "fc:frame:launch_app": JSON.stringify({
-        version: "next",
-        name: "HolyMarket",
-        iconUrl: `${baseUrl}/icon.png`,
-        homeUrl: `${baseUrl}`,
-        imageUrl: currentImageUrl,
-        button: {
-          title: "Play HolyMarket",
-          action: {
-            type: "launch_frame",
-            name: "HolyMarket",
-            url: baseUrl,
-          }
-        },
-        splashImageUrl: `${baseUrl}/icon.png`,
-        splashBackgroundColor: "#050b1a",
-        subtitle: "HolyMarket",
-        description: "HolyMarket: Bet your beliefs on Base. Join the most fluid prediction market in the Farcaster ecosystem.",
-        screenshotUrls: [staticOgImageUrl],
-        primaryCategory: "finance",
-        tags: ["prediction", "market", "base", "finance"],
-        heroImageUrl: staticOgImageUrl,
-        tagline: "Bet your beliefs on Base",
-        ogTitle: "HolyMarket",
-        ogDescription: "Bet your beliefs on Base. Join the market",
-        ogImageUrl: staticOgImageUrl,
-        castShareUrl: baseUrl
-      }),
-      "fc:miniapp": JSON.stringify({
-        version: "next",
-        name: "HolyMarket",
-        iconUrl: `${baseUrl}/icon.png`,
-        homeUrl: `${baseUrl}`,
-        imageUrl: currentImageUrl,
-        button: {
-          title: "Play HolyMarket",
-          action: {
-            type: "launch_frame",
-            name: "HolyMarket",
-            url: baseUrl,
-          }
-        },
-        splashImageUrl: `${baseUrl}/icon.png`,
-        splashBackgroundColor: "#050b1a",
-        subtitle: "HolyMarket",
-        description: "HolyMarket: Bet your beliefs on Base. Join the most fluid prediction market in the Farcaster ecosystem.",
-        screenshotUrls: [staticOgImageUrl],
-        primaryCategory: "finance",
-        tags: ["prediction", "market", "base", "finance"],
-        heroImageUrl: staticOgImageUrl,
-        tagline: "Bet your beliefs on Base",
-        ogTitle: "HolyMarket",
-        ogDescription: "Bet your beliefs on Base. Join the market",
-        ogImageUrl: staticOgImageUrl,
-        castShareUrl: baseUrl
-      })
+      "fc:frame:launch_app": JSON.stringify(sharedMetadata),
+      "fc:miniapp": JSON.stringify(sharedMetadata)
     },
   };
 }
@@ -133,7 +109,7 @@ export default function Page() {
       <div className="w-full max-w-3xl space-y-8">
         <div className="text-center space-y-4">
           <div className="flex justify-center mb-6">
-            <img src="/icon.png" alt="HolyMarket Logo" className="w-24 h-24 sm:w-32 sm:h-32 rounded-3xl shadow-xl" />
+            <img src="/api/icon?v=13" alt="HolyMarket Logo" className="w-24 h-24 sm:w-32 sm:h-32 rounded-3xl shadow-xl" />
           </div>
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tighter text-white leading-none break-words">
             HOLY<span className="text-gradient">MARKET</span>

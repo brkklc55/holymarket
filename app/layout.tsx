@@ -12,9 +12,9 @@ export const metadata: Metadata = {
   description: "HolyMarket: Bet your beliefs on Base.",
   metadataBase: new URL(baseUrl),
   icons: {
-    icon: [{ url: `${baseUrl}/hm_icon_v12.png`, sizes: "any" }],
-    shortcut: [`${baseUrl}/hm_icon_v12.png`],
-    apple: [{ url: `${baseUrl}/hm_icon_v12.png`, sizes: "180x180", type: "image/png" }],
+    icon: [{ url: `${baseUrl}/api/icon?v=13`, sizes: "any" }],
+    shortcut: [`${baseUrl}/api/icon?v=13`],
+    apple: [{ url: `${baseUrl}/api/icon?v=13`, sizes: "180x180", type: "image/png" }],
   },
   openGraph: {
     title: "HolyMarket",
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     siteName: "HolyMarket",
     images: [
       {
-        url: `${baseUrl}/hm_og_v12.png`,
+        url: `${baseUrl}/api/og?v=13`,
         width: 1200,
         height: 630,
         type: 'image/png',
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "HolyMarket",
     description: "HolyMarket: Bet your beliefs on Base.",
-    images: [`${baseUrl}/hm_og_v12.png`],
+    images: [`${baseUrl}/api/og?v=13`],
   },
   manifest: "/manifest.json",
   appleWebApp: {
