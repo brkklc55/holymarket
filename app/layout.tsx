@@ -4,16 +4,16 @@ import FarcasterProvider from "./components/FarcasterProvider";
 import TermsGate from "./components/TermsGate";
 import SplashGate from "./components/SplashGate";
 
-const baseUrl = "https://www.baseappholymarket.xyz";
+const baseUrl = process.env.NEXT_PUBLIC_MINIAPP_URL || "https://www.baseappholymarket.xyz";
 
-// v36: Absolute Truth (The "Zero Pollution" Fix)
+// v37: Dynamic Identity (Vercel Sync Fix)
 // Consolidating ALL branding metadata here to prevent triple-titles and duplicate tags.
 const fcMiniappMetadata = {
   version: "1",
   name: "HolyMarket",
-  iconUrl: `${baseUrl}/icon-1024.png?v=36`,
+  iconUrl: `${baseUrl}/icon-1024.png?v=37`,
   homeUrl: `${baseUrl}/`,
-  imageUrl: `${baseUrl}/api/og/v36.png`,
+  imageUrl: `${baseUrl}/api/og/v37.png`,
   button: {
     title: "Play HolyMarket",
     action: {
@@ -34,16 +34,16 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/favicon.png?v=36", sizes: "32x32", type: "image/png" },
-      { url: "/icon-192.png?v=36", sizes: "192x192", type: "image/png" },
-      { url: "/icon-512.png?v=36", sizes: "512x512", type: "image/png" },
-      { url: "/icon-1024.png?v=36", sizes: "1024x1024", type: "image/png" }
+      { url: "/favicon.png?v=37", sizes: "32x32", type: "image/png" },
+      { url: "/icon-192.png?v=37", sizes: "192x192", type: "image/png" },
+      { url: "/icon-512.png?v=37", sizes: "512x512", type: "image/png" },
+      { url: "/icon-1024.png?v=37", sizes: "1024x1024", type: "image/png" }
     ],
     apple: [
-      { url: "/apple-touch-icon.png?v=36", sizes: "180x180", type: "image/png" }
+      { url: "/apple-touch-icon.png?v=37", sizes: "180x180", type: "image/png" }
     ],
   },
-  manifest: "/manifest.json?v=36",
+  manifest: "/manifest.json?v=37",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
@@ -55,7 +55,7 @@ export const metadata: Metadata = {
     url: "/",
     siteName: "HolyMarket",
     type: "website",
-    images: ["/api/og/v36.png"]
+    images: ["/api/og/v37.png"]
   },
   other: {
     "fc:miniapp": JSON.stringify(fcMiniappMetadata),
