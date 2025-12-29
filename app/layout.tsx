@@ -12,9 +12,9 @@ export const metadata: Metadata = {
   description: "HolyMarket: Bet your beliefs on Base.",
   metadataBase: new URL(baseUrl),
   icons: {
-    icon: [{ url: `${baseUrl}/api/icon?v=14`, sizes: "any" }],
-    shortcut: [`${baseUrl}/api/icon?v=14`],
-    apple: [{ url: `${baseUrl}/api/icon?v=14`, sizes: "180x180", type: "image/png" }],
+    icon: [{ url: `${baseUrl}/icon-1024.png`, sizes: "any" }],
+    shortcut: [`${baseUrl}/icon-1024.png`],
+    apple: [{ url: `${baseUrl}/apple-touch-icon.png`, sizes: "180x180", type: "image/png" }],
   },
   openGraph: {
     title: "HolyMarket",
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     siteName: "HolyMarket",
     images: [
       {
-        url: `${baseUrl}/api/og?v=14`,
+        url: `${baseUrl}/api/og?v=15`,
         width: 1200,
         height: 630,
         type: 'image/png',
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "HolyMarket",
     description: "HolyMarket: Bet your beliefs on Base.",
-    images: [`${baseUrl}/api/og?v=14`],
+    images: [`${baseUrl}/api/og?v=15`],
   },
   manifest: "/manifest.json",
   appleWebApp: {
@@ -73,13 +73,15 @@ export default async function RootLayout({
 }>) {
   const heads = await headers();
   const userAgent = heads.get("user-agent") || "";
-  const isBot = /bot|crawler|spider|warpcast|farcaster/i.test(userAgent);
+  // Enhanced bot detection to include Coinbase/Base App pinning crawlers
+  const isBot = /bot|crawler|spider|warpcast|farcaster|coinbase|wallet|iphone|android/i.test(userAgent);
 
   return (
     <html lang="en">
       <head>
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
       </head>
       <body>
         <Providers>

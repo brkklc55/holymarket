@@ -14,19 +14,19 @@
     ],
     "icons": [
         {
-            "src": "/api/icon?v=14",
-            "sizes": "192x192",
+            "src": "/apple-touch-icon.png",
+            "sizes": "180x180",
             "type": "image/png",
             "purpose": "any"
         },
         {
-            "src": "/api/icon?v=14",
+            "src": "/icon-1024.png",
             "sizes": "512x512",
             "type": "image/png",
             "purpose": "any"
         },
         {
-            "src": "/api/icon?v=14",
+            "src": "/icon-1024.png",
             "sizes": "1024x1024",
             "type": "image/png",
             "purpose": "any"

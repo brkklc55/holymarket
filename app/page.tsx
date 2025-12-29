@@ -17,8 +17,8 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const volume = typeof params.volume === 'string' ? params.volume : '0.00';
 
   // Base dynamic image URLs providing strict aspect ratios (Portal requirement)
-  const staticOgImageUrl = `${baseUrl}/api/og?v=14`;
-  const staticIconUrl = `${baseUrl}/api/icon?v=14`;
+  const staticOgImageUrl = `${baseUrl}/api/og?v=15`;
+  const staticIconUrl = `${baseUrl}/icon-1024.png`;
   let currentImageUrl = staticOgImageUrl;
 
   if (question) {
@@ -28,7 +28,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     urlParams.set('yesPct', yesPct);
     urlParams.set('noPct', noPct);
     urlParams.set('volume', volume);
-    urlParams.set('v', '14');
+    urlParams.set('v', '15');
     currentImageUrl = `${baseUrl}/api/og?${urlParams.toString()}`;
   }
 
@@ -109,7 +109,7 @@ export default function Page() {
       <div className="w-full max-w-3xl space-y-8">
         <div className="text-center space-y-4">
           <div className="flex justify-center mb-6">
-            <img src="/api/icon?v=14" alt="HolyMarket Logo" className="w-24 h-24 sm:w-32 sm:h-32 rounded-3xl shadow-xl" />
+            <img src="/icon-1024.png" alt="HolyMarket Logo" className="w-24 h-24 sm:w-32 sm:h-32 rounded-3xl shadow-xl" />
           </div>
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tighter text-white leading-none break-words">
             HOLY<span className="text-gradient">MARKET</span>
