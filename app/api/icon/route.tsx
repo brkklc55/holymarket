@@ -1,30 +1,31 @@
 import { ImageResponse } from 'next/og';
-import { NextRequest } from 'next/server';
 
 export const runtime = 'edge';
 
-export async function GET(req: NextRequest) {
-    const { searchParams } = new URL(req.url);
-    const size = parseInt(searchParams.get('s') || '512');
+export async function GET(request: Request) {
+    const { searchParams } = new URL(request.url);
+    const s = searchParams.get('s') || '1024';
+    const size = parseInt(s);
 
-    // Using the existing high-quality background
-    // ImageResponse will render this and output a REAL PNG.
-    const baseUrl = 'https://www.baseappholymarket.xyz';
-    const bgUrl = `${baseUrl}/icon-1024.png`; // Our existing base image
-
+    // v38: Guaranteed TRUE PNG via Next.js ImageResponse (89-50-4E-47)
     return new ImageResponse(
         (
             <div
                 style={{
-                    height: '100%',
+                    fontSize: size * 0.4,
+                    background: '#050b1a',
                     width: '100%',
+                    height: '100%',
                     display: 'flex',
-                    backgroundImage: `url(${bgUrl})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    backgroundColor: '#050b1a',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'white',
+                    fontWeight: 'bold',
+                    fontFamily: 'sans-serif',
                 }}
-            />
+            >
+                HM
+            </div>
         ),
         {
             width: size,

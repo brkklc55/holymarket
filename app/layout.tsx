@@ -4,16 +4,15 @@ import FarcasterProvider from "./components/FarcasterProvider";
 import TermsGate from "./components/TermsGate";
 import SplashGate from "./components/SplashGate";
 
-const baseUrl = process.env.NEXT_PUBLIC_MINIAPP_URL || "https://www.baseappholymarket.xyz";
+const baseUrl = "https://www.baseappholymarket.xyz";
 
-// v37: Dynamic Identity (Vercel Sync Fix)
-// Consolidating ALL branding metadata here to prevent triple-titles and duplicate tags.
+// v38: Scientific Final - Extreme Consistency
 const fcMiniappMetadata = {
   version: "1",
   name: "HolyMarket",
-  iconUrl: `${baseUrl}/icon-1024.png?v=37`,
+  iconUrl: `${baseUrl}/icon-1024.png?v=38`,
   homeUrl: `${baseUrl}/`,
-  imageUrl: `${baseUrl}/api/og/v37.png`,
+  imageUrl: `${baseUrl}/api/og/v38.png`,
   button: {
     title: "Play HolyMarket",
     action: {
@@ -34,16 +33,17 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/favicon.png?v=37", sizes: "32x32", type: "image/png" },
-      { url: "/icon-192.png?v=37", sizes: "192x192", type: "image/png" },
-      { url: "/icon-512.png?v=37", sizes: "512x512", type: "image/png" },
-      { url: "/icon-1024.png?v=37", sizes: "1024x1024", type: "image/png" }
+      { url: "/favicon.png?v=38", sizes: "32x32", type: "image/png" },
+      { url: "/icon-192.png?v=38", sizes: "192x192", type: "image/png" },
+      { url: "/icon-512.png?v=38", sizes: "512x512", type: "image/png" },
+      { url: "/icon-1024.png?v=38", sizes: "1024x1024", type: "image/png" }
     ],
     apple: [
-      { url: "/apple-touch-icon.png?v=37", sizes: "180x180", type: "image/png" }
+      { url: "/apple-touch-icon.png?v=38", sizes: "180x180", type: "image/png" },
+      { url: "/apple-touch-icon-precomposed.png?v=38", sizes: "180x180", type: "image/png" }
     ],
   },
-  manifest: "/manifest.json?v=37",
+  manifest: `${baseUrl}/manifest.json?v=38`, // Using absolute URL to avoid redirect issues
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
@@ -55,7 +55,7 @@ export const metadata: Metadata = {
     url: "/",
     siteName: "HolyMarket",
     type: "website",
-    images: ["/api/og/v37.png"]
+    images: ["/api/og/v38.png"]
   },
   other: {
     "fc:miniapp": JSON.stringify(fcMiniappMetadata),
@@ -85,8 +85,8 @@ export default async function RootLayout({
   const heads = await headers();
   const userAgent = heads.get("user-agent") || "";
 
-  // v36: Enhanced bot/wallet detection for clean crawl
-  const isBot = /bot|crawler|spider|warpcast|farcaster|google|yandex|bing|facebook|twitter|Coinbase|Toshi|Lighthouse|Mojo/i.test(userAgent);
+  // v38: EXTENDED BOT DETECTION (Includes all known Coinbase and Wallet UAs)
+  const isBot = /bot|crawler|spider|warpcast|farcaster|google|yandex|bing|facebook|twitter|Coinbase|Toshi|Lighthouse|Mojo|BaseApp|Cipher|TrustWallet|Rainbow|Metamask|OKX|Bybit|Bitget|Phantom|TokenPocket/i.test(userAgent);
 
   return (
     <html lang="en">
@@ -102,21 +102,6 @@ export default async function RootLayout({
             )}
           </FarcasterProvider>
         </Providers>
-
-        {/* Service Worker (v36) - Registered after hydration */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              if ('serviceWorker' in navigator) {
-                window.addEventListener('load', function() {
-                  navigator.serviceWorker.register('/sw.js').catch(function(err) {
-                    console.log('SW registration failed: ', err);
-                  });
-                });
-              }
-            `,
-          }}
-        />
       </body>
     </html>
   );

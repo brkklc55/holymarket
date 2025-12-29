@@ -1,0 +1,37 @@
+{
+    "name": "HolyMarket",
+    "short_name": "HolyMarket",
+    "description": "HolyMarket: Bet your beliefs on Base.",
+    "start_url": "/?v=38",
+    "display": "standalone",
+    "background_color": "#050b1a",
+    "theme_color": "#050b1a",
+    "orientation": "portrait",
+    "icons": [
+        {
+            "src": "https://www.baseappholymarket.xyz/api/icon?s=32&v=38",
+            "sizes": "32x32",
+            "type": "image/png"
+        },
+        {
+            "src": "https://www.baseappholymarket.xyz/api/icon?s=180&v=38",
+            "sizes": "180x180",
+            "type": "image/png"
+        },
+        {
+            "src": "https://www.baseappholymarket.xyz/api/icon?s=192&v=38",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "https://www.baseappholymarket.xyz/api/icon?s=512&v=38",
+            "sizes": "512x512",
+            "type": "image/png"
+        },
+        {
+            "src": "https://www.baseappholymarket.xyz/api/icon?s=1024&v=38",
+            "sizes": "1024x1024",
+            "type": "image/png"
+        }
+    ]
+}
