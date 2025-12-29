@@ -7,70 +7,108 @@ type Props = {
     children: React.ReactNode;
 };
 
+/**
+ * v40: Premium Splash Overlay
+ * - Renders children immediately to prevent hydration flickering.
+ * - Displays splash as a fixed overlay that fades out.
+ * - Improved centering and visual polish.
+ */
 export default function SplashGate({ children }: Props) {
-    const [show, setShow] = useState(true);
+    const [isMounted, setIsMounted] = useState(true);
     const [opacity, setOpacity] = useState(1);
 
     useEffect(() => {
+        // Show splash for 2s, then fade out
         const timer = setTimeout(() => {
             setOpacity(0);
-            setTimeout(() => setShow(false), 500);
-        }, 1500);
+            // Remove from DOM after transition
+            setTimeout(() => setIsMounted(false), 1000);
+        }, 2000);
+
         return () => clearTimeout(timer);
     }, []);
 
-    if (!show) return <>{children}</>;
-
     return (
-        <div
-            className="fixed inset-0 z-[9999] bg-[#020617] flex items-center justify-center overflow-hidden transition-opacity duration-500 ease-in-out"
-            style={{ opacity }}
-        >
-            {/* Background Effects */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-500/10 blur-[120px] rounded-full animate-pulse" />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-sky-500/5 blur-[80px] rounded-full" />
-
-            <div className="relative z-10 flex flex-col items-center">
-                <div className="relative group animate-in zoom-in duration-700">
-                    <div className="absolute -inset-4 bg-gradient-to-tr from-blue-500/20 to-sky-500/20 blur-xl rounded-[2.5rem] group-hover:opacity-100 transition-opacity" />
-                    <img
-                        src="/icon-1024.png"
-                        alt="HolyMarket Logo"
-                        className="w-32 h-32 rounded-[2rem] shadow-2xl relative border border-white/10"
-                    />
-                    <div className="absolute -top-2 -right-2 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center shadow-lg animate-bounce">
-                        <Sparkles size={16} className="text-white" />
-                    </div>
-                </div>
-
-                <div className="mt-8 text-center space-y-3 animate-in fade-in slide-in-from-bottom-4 duration-1000">
-                    <h1 className="text-4xl font-black tracking-tighter text-white">
-                        HOLY<span className="text-gradient">MARKET</span>
-                    </h1>
-                    <div className="flex items-center gap-3 justify-center">
-                        <div className="h-px w-8 bg-white/10" />
-                        <p className="text-[10px] text-slate-500 font-bold uppercase tracking-[0.4em]">Predict The Future</p>
-                        <div className="h-px w-8 bg-white/10" />
-                    </div>
-                </div>
-
-                <div className="mt-12 flex flex-col items-center gap-4">
-                    <div className="w-48 h-1 bg-white/5 rounded-full overflow-hidden relative">
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-500 to-transparent w-full animate-progress-flow" />
-                    </div>
-                    <span className="text-[9px] font-black text-blue-500/50 uppercase tracking-widest">Initialising Protocol</span>
-                </div>
+        <>
+            {/* Render app content immediately behind the splash */}
+            <div style={{ visibility: isMounted ? 'hidden' : 'visible', height: isMounted ? '0' : 'auto', overflow: isMounted ? 'hidden' : 'visible' }}>
+                {children}
             </div>
 
-            <style jsx>{`
-                @keyframes progress-flow {
-                    0% { transform: translateX(-100%); }
-                    100% { transform: translateX(100%); }
-                }
-                .animate-progress-flow {
-                    animation: progress-flow 2s infinite linear;
-                }
-            `}</style>
-        </div>
+            {/* Fallback for app content visibility to prevent layout jumps during fade */}
+            {!isMounted && <>{children}</>}
+
+            {isMounted && (
+                <div
+                    className="fixed inset-0 z-[9999] bg-[#020617] flex items-center justify-center overflow-hidden transition-all duration-1000 ease-in-out"
+                    style={{
+                        opacity,
+                        pointerEvents: opacity === 0 ? 'none' : 'auto'
+                    }}
+                >
+                    {/* Background Glow */}
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-blue-600/10 blur-[150px] rounded-full animate-pulse" />
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-sky-500/5 blur-[100px] rounded-full" />
+
+                    <div className="relative z-10 flex flex-col items-center">
+                        {/* Premium Logo Wrapper */}
+                        <div className="relative group animate-in zoom-in duration-1000 ease-out">
+                            <div className="absolute -inset-8 bg-gradient-to-tr from-blue-500/20 to-sky-500/20 blur-2xl rounded-full group-hover:opacity-100 transition-opacity" />
+                            <img
+                                src="/icon-1024.png?v=39"
+                                alt="HolyMarket Logo"
+                                className="w-40 h-40 md:w-48 md:h-48 rounded-[2.5rem] shadow-[0_0_50px_rgba(14,165,233,0.3)] relative border border-white/10"
+                            />
+                            <div className="absolute -top-3 -right-3 w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center shadow-lg animate-bounce">
+                                <Sparkles size={20} className="text-white" />
+                            </div>
+                        </div>
+
+                        {/* Title & Slogan */}
+                        <div className="mt-10 text-center space-y-4 animate-in fade-in slide-in-from-bottom-6 duration-1000">
+                            <h1 className="text-5xl md:text-6xl font-black tracking-tighter text-white">
+                                HOLY<span className="text-gradient">MARKET</span>
+                            </h1>
+                            <div className="flex items-center gap-4 justify-center">
+                                <div className="h-px w-12 bg-white/10" />
+                                <p className="text-[12px] text-slate-500 font-extrabold uppercase tracking-[0.5em]">Predict The Future</p>
+                                <div className="h-px w-12 bg-white/10" />
+                            </div>
+                        </div>
+
+                        {/* Loading Indicator */}
+                        <div className="mt-16 flex flex-col items-center gap-6">
+                            <div className="w-64 h-1.5 bg-white/5 rounded-full overflow-hidden relative border border-white/5">
+                                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-500 to-transparent w-full animate-progress-flow" />
+                            </div>
+                            <div className="flex flex-col items-center gap-2">
+                                <span className="text-[10px] font-black text-blue-500/60 uppercase tracking-[0.3em]">Initialising Protocol</span>
+                                <div className="flex gap-1">
+                                    <div className="w-1 h-1 bg-blue-500/40 rounded-full animate-pulse" />
+                                    <div className="w-1 h-1 bg-blue-500/40 rounded-full animate-pulse [animation-delay:200ms]" />
+                                    <div className="w-1 h-1 bg-blue-500/40 rounded-full animate-pulse [animation-delay:400ms]" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <style jsx>{`
+                        @keyframes progress-flow {
+                            0% { transform: translateX(-100%); }
+                            100% { transform: translateX(100%); }
+                        }
+                        .animate-progress-flow {
+                            animation: progress-flow 2.5s infinite ease-in-out;
+                        }
+                        .text-gradient {
+                            background: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%);
+                            -webkit-background-clip: text;
+                            background-clip: text;
+                            -webkit-text-fill-color: transparent;
+                        }
+                    `}</style>
+                </div>
+            )}
+        </>
     );
 }
