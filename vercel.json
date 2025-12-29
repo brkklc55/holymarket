@@ -1,15 +1,4 @@
 {
-    "headers": [
-        {
-            "source": "/(.*)",
-            "headers": [
-                {
-                    "key": "Access-Control-Allow-Origin",
-                    "value": "*"
-                }
-            ]
-        }
-    ],
     "redirects": [
         {
             "source": "/(.*)",
@@ -27,14 +16,6 @@
         {
             "source": "/farcaster.json",
             "destination": "/.well-known/farcaster.json"
-        },
-        {
-            "source": "/api/og.png",
-            "destination": "/api/og"
-        },
-        {
-            "source": "/api/og/:v.png",
-            "destination": "/api/og?v=:v"
         }
     ]
 }
