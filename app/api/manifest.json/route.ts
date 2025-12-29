@@ -15,11 +15,11 @@ export async function GET() {
         "theme_color": "#050b1a",
         "orientation": "portrait",
         "icons": [
-            { "src": "/favicon.png?v=42", "sizes": "32x32", "type": "image/png" },
-            { "src": "/apple-touch-icon.png?v=42", "sizes": "180x180", "type": "image/png" },
-            { "src": "/icon-192.png?v=42", "sizes": "192x192", "type": "image/png" },
-            { "src": "/icon-512.png?v=42", "sizes": "512x512", "type": "image/png" },
-            { "src": "/icon-1024.png?v=42", "sizes": "1024x1024", "type": "image/png" }
+            { "src": "/favicon.png?v=43", "sizes": "32x32", "type": "image/png" },
+            { "src": "/apple-touch-icon.png?v=43", "sizes": "180x180", "type": "image/png" },
+            { "src": "/icon-192.png?v=43", "sizes": "192x192", "type": "image/png" },
+            { "src": "/icon-512.png?v=43", "sizes": "512x512", "type": "image/png" },
+            { "src": "/icon-1024.png?v=43", "sizes": "1024x1024", "type": "image/png" }
         ]
     }, {
         headers: {
