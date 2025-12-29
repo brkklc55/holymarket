@@ -6,13 +6,14 @@ import SplashGate from "./components/SplashGate";
 
 const baseUrl = "https://www.baseappholymarket.xyz";
 
-// v35: Deep Identity & Service Worker (Registry Fix)
+// v36: Absolute Truth (The "Zero Pollution" Fix)
+// Consolidating ALL branding metadata here to prevent triple-titles and duplicate tags.
 const fcMiniappMetadata = {
   version: "1",
   name: "HolyMarket",
-  iconUrl: `${baseUrl}/icon-1024.png?v=35`,
+  iconUrl: `${baseUrl}/icon-1024.png?v=36`,
   homeUrl: `${baseUrl}/`,
-  imageUrl: `${baseUrl}/api/og/v35.png`,
+  imageUrl: `${baseUrl}/api/og/v36.png`,
   button: {
     title: "Play HolyMarket",
     action: {
@@ -24,10 +25,29 @@ const fcMiniappMetadata = {
 };
 
 export const metadata: Metadata = {
+  title: "HolyMarket",
+  applicationName: "HolyMarket",
   description: "HolyMarket: Bet your beliefs on Base.",
   metadataBase: new URL(baseUrl),
   alternates: {
     canonical: "/",
+  },
+  icons: {
+    icon: [
+      { url: "/favicon.png?v=36", sizes: "32x32", type: "image/png" },
+      { url: "/icon-192.png?v=36", sizes: "192x192", type: "image/png" },
+      { url: "/icon-512.png?v=36", sizes: "512x512", type: "image/png" },
+      { url: "/icon-1024.png?v=36", sizes: "1024x1024", type: "image/png" }
+    ],
+    apple: [
+      { url: "/apple-touch-icon.png?v=36", sizes: "180x180", type: "image/png" }
+    ],
+  },
+  manifest: "/manifest.json?v=36",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "HolyMarket",
   },
   openGraph: {
     title: "HolyMarket",
@@ -35,6 +55,13 @@ export const metadata: Metadata = {
     url: "/",
     siteName: "HolyMarket",
     type: "website",
+    images: ["/api/og/v36.png"]
+  },
+  other: {
+    "fc:miniapp": JSON.stringify(fcMiniappMetadata),
+    "base:app_id": "6952a8dc4d3a403912ed8525",
+    "apple-mobile-web-app-title": "HolyMarket",
+    "theme-color": "#050b1a"
   }
 };
 
@@ -58,32 +85,25 @@ export default async function RootLayout({
   const heads = await headers();
   const userAgent = heads.get("user-agent") || "";
 
-  // v35: Highly inclusive bot/wallet detection
+  // v36: Enhanced bot/wallet detection for clean crawl
   const isBot = /bot|crawler|spider|warpcast|farcaster|google|yandex|bing|facebook|twitter|Coinbase|Toshi|Lighthouse|Mojo/i.test(userAgent);
 
   return (
     <html lang="en">
-      <head>
-        {/* v35: PWA CORE IDENTITY (The absolute top) */}
-        <meta charSet="utf-8" />
-        <title>HolyMarket</title>
-        <meta name="apple-mobile-web-app-title" content="HolyMarket" />
-        <meta name="application-name" content="HolyMarket" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="mobile-web-app-capable" content="yes" />
+      <body>
+        <Providers>
+          <FarcasterProvider>
+            {isBot ? (
+              <>{children}</>
+            ) : (
+              <SplashGate>
+                <TermsGate>{children}</TermsGate>
+              </SplashGate>
+            )}
+          </FarcasterProvider>
+        </Providers>
 
-        {/* Strict Absolute Asset Mapping (v35 Cache Buster) */}
-        <link rel="manifest" href={`${baseUrl}/manifest.json?v=35`} />
-        <link rel="apple-touch-icon" href={`${baseUrl}/apple-touch-icon.png?v=35`} />
-        <link rel="shortcut icon" href={`${baseUrl}/favicon.png?v=35`} />
-
-        {/* Registry & Verification */}
-        <meta name="fc:miniapp" content={JSON.stringify(fcMiniappMetadata)} />
-        <meta name="base:app_id" content="6952a8dc4d3a403912ed8525" />
-        <meta name="theme-color" content="#050b1a" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-
-        {/* PWA Service Worker Registration */}
+        {/* Service Worker (v36) - Registered after hydration */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -97,19 +117,6 @@ export default async function RootLayout({
             `,
           }}
         />
-      </head>
-      <body>
-        <Providers>
-          <FarcasterProvider>
-            {isBot ? (
-              <>{children}</>
-            ) : (
-              <SplashGate>
-                <TermsGate>{children}</TermsGate>
-              </SplashGate>
-            )}
-          </FarcasterProvider>
-        </Providers>
       </body>
     </html>
   );
