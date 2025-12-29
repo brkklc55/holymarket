@@ -6,23 +6,7 @@ import SplashGate from "./components/SplashGate";
 
 const baseUrl = "https://www.baseappholymarket.xyz";
 
-// v20: Aerodrome Standard Serialized Metadata
-const fcMiniappMetadata = {
-  version: "1",
-  name: "HolyMarket",
-  iconUrl: "https://www.baseappholymarket.xyz/icon-1024.png",
-  homeUrl: "https://www.baseappholymarket.xyz/",
-  imageUrl: "https://www.baseappholymarket.xyz/api/og?v=20",
-  button: {
-    title: "Play HolyMarket",
-    action: {
-      type: "launch_frame",
-      name: "HolyMarket",
-      url: "https://www.baseappholymarket.xyz/",
-    }
-  }
-};
-
+// v21: Simplified and Robust Metadata for Base App
 export const metadata: Metadata = {
   title: "HolyMarket",
   applicationName: "HolyMarket",
@@ -32,9 +16,13 @@ export const metadata: Metadata = {
     canonical: "https://www.baseappholymarket.xyz/",
   },
   icons: {
-    icon: [{ url: "https://www.baseappholymarket.xyz/favicon.png", sizes: "any" }],
-    shortcut: ["https://www.baseappholymarket.xyz/favicon.png"],
-    apple: [{ url: "https://www.baseappholymarket.xyz/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+    icon: [
+      { url: "/favicon.png", sizes: "32x32", type: "image/png" },
+      { url: "/icon-1024.png", sizes: "192x192", type: "image/png" }
+    ],
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }
+    ],
   },
   openGraph: {
     title: "HolyMarket",
@@ -43,7 +31,7 @@ export const metadata: Metadata = {
     siteName: "HolyMarket",
     images: [
       {
-        url: "https://www.baseappholymarket.xyz/api/og?v=20",
+        url: "/api/og?v=21",
         width: 1200,
         height: 630,
         type: 'image/png',
@@ -56,22 +44,20 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "HolyMarket",
     description: "HolyMarket: Bet your beliefs on Base.",
-    images: ["https://www.baseappholymarket.xyz/api/og?v=20"],
+    images: ["/api/og?v=21"],
   },
-  manifest: "https://www.baseappholymarket.xyz/manifest.json",
+  manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
     title: "HolyMarket",
   },
   other: {
-    "fc:miniapp": JSON.stringify(fcMiniappMetadata),
     "mobile-web-app-capable": "yes",
     "apple-mobile-web-app-capable": "yes",
     "application-name": "HolyMarket",
     "apple-mobile-web-app-title": "HolyMarket",
-    "msapplication-starturl": "https://www.baseappholymarket.xyz/",
-    "msapplication-navbutton-color": "#050b1a",
+    "msapplication-starturl": "/",
     "theme-color": "#050b1a"
   }
 };
@@ -96,20 +82,18 @@ export default async function RootLayout({
   const heads = await headers();
   const userAgent = heads.get("user-agent") || "";
 
-  // v20: Strict bot detection for Coinbase Pinning
-  const isBot = /bot|crawler|spider|warpcast|farcaster|coinbase|wallet|toshi|googlebot|yandexbot/i.test(userAgent);
+  // v21: Broad bot detection to bypass SplashGate for ALL crawlers
+  const isBot = /bot|crawler|spider|warpcast|farcaster|coinbase|wallet|toshi|google|yandex|bing|apple|facebook/i.test(userAgent);
 
   return (
     <html lang="en">
       <head>
+        {/* RAW Priority Tags for Bots that ignore Next.js dynamic metadata */}
         <title>HolyMarket</title>
-        <link rel="canonical" href="https://www.baseappholymarket.xyz/" />
-        <link rel="icon" href="https://www.baseappholymarket.xyz/favicon.png" />
-        <link rel="apple-touch-icon" href="https://www.baseappholymarket.xyz/apple-touch-icon.png" />
         <meta name="apple-mobile-web-app-title" content="HolyMarket" />
-        <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="fc:miniapp" content={JSON.stringify(fcMiniappMetadata)} />
+        <meta name="application-name" content="HolyMarket" />
+        <link rel="icon" href="/favicon.png" sizes="32x32" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
       </head>
       <body>
         <Providers>

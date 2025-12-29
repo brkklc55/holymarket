@@ -17,8 +17,8 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const volume = typeof params.volume === 'string' ? params.volume : '0.00';
 
   // Base dynamic image URLs providing strict aspect ratios (Portal requirement)
-  const staticOgImageUrl = `https://www.baseappholymarket.xyz/api/og?v=20`;
-  const staticIconUrl = `https://www.baseappholymarket.xyz/icon-1024.png`;
+  const staticOgImageUrl = `/api/og?v=21`;
+  const staticIconUrl = `/icon-1024.png`;
   let currentImageUrl = staticOgImageUrl;
 
   if (question) {
@@ -28,8 +28,8 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     urlParams.set('yesPct', yesPct);
     urlParams.set('noPct', noPct);
     urlParams.set('volume', volume);
-    urlParams.set('v', '20');
-    currentImageUrl = `https://www.baseappholymarket.xyz/api/og?${urlParams.toString()}`;
+    urlParams.set('v', '21');
+    currentImageUrl = `/api/og?${urlParams.toString()}`;
   }
 
   const title = question ? `HolyMarket | ${question}` : 'HolyMarket';
@@ -38,30 +38,30 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const sharedMetadata = {
     version: "1",
     name: "HolyMarket",
-    iconUrl: staticIconUrl,
-    homeUrl: `https://www.baseappholymarket.xyz/`,
-    imageUrl: currentImageUrl,
+    iconUrl: `${baseUrl}${staticIconUrl}`,
+    homeUrl: `${baseUrl}/`,
+    imageUrl: currentImageUrl.startsWith('http') ? currentImageUrl : `${baseUrl}${currentImageUrl}`,
     button: {
       title: "Play HolyMarket",
       action: {
         type: "launch_frame",
         name: "HolyMarket",
-        url: "https://www.baseappholymarket.xyz/",
+        url: baseUrl,
       }
     },
-    splashImageUrl: staticIconUrl,
+    splashImageUrl: `${baseUrl}${staticIconUrl}`,
     splashBackgroundColor: "#050b1a",
     subtitle: "HolyMarket",
     description: "HolyMarket: Bet your beliefs on Base. Join the market.",
-    screenshotUrls: [staticOgImageUrl],
+    screenshotUrls: [currentImageUrl.startsWith('http') ? currentImageUrl : `${baseUrl}${currentImageUrl}`],
     primaryCategory: "finance",
     tags: ["prediction", "market", "base", "finance"],
-    heroImageUrl: staticOgImageUrl,
+    heroImageUrl: currentImageUrl.startsWith('http') ? currentImageUrl : `${baseUrl}${currentImageUrl}`,
     tagline: "Bet your beliefs on Base",
     ogTitle: "HolyMarket",
     ogDescription: "Bet your beliefs on Base. Join the market",
-    ogImageUrl: staticOgImageUrl,
-    castShareUrl: "https://www.baseappholymarket.xyz/"
+    ogImageUrl: currentImageUrl.startsWith('http') ? currentImageUrl : `${baseUrl}${currentImageUrl}`,
+    castShareUrl: baseUrl
   };
 
   return {
@@ -73,7 +73,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
       description,
       images: [
         {
-          url: currentImageUrl,
+          url: currentImageUrl.startsWith('http') ? currentImageUrl : `${baseUrl}${currentImageUrl}`,
           width: 1200,
           height: 630,
           type: 'image/png',
@@ -88,15 +88,15 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
       card: 'summary_large_image',
       title,
       description,
-      images: [currentImageUrl],
+      images: [currentImageUrl.startsWith('http') ? currentImageUrl : `${baseUrl}${currentImageUrl}`],
     },
     other: {
       "fc:miniapp": JSON.stringify(sharedMetadata),
-      "apple-touch-icon": staticIconUrl,
+      "apple-touch-icon": `${baseUrl}/apple-touch-icon.png`,
       "fc:frame": "vNext",
       "fc:frame:v2": "true",
-      "fc:frame:image": currentImageUrl,
-      "fc:frame:manifest": `https://www.baseappholymarket.xyz/.well-known/farcaster.json`,
+      "fc:frame:image": currentImageUrl.startsWith('http') ? currentImageUrl : `${baseUrl}${currentImageUrl}`,
+      "fc:frame:manifest": `${baseUrl}/.well-known/farcaster.json`,
       "fc:frame:image:aspect_ratio": "1.91:1",
       "fc:frame:launch_app": JSON.stringify(sharedMetadata),
     },
@@ -109,7 +109,7 @@ export default function Page() {
       <div className="w-full max-w-3xl space-y-8">
         <div className="text-center space-y-4">
           <div className="flex justify-center mb-6">
-            <img src="https://www.baseappholymarket.xyz/icon-1024.png" alt="HolyMarket Logo" className="w-24 h-24 sm:w-32 sm:h-32 rounded-3xl shadow-xl" />
+            <img src="/icon-1024.png" alt="HolyMarket Logo" className="w-24 h-24 sm:w-32 sm:h-32 rounded-3xl shadow-xl" />
           </div>
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tighter text-white leading-none break-words">
             HOLY<span className="text-gradient">MARKET</span>

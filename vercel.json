@@ -1,7 +1,7 @@
 {
     "redirects": [
         {
-            "source": "/(.*)",
+            "source": "/((?!.well-known|manifest.json|icon-1024.png|apple-touch-icon.png|favicon.png).*)",
             "has": [
                 {
                     "type": "host",
