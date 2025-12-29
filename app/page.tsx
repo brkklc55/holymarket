@@ -17,7 +17,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const volume = typeof params.volume === 'string' ? params.volume : '0.00';
 
   // Base dynamic image URLs providing strict aspect ratios (Portal requirement)
-  const staticOgImageUrl = `/api/og?v=21`;
+  const staticOgImageUrl = `/api/og?v=22`;
   const staticIconUrl = `/icon-1024.png`;
   let currentImageUrl = staticOgImageUrl;
 
@@ -28,19 +28,24 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     urlParams.set('yesPct', yesPct);
     urlParams.set('noPct', noPct);
     urlParams.set('volume', volume);
-    urlParams.set('v', '21');
+    urlParams.set('v', '22');
     currentImageUrl = `/api/og?${urlParams.toString()}`;
   }
 
   const title = question ? `HolyMarket | ${question}` : 'HolyMarket';
   const description = question ? `Will it happen? Predict now on HolyMarket.` : 'HolyMarket: Bet your beliefs on Base.';
 
+  // Build absolute URLs carefully to avoid // issue
+  const absoluteIconUrl = `${baseUrl}${staticIconUrl}`;
+  const absoluteHomeUrl = `${baseUrl}/`;
+  const absoluteImageUrl = currentImageUrl.startsWith('http') ? currentImageUrl : `${baseUrl}${currentImageUrl}`;
+
   const sharedMetadata = {
     version: "1",
     name: "HolyMarket",
-    iconUrl: `${baseUrl}${staticIconUrl}`,
-    homeUrl: `${baseUrl}/`,
-    imageUrl: currentImageUrl.startsWith('http') ? currentImageUrl : `${baseUrl}${currentImageUrl}`,
+    iconUrl: absoluteIconUrl,
+    homeUrl: absoluteHomeUrl,
+    imageUrl: absoluteImageUrl,
     button: {
       title: "Play HolyMarket",
       action: {
@@ -49,18 +54,18 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
         url: baseUrl,
       }
     },
-    splashImageUrl: `${baseUrl}${staticIconUrl}`,
+    splashImageUrl: absoluteIconUrl,
     splashBackgroundColor: "#050b1a",
     subtitle: "HolyMarket",
     description: "HolyMarket: Bet your beliefs on Base. Join the market.",
-    screenshotUrls: [currentImageUrl.startsWith('http') ? currentImageUrl : `${baseUrl}${currentImageUrl}`],
+    screenshotUrls: [absoluteImageUrl],
     primaryCategory: "finance",
     tags: ["prediction", "market", "base", "finance"],
-    heroImageUrl: currentImageUrl.startsWith('http') ? currentImageUrl : `${baseUrl}${currentImageUrl}`,
+    heroImageUrl: absoluteImageUrl,
     tagline: "Bet your beliefs on Base",
     ogTitle: "HolyMarket",
     ogDescription: "Bet your beliefs on Base. Join the market",
-    ogImageUrl: currentImageUrl.startsWith('http') ? currentImageUrl : `${baseUrl}${currentImageUrl}`,
+    ogImageUrl: absoluteImageUrl,
     castShareUrl: baseUrl
   };
 
@@ -73,7 +78,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
       description,
       images: [
         {
-          url: currentImageUrl.startsWith('http') ? currentImageUrl : `${baseUrl}${currentImageUrl}`,
+          url: absoluteImageUrl,
           width: 1200,
           height: 630,
           type: 'image/png',
@@ -88,14 +93,14 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
       card: 'summary_large_image',
       title,
       description,
-      images: [currentImageUrl.startsWith('http') ? currentImageUrl : `${baseUrl}${currentImageUrl}`],
+      images: [absoluteImageUrl],
     },
     other: {
       "fc:miniapp": JSON.stringify(sharedMetadata),
-      "apple-touch-icon": `${baseUrl}/apple-touch-icon.png`,
+      "apple-touch-icon": absoluteIconUrl,
       "fc:frame": "vNext",
       "fc:frame:v2": "true",
-      "fc:frame:image": currentImageUrl.startsWith('http') ? currentImageUrl : `${baseUrl}${currentImageUrl}`,
+      "fc:frame:image": absoluteImageUrl,
       "fc:frame:manifest": `${baseUrl}/.well-known/farcaster.json`,
       "fc:frame:image:aspect_ratio": "1.91:1",
       "fc:frame:launch_app": JSON.stringify(sharedMetadata),

@@ -6,14 +6,14 @@ import SplashGate from "./components/SplashGate";
 
 const baseUrl = "https://www.baseappholymarket.xyz";
 
-// v21: Simplified and Robust Metadata for Base App
+// v22: Unified and Clean Metadata for Base App
 export const metadata: Metadata = {
   title: "HolyMarket",
   applicationName: "HolyMarket",
   description: "HolyMarket: Bet your beliefs on Base.",
   metadataBase: new URL(baseUrl),
   alternates: {
-    canonical: "https://www.baseappholymarket.xyz/",
+    canonical: "/",
   },
   icons: {
     icon: [
@@ -27,11 +27,11 @@ export const metadata: Metadata = {
   openGraph: {
     title: "HolyMarket",
     description: "HolyMarket: Bet your beliefs on Base.",
-    url: "https://www.baseappholymarket.xyz/",
+    url: "/",
     siteName: "HolyMarket",
     images: [
       {
-        url: "/api/og?v=21",
+        url: "/api/og?v=22",
         width: 1200,
         height: 630,
         type: 'image/png',
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "HolyMarket",
     description: "HolyMarket: Bet your beliefs on Base.",
-    images: ["/api/og?v=21"],
+    images: ["/api/og?v=22"],
   },
   manifest: "/manifest.json",
   appleWebApp: {
@@ -82,18 +82,20 @@ export default async function RootLayout({
   const heads = await headers();
   const userAgent = heads.get("user-agent") || "";
 
-  // v21: Broad bot detection to bypass SplashGate for ALL crawlers
-  const isBot = /bot|crawler|spider|warpcast|farcaster|coinbase|wallet|toshi|google|yandex|bing|apple|facebook/i.test(userAgent);
+  // v22 REVISION: Removed 'apple' from bot detection to prevent false positives for iOS users.
+  // This restores the SplashGate for real iPhone/iPad users.
+  const isBot = /bot|crawler|spider|warpcast|farcaster|coinbase|wallet|toshi|google|yandex|bing|facebook/i.test(userAgent);
 
   return (
     <html lang="en">
       <head>
-        {/* RAW Priority Tags for Bots that ignore Next.js dynamic metadata */}
+        {/* RAW Priority Tags - Ensuring Absolute Integrity */}
         <title>HolyMarket</title>
         <meta name="apple-mobile-web-app-title" content="HolyMarket" />
         <meta name="application-name" content="HolyMarket" />
-        <link rel="icon" href="/favicon.png" sizes="32x32" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link rel="icon" href={`${baseUrl}/favicon.png`} sizes="32x32" />
+        <link rel="apple-touch-icon" href={`${baseUrl}/apple-touch-icon.png`} />
+        <link rel="manifest" href={`${baseUrl}/manifest.json`} />
       </head>
       <body>
         <Providers>
