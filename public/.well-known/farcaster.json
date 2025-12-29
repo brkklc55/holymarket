@@ -7,11 +7,11 @@
     "miniapp": {
         "version": "1",
         "name": "HolyMarket",
-        "iconUrl": "https://www.baseappholymarket.xyz/icon.png",
+        "iconUrl": "https://www.baseappholymarket.xyz/favicon.ico",
         "homeUrl": "https://www.baseappholymarket.xyz/",
         "imageUrl": "https://www.baseappholymarket.xyz/api/og.png",
         "buttonTitle": "Play HolyMarket",
-        "splashImageUrl": "https://www.baseappholymarket.xyz/icon.png",
+        "splashImageUrl": "https://www.baseappholymarket.xyz/favicon.ico",
         "splashBackgroundColor": "#050b1a",
         "subtitle": "HolyMarket",
         "description": "HolyMarket: Bet your beliefs on Base.",

@@ -11,8 +11,8 @@ export const metadata: Metadata = {
   description: "HolyMarket: Bet your beliefs on Base.",
   metadataBase: new URL(baseUrl),
   icons: {
-    icon: "/icon.png",
-    apple: "/icon.png",
+    icon: "/favicon.ico",
+    apple: "/favicon.ico",
   },
   manifest: "/manifest.json",
   appleWebApp: {
@@ -41,7 +41,7 @@ export default async function RootLayout({
 }>) {
   const heads = await headers();
   const userAgent = heads.get("user-agent") || "";
-  const isBot = /bot|crawler|spider|warpcast|farcaster|google|facebook|twitter|Coinbase/i.test(userAgent);
+  const isBot = /bot|crawler|spider|warpcast|farcaster|google|facebook|twitter/i.test(userAgent);
 
   return (
     <html lang="en">
