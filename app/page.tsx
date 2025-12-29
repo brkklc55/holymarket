@@ -17,8 +17,8 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const volume = typeof params.volume === 'string' ? params.volume : '0.00';
 
   // Base dynamic image URLs providing strict aspect ratios (Portal requirement)
-  const staticOgImageUrl = `${baseUrl}/api/og?v=13`;
-  const staticIconUrl = `${baseUrl}/api/icon?v=13`;
+  const staticOgImageUrl = `${baseUrl}/api/og?v=14`;
+  const staticIconUrl = `${baseUrl}/api/icon?v=14`;
   let currentImageUrl = staticOgImageUrl;
 
   if (question) {
@@ -28,7 +28,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     urlParams.set('yesPct', yesPct);
     urlParams.set('noPct', noPct);
     urlParams.set('volume', volume);
-    urlParams.set('v', '13');
+    urlParams.set('v', '14');
     currentImageUrl = `${baseUrl}/api/og?${urlParams.toString()}`;
   }
 
@@ -36,7 +36,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const description = question ? `Will it happen? Predict now on HolyMarket.` : 'HolyMarket: Bet your beliefs on Base.';
 
   const sharedMetadata = {
-    version: "next",
+    version: "1",
     name: "HolyMarket",
     iconUrl: staticIconUrl,
     homeUrl: `${baseUrl}`,
@@ -109,7 +109,7 @@ export default function Page() {
       <div className="w-full max-w-3xl space-y-8">
         <div className="text-center space-y-4">
           <div className="flex justify-center mb-6">
-            <img src="/api/icon?v=13" alt="HolyMarket Logo" className="w-24 h-24 sm:w-32 sm:h-32 rounded-3xl shadow-xl" />
+            <img src="/api/icon?v=14" alt="HolyMarket Logo" className="w-24 h-24 sm:w-32 sm:h-32 rounded-3xl shadow-xl" />
           </div>
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tighter text-white leading-none break-words">
             HOLY<span className="text-gradient">MARKET</span>

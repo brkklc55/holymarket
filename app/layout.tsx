@@ -12,9 +12,9 @@ export const metadata: Metadata = {
   description: "HolyMarket: Bet your beliefs on Base.",
   metadataBase: new URL(baseUrl),
   icons: {
-    icon: [{ url: `${baseUrl}/api/icon?v=13`, sizes: "any" }],
-    shortcut: [`${baseUrl}/api/icon?v=13`],
-    apple: [{ url: `${baseUrl}/api/icon?v=13`, sizes: "180x180", type: "image/png" }],
+    icon: [{ url: `${baseUrl}/api/icon?v=14`, sizes: "any" }],
+    shortcut: [`${baseUrl}/api/icon?v=14`],
+    apple: [{ url: `${baseUrl}/api/icon?v=14`, sizes: "180x180", type: "image/png" }],
   },
   openGraph: {
     title: "HolyMarket",
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     siteName: "HolyMarket",
     images: [
       {
-        url: `${baseUrl}/api/og?v=13`,
+        url: `${baseUrl}/api/og?v=14`,
         width: 1200,
         height: 630,
         type: 'image/png',
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "HolyMarket",
     description: "HolyMarket: Bet your beliefs on Base.",
-    images: [`${baseUrl}/api/og?v=13`],
+    images: [`${baseUrl}/api/og?v=14`],
   },
   manifest: "/manifest.json",
   appleWebApp: {
@@ -44,6 +44,14 @@ export const metadata: Metadata = {
     statusBarStyle: "black-translucent",
     title: "HolyMarket",
   },
+  other: {
+    "mobile-web-app-capable": "yes",
+    "apple-mobile-web-app-capable": "yes",
+    "application-name": "HolyMarket",
+    "apple-mobile-web-app-title": "HolyMarket",
+    "msapplication-starturl": "/",
+    "msapplication-navbutton-color": "#050b1a",
+  }
 };
 
 export const viewport: Viewport = {
@@ -52,7 +60,7 @@ export const viewport: Viewport = {
   maximumScale: 1,
   userScalable: false,
   viewportFit: "cover",
-  themeColor: "#020617",
+  themeColor: "#050b1a",
 };
 
 import { Providers } from "./providers";
@@ -69,6 +77,10 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
+      <head>
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+      </head>
       <body>
         <Providers>
           <FarcasterProvider>

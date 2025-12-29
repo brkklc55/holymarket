@@ -25,14 +25,14 @@ export async function GET(req: NextRequest) {
                         width: '100%',
                         height: '100%',
                         objectFit: 'cover',
-                        borderRadius: '25%',
+                        borderRadius: '0%', // Base App manages its own clipping, high res usually stays square
                     }}
                 />
             </div>
         ),
         {
-            width: 512,
-            height: 512,
+            width: 1024,
+            height: 1024,
         }
     );
 }
