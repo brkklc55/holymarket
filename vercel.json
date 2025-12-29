@@ -26,15 +26,27 @@
     "rewrites": [
         {
             "source": "/farcaster.json",
-            "destination": "/.well-known/farcaster.json"
+            "destination": "/api/farcaster.json"
         },
         {
-            "source": "/api/og.png",
-            "destination": "/api/og"
+            "source": "/.well-known/farcaster.json",
+            "destination": "/api/farcaster.json"
         },
         {
-            "source": "/api/og/:v.png",
-            "destination": "/api/og?v=:v"
+            "source": "/manifest.json",
+            "destination": "/api/manifest.json"
+        },
+        {
+            "source": "/.well-known/base-app-config.json",
+            "destination": "/api/base-app-config.json"
+        },
+        {
+            "source": "/.well-known/onchain-app-config.json",
+            "destination": "/api/onchain-app-config.json"
+        },
+        {
+            "source": "/onchain-app-config.json",
+            "destination": "/api/onchain-app-config.json"
         },
         {
             "source": "/favicon.png",
@@ -45,7 +57,15 @@
             "destination": "/api/icon?s=180"
         },
         {
-            "source": "/icon.png",
+            "source": "/icon-192.png",
+            "destination": "/api/icon?s=192"
+        },
+        {
+            "source": "/icon-512.png",
+            "destination": "/api/icon?s=512"
+        },
+        {
+            "source": "/icon-1024.png",
             "destination": "/api/icon?s=1024"
         }
     ]
