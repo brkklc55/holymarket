@@ -74,6 +74,7 @@ export const metadata: Metadata = {
   },
   other: {
     "fc:miniapp": JSON.stringify(fcMiniappMetadata),
+    "base:app_id": "6952a8dc4d3a403912ed8525",
     "apple-mobile-web-app-capable": "yes",
     "mobile-web-app-capable": "yes",
     "apple-mobile-web-app-title": "HolyMarket",
