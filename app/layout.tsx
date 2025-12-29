@@ -11,8 +11,8 @@ export const metadata: Metadata = {
   description: "HolyMarket: Bet your beliefs on Base.",
   metadataBase: new URL(baseUrl),
   icons: {
-    icon: "/favicon.ico",
-    apple: "/favicon.ico",
+    icon: "/icon.png",
+    apple: "/apple-touch-icon.png",
   },
   manifest: "/manifest.json",
   appleWebApp: {

@@ -34,7 +34,7 @@ export default function SplashGate({ children }: Props) {
                 <div className="relative group animate-in zoom-in duration-700">
                     <div className="absolute -inset-4 bg-gradient-to-tr from-blue-500/20 to-sky-500/20 blur-xl rounded-[2.5rem] group-hover:opacity-100 transition-opacity" />
                     <img
-                        src="/favicon.ico"
+                        src="/icon.png"
                         alt="HolyMarket Logo"
                         className="w-32 h-32 rounded-[2rem] shadow-2xl relative border border-white/10"
                     />

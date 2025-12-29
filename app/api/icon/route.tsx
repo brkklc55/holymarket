@@ -7,7 +7,8 @@ export async function GET(request: Request) {
     const s = searchParams.get('s') || '1024';
     const size = parseInt(s);
 
-    // v38: Guaranteed TRUE PNG via Next.js ImageResponse (89-50-4E-47)
+    // v38.1: Guaranteed TRUE PNG via Next.js ImageResponse (89-50-4E-47)
+    // This satisfies both Coinbase Wallet and Base.dev validator.
     return new ImageResponse(
         (
             <div

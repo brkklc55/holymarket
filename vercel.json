@@ -1,4 +1,15 @@
 {
+    "headers": [
+        {
+            "source": "/(.*)",
+            "headers": [
+                {
+                    "key": "Access-Control-Allow-Origin",
+                    "value": "*"
+                }
+            ]
+        }
+    ],
     "redirects": [
         {
             "source": "/(.*)",
@@ -16,6 +27,26 @@
         {
             "source": "/farcaster.json",
             "destination": "/.well-known/farcaster.json"
+        },
+        {
+            "source": "/api/og.png",
+            "destination": "/api/og"
+        },
+        {
+            "source": "/api/og/:v.png",
+            "destination": "/api/og?v=:v"
+        },
+        {
+            "source": "/favicon.png",
+            "destination": "/api/icon?s=32"
+        },
+        {
+            "source": "/apple-touch-icon.png",
+            "destination": "/api/icon?s=180"
+        },
+        {
+            "source": "/icon.png",
+            "destination": "/api/icon?s=1024"
         }
     ]
 }
