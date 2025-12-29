@@ -17,7 +17,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const volume = typeof params.volume === 'string' ? params.volume : '0.00';
 
   // Base dynamic image URLs providing strict aspect ratios (Portal requirement)
-  const staticOgImageUrl = `https://www.baseappholymarket.xyz/api/og?v=19`;
+  const staticOgImageUrl = `https://www.baseappholymarket.xyz/api/og?v=20`;
   const staticIconUrl = `https://www.baseappholymarket.xyz/icon-1024.png`;
   let currentImageUrl = staticOgImageUrl;
 
@@ -28,7 +28,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     urlParams.set('yesPct', yesPct);
     urlParams.set('noPct', noPct);
     urlParams.set('volume', volume);
-    urlParams.set('v', '19');
+    urlParams.set('v', '20');
     currentImageUrl = `https://www.baseappholymarket.xyz/api/og?${urlParams.toString()}`;
   }
 
@@ -91,6 +91,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
       images: [currentImageUrl],
     },
     other: {
+      "fc:miniapp": JSON.stringify(sharedMetadata),
       "apple-touch-icon": staticIconUrl,
       "fc:frame": "vNext",
       "fc:frame:v2": "true",
@@ -98,7 +99,6 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
       "fc:frame:manifest": `https://www.baseappholymarket.xyz/.well-known/farcaster.json`,
       "fc:frame:image:aspect_ratio": "1.91:1",
       "fc:frame:launch_app": JSON.stringify(sharedMetadata),
-      "fc:miniapp": JSON.stringify(sharedMetadata)
     },
   };
 }
