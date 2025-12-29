@@ -7,7 +7,7 @@ type Props = {
 
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
   const params = await searchParams;
-  const baseUrl = "https://www.baseappholymarket.xyz";
+  const baseUrl = process.env.NEXT_PUBLIC_MINIAPP_URL || "https://www.baseappholymarket.xyz";
   const appOrigin = baseUrl + "/";
 
   const question = typeof params.question === 'string' ? params.question : undefined;
@@ -16,11 +16,10 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const noPct = typeof params.noPct === 'string' ? params.noPct : '50';
   const volume = typeof params.volume === 'string' ? params.volume : '0.00';
 
-  // Base dynamic image URLs providing strict aspect ratios (Portal requirement)
-  const staticOgImageUrl = `/api/og/v38.png`;
-  const staticIconUrl = `/icon-1024.png`;
-  let currentImageUrl = staticOgImageUrl;
+  const title = question ? `HolyMarket | ${question}` : 'HolyMarket';
+  const description = question ? `Will it happen? Predict now on HolyMarket.` : 'HolyMarket: Bet your beliefs on Base.';
 
+  let currentImageUrl = `/api/og.png`;
   if (question) {
     const urlParams = new URLSearchParams();
     urlParams.set('question', question);
@@ -28,23 +27,15 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     urlParams.set('yesPct', yesPct);
     urlParams.set('noPct', noPct);
     urlParams.set('volume', volume);
-    urlParams.set('v', '38');
     currentImageUrl = `/api/og/${urlParams.toString()}.png`;
   }
 
-  const title = question ? `HolyMarket | ${question}` : 'HolyMarket';
-  const description = question ? `Will it happen? Predict now on HolyMarket.` : 'HolyMarket: Bet your beliefs on Base.';
+  const absoluteImageUrl = `${baseUrl}${currentImageUrl}`;
 
-  // Build absolute URLs carefully to avoid // issue
-  const absoluteIconUrl = `${baseUrl}${staticIconUrl}?v=38`;
-  const absoluteHomeUrl = `${baseUrl}/`;
-  const absoluteImageUrl = currentImageUrl.startsWith('http') ? currentImageUrl : `${baseUrl}${currentImageUrl}`;
-
-  // Simplified sharedMetadata for Farcaster frame properties
   const sharedMetadata = {
     name: "HolyMarket",
-    iconUrl: absoluteIconUrl,
-    homeUrl: absoluteHomeUrl,
+    iconUrl: `${baseUrl}/icon.png`,
+    homeUrl: appOrigin,
     imageUrl: absoluteImageUrl,
     button: {
       title: "Play HolyMarket",
@@ -54,7 +45,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
         url: baseUrl,
       }
     },
-    description: "HolyMarket: Bet your beliefs on Base. Join the market.",
+    description: "HolyMarket: Bet your beliefs on Base.",
   };
 
   return {
@@ -63,15 +54,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     openGraph: {
       title,
       description,
-      images: [
-        {
-          url: absoluteImageUrl,
-          width: 1200,
-          height: 630,
-          type: 'image/png',
-          alt: title,
-        },
-      ],
+      images: [absoluteImageUrl],
       url: appOrigin,
       siteName: 'HolyMarket',
       type: 'website',
@@ -88,7 +71,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
       "fc:frame": "vNext",
       "fc:frame:v2": "true",
       "fc:frame:image": absoluteImageUrl,
-      "fc:frame:manifest": `${baseUrl}/.well-known/farcaster.json?v=38`,
+      "fc:frame:manifest": `${baseUrl}/farcaster.json`,
       "fc:frame:image:aspect_ratio": "1.91:1",
       "fc:frame:launch_app": JSON.stringify(sharedMetadata),
     },
@@ -101,7 +84,7 @@ export default function Page() {
       <div className="w-full max-w-3xl space-y-8">
         <div className="text-center space-y-4">
           <div className="flex justify-center mb-6">
-            <img src="/icon-1024.png" alt="HolyMarket Logo" className="w-24 h-24 sm:w-32 sm:h-32 rounded-3xl shadow-xl" />
+            <img src="/icon.png" alt="HolyMarket Logo" className="w-24 h-24 sm:w-32 sm:h-32 rounded-3xl shadow-xl" />
           </div>
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tighter text-white leading-none break-words">
             HOLY<span className="text-gradient">MARKET</span>

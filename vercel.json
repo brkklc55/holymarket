@@ -35,26 +35,6 @@
         {
             "source": "/api/og/:v.png",
             "destination": "/api/og?v=:v"
-        },
-        {
-            "source": "/favicon.png",
-            "destination": "/api/icon?s=32"
-        },
-        {
-            "source": "/apple-touch-icon.png",
-            "destination": "/api/icon?s=180"
-        },
-        {
-            "source": "/icon-192.png",
-            "destination": "/api/icon?s=192"
-        },
-        {
-            "source": "/icon-512.png",
-            "destination": "/api/icon?s=512"
-        },
-        {
-            "source": "/icon-1024.png",
-            "destination": "/api/icon?s=1024"
         }
     ]
 }
