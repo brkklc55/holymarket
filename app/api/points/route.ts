@@ -743,52 +743,31 @@ export async function POST(req: NextRequest) {
         const auth = requireAdmin(db, adminAddress, "superadmin");
         if (!auth.ok) return NextResponse.json({ error: "Not authorized" }, { status: 403 });
 
-        // Reset local DB state
+        // Reset local memory state
         db.users = {};
         db.devices = {};
         if (db.shareBoosts) db.shareBoosts = {};
 
-        let supabaseStats: any = {};
-
-        // Deep reset Supabase if enabled
+        // Deep reset Supabase
         if (USE_SUPABASE) {
             const supabase = getSupabaseClient();
             if (supabase) {
                 try {
-                    // Try to delete everything from core tables
-                    const { count: uDel } = await supabase.from("users").delete({ count: 'exact' }).gt("points", -999999);
-                    const { count: dDel } = await supabase.from("devices").delete({ count: 'exact' }).not("device_id", "is", null);
-                    const { count: aDel } = await supabase.from("device_accounts").delete({ count: 'exact' }).not("device_id", "is", null);
+                    // Robust row-level deletion
+                    await supabase.from("users").delete().not("address", "is", null);
+                    await supabase.from("devices").delete().not("device_id", "is", null);
+                    await supabase.from("device_accounts").delete().not("device_id", "is", null);
 
-                    const { data: allKeys } = await supabase.from(SUPABASE_TABLE).select("key");
-                    if (allKeys) {
-                        for (const k of allKeys) {
-                            if (k.key.startsWith("points_db_") || k.key === "points_db_v1") {
-                                await supabase.from(SUPABASE_TABLE).delete().eq("key", k.key);
-                            }
-                        }
-                    }
-
-                    supabaseStats = {
-                        usersDeleted: uDel,
-                        devicesDeleted: dDel,
-                        accountsDeleted: aDel,
-                        keysFound: allKeys?.map(k => k.key) || []
-                    };
+                    // Clear designated KV entry
+                    await supabase.from(SUPABASE_TABLE).delete().eq("key", SUPABASE_DB_KEY);
                 } catch (e) {
-                    console.error("Supabase nuke failed:", e);
-                    supabaseStats = { error: String(e) };
+                    console.error("Supabase deep reset failed:", e);
                 }
             }
         }
 
         await saveDb(db);
-        return NextResponse.json({
-            ok: true,
-            message: "Global Nuke completed.",
-            stats: supabaseStats,
-            env: { kvTable: SUPABASE_TABLE, dbKey: SUPABASE_DB_KEY }
-        });
+        return NextResponse.json({ ok: true, message: "System-wide reset complete." });
     }
 
     if (action === "adminAdjust") {
