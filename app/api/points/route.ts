@@ -748,26 +748,38 @@ export async function POST(req: NextRequest) {
         db.devices = {};
         if (db.shareBoosts) db.shareBoosts = {};
 
+        let supabaseStats = {};
+
         // Deep reset Supabase if enabled
         if (USE_SUPABASE) {
             const supabase = getSupabaseClient();
             if (supabase) {
                 try {
                     // Optimized deletion filters to ensure all rows are targeted
-                    await supabase.from("users").delete().not("address", "is", null);
-                    await supabase.from("devices").delete().not("device_id", "is", null);
-                    await supabase.from("device_accounts").delete().not("device_id", "is", null);
+                    const { count: usersCount } = await supabase.from("users").delete({ count: 'exact' }).not("address", "is", null);
+                    const { count: devicesCount } = await supabase.from("devices").delete({ count: 'exact' }).not("device_id", "is", null);
+                    const { count: devAccCount } = await supabase.from("device_accounts").delete({ count: 'exact' }).not("device_id", "is", null);
+                    const { count: kvCount } = await supabase.from(SUPABASE_TABLE).delete({ count: 'exact' }).eq("key", SUPABASE_DB_KEY);
 
-                    // Also clear the KV entry if it exists
-                    await supabase.from(SUPABASE_TABLE).delete().eq("key", SUPABASE_DB_KEY);
+                    supabaseStats = {
+                        users: usersCount,
+                        devices: devicesCount,
+                        accounts: devAccCount,
+                        kv: kvCount
+                    };
                 } catch (e) {
-                    console.error("Supabase deep reset partially failed:", e);
+                    console.error("Supabase deep reset failed:", e);
+                    supabaseStats = { error: String(e) };
                 }
             }
         }
 
         await saveDb(db);
-        return NextResponse.json({ ok: true, message: "Leaderboard and user data wiped successfully." });
+        return NextResponse.json({
+            ok: true,
+            message: "Leaderboard and user data wiped successfully.",
+            stats: supabaseStats
+        });
     }
 
     if (action === "adminAdjust") {
