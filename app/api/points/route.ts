@@ -743,10 +743,32 @@ export async function POST(req: NextRequest) {
         const auth = requireAdmin(db, adminAddress, "superadmin");
         if (!auth.ok) return NextResponse.json({ error: "Not authorized" }, { status: 403 });
 
+        // Reset local DB state
         db.users = {};
         db.devices = {};
+        if (db.shareBoosts) db.shareBoosts = {};
+
+        // Deep reset Supabase if enabled
+        if (USE_SUPABASE) {
+            const supabase = getSupabaseClient();
+            if (supabase) {
+                try {
+                    // Truncate or delete all rows from core tables
+                    // Note: delete with filter that matches all is safer than truncate in many Supabase tiers
+                    await supabase.from("users").delete().neq("address", "0x0000000000000000000000000000000000000000");
+                    await supabase.from("devices").delete().neq("device_id", "____empty____");
+                    await supabase.from("device_accounts").delete().neq("device_id", "____empty____");
+
+                    // Also clear the KV entry if it exists
+                    await supabase.from(SUPABASE_TABLE).delete().eq("key", SUPABASE_DB_KEY);
+                } catch (e) {
+                    console.error("Supabase deep reset partially failed:", e);
+                }
+            }
+        }
+
         await saveDb(db);
-        return NextResponse.json({ ok: true });
+        return NextResponse.json({ ok: true, message: "Leaderboard and user data wiped successfully." });
     }
 
     if (action === "adminAdjust") {
