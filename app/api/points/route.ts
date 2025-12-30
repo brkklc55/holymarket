@@ -753,11 +753,10 @@ export async function POST(req: NextRequest) {
             const supabase = getSupabaseClient();
             if (supabase) {
                 try {
-                    // Truncate or delete all rows from core tables
-                    // Note: delete with filter that matches all is safer than truncate in many Supabase tiers
-                    await supabase.from("users").delete().neq("address", "0x0000000000000000000000000000000000000000");
-                    await supabase.from("devices").delete().neq("device_id", "____empty____");
-                    await supabase.from("device_accounts").delete().neq("device_id", "____empty____");
+                    // Optimized deletion filters to ensure all rows are targeted
+                    await supabase.from("users").delete().not("address", "is", null);
+                    await supabase.from("devices").delete().not("device_id", "is", null);
+                    await supabase.from("device_accounts").delete().not("device_id", "is", null);
 
                     // Also clear the KV entry if it exists
                     await supabase.from(SUPABASE_TABLE).delete().eq("key", SUPABASE_DB_KEY);
