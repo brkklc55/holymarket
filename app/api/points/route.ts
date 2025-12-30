@@ -748,27 +748,35 @@ export async function POST(req: NextRequest) {
         db.devices = {};
         if (db.shareBoosts) db.shareBoosts = {};
 
-        let supabaseStats = {};
+        let supabaseStats: any = {};
 
         // Deep reset Supabase if enabled
         if (USE_SUPABASE) {
             const supabase = getSupabaseClient();
             if (supabase) {
                 try {
-                    // Optimized deletion filters to ensure all rows are targeted
-                    const { count: usersCount } = await supabase.from("users").delete({ count: 'exact' }).not("address", "is", null);
-                    const { count: devicesCount } = await supabase.from("devices").delete({ count: 'exact' }).not("device_id", "is", null);
-                    const { count: devAccCount } = await supabase.from("device_accounts").delete({ count: 'exact' }).not("device_id", "is", null);
-                    const { count: kvCount } = await supabase.from(SUPABASE_TABLE).delete({ count: 'exact' }).eq("key", SUPABASE_DB_KEY);
+                    // Try to delete everything from core tables
+                    const { count: uDel } = await supabase.from("users").delete({ count: 'exact' }).gt("points", -999999);
+                    const { count: dDel } = await supabase.from("devices").delete({ count: 'exact' }).not("device_id", "is", null);
+                    const { count: aDel } = await supabase.from("device_accounts").delete({ count: 'exact' }).not("device_id", "is", null);
+
+                    const { data: allKeys } = await supabase.from(SUPABASE_TABLE).select("key");
+                    if (allKeys) {
+                        for (const k of allKeys) {
+                            if (k.key.startsWith("points_db_") || k.key === "points_db_v1") {
+                                await supabase.from(SUPABASE_TABLE).delete().eq("key", k.key);
+                            }
+                        }
+                    }
 
                     supabaseStats = {
-                        users: usersCount,
-                        devices: devicesCount,
-                        accounts: devAccCount,
-                        kv: kvCount
+                        usersDeleted: uDel,
+                        devicesDeleted: dDel,
+                        accountsDeleted: aDel,
+                        keysFound: allKeys?.map(k => k.key) || []
                     };
                 } catch (e) {
-                    console.error("Supabase deep reset failed:", e);
+                    console.error("Supabase nuke failed:", e);
                     supabaseStats = { error: String(e) };
                 }
             }
@@ -777,8 +785,9 @@ export async function POST(req: NextRequest) {
         await saveDb(db);
         return NextResponse.json({
             ok: true,
-            message: "Leaderboard and user data wiped successfully.",
-            stats: supabaseStats
+            message: "Global Nuke completed.",
+            stats: supabaseStats,
+            env: { kvTable: SUPABASE_TABLE, dbKey: SUPABASE_DB_KEY }
         });
     }
 
