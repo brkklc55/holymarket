@@ -13,11 +13,11 @@ export async function GET() {
         miniapp: {
             version: "1",
             name: "HolyMarket",
-            iconUrl: `${baseUrl}/icon-1024.png?v=48`,
+            iconUrl: `${baseUrl}/app-icon.png`,
             homeUrl: `${baseUrl}/`,
             imageUrl: `${baseUrl}/api/og/v47.png`,
             buttonTitle: "Play HolyMarket",
-            splashImageUrl: `${baseUrl}/icon-1024.png?v=48`,
+            splashImageUrl: `${baseUrl}/app-icon.png`,
             subtitle: "HolyMarket",
             description: "HolyMarket: Bet your beliefs on Base.",
             screenshotUrls: [`${baseUrl}/api/og/v47.png`],
