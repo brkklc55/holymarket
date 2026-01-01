@@ -10,9 +10,9 @@ const baseUrl = process.env.NEXT_PUBLIC_MINIAPP_URL || "https://www.baseappholym
 const fcMiniappMetadata = {
   version: "1",
   name: "HolyMarket",
-  iconUrl: `${baseUrl}/icon-1024.png?v=50`,
+  iconUrl: `${baseUrl}/icon-1024.png`,
   homeUrl: `${baseUrl}/`,
-  imageUrl: `${baseUrl}/splash-bg.png?v=50`,
+  imageUrl: `${baseUrl}/splash-bg.png`,
   button: {
     title: "Play HolyMarket",
     action: {
@@ -33,10 +33,10 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/favicon.png?v=49", sizes: "32x32", type: "image/png" },
-      { url: "/icon-192.png?v=49", sizes: "192x192", type: "image/png" },
-      { url: "/icon-512.png?v=49", sizes: "512x512", type: "image/png" },
-      { url: "/icon-1024.png?v=50", sizes: "1024x1024", type: "image/png" }
+      { url: "/favicon.png", sizes: "32x32", type: "image/png" },
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
+      { url: "/icon-1024.png", sizes: "1024x1024", type: "image/png" }
     ],
     apple: [
       { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }
