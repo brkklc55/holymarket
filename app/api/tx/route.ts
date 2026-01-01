@@ -7,8 +7,11 @@ import { PREDICTION_MARKET_ABI, PREDICTION_MARKET_ADDRESS } from '../../constant
 export async function POST(req: NextRequest): Promise<NextResponse> {
     const url = new URL(req.url);
     const outcome = url.searchParams.get('outcome') === 'true';
-    const marketId = 1n; // Market 1 is now confirmed open
-    const betAmount = parseEther('0.001'); // Fixed bet amount
+    const marketIdRaw = url.searchParams.get('marketId');
+    const amountRaw = url.searchParams.get('amount') || '0.001';
+
+    const marketId = marketIdRaw ? BigInt(marketIdRaw) : 1n;
+    const betAmount = parseEther(amountRaw);
 
     const data = encodeFunctionData({
         abi: PREDICTION_MARKET_ABI,

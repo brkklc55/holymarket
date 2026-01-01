@@ -19,7 +19,7 @@ export async function GET() {
             { "src": "/apple-touch-icon.png?v=47", "sizes": "180x180", "type": "image/png" },
             { "src": "/icon-192.png?v=47", "sizes": "192x192", "type": "image/png" },
             { "src": "/icon-512.png?v=47", "sizes": "512x512", "type": "image/png" },
-            { "src": "/icon-1024.png?v=47", "sizes": "1024x1024", "type": "image/png" }
+            { "src": "/icon-1024.png?v=50", "sizes": "1024x1024", "type": "image/png" }
         ]
     }, {
         headers: {

@@ -13,7 +13,7 @@ export async function GET() {
         miniapp: {
             version: "1",
             name: "HolyMarket",
-            iconUrl: `${baseUrl}/app-icon.png`,
+            iconUrl: `${baseUrl}/icon-1024.png`,
             homeUrl: `${baseUrl}/`,
             imageUrl: `${baseUrl}/splash-bg.png`,
             buttonTitle: "Play HolyMarket",

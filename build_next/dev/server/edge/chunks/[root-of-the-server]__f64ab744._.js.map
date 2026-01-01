@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 16, "column": 0}, "map": {"version":3,"sources":["turbopack:///[project]/.gemini/antigravity/scratch/folymarket/middleware.ts"],"sourcesContent":["export function middleware() {\r\n    // Completely pass-through to ensure static files like farcaster.json are served directly\r\n}\r\n"],"names":[],"mappings":";;;;AAAO,SAAS;AACZ,yFAAyF;AAC7F"}}]
+}

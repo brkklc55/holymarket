@@ -1,0 +1,3 @@
+{
+  "/api/farcaster/webhook/route": "app/api/farcaster/webhook/route.js"
+}

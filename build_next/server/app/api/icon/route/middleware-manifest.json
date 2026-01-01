@@ -1,0 +1,54 @@
+{
+  "sorted_middleware": [
+    "/api/icon/route"
+  ],
+  "middleware": {},
+  "instrumentation": null,
+  "functions": {
+    "/api/icon/route": {
+      "files": [
+        "server/middleware-build-manifest.js",
+        "server/interception-route-rewrite-manifest.js",
+        "required-server-files.js",
+        "server/server-reference-manifest.js",
+        "server/app/api/icon/route_client-reference-manifest.js",
+        "server/edge/chunks/2078d_scratch_folymarket__next-internal_server_app_api_icon_route_actions_aae74876.js",
+        "server/edge/chunks/[root-of-the-server]__154c7f99._.js",
+        "server/edge/chunks/28ea8_next_dist_ddf5eadc._.js",
+        "server/edge/chunks/28ea8_next_dist_compiled_@vercel_og_b0a1a923._.js",
+        "server/edge/chunks/0c2c6_next_dist_esm_build_templates_edge-wrapper_81ecf1c0.js"
+      ],
+      "name": "app/api/icon/route",
+      "page": "/api/icon/route",
+      "matchers": [
+        {
+          "regexp": "^/api/icon(?:/)?$",
+          "originalSource": "/api/icon"
+        }
+      ],
+      "wasm": [
+        {
+          "name": "wasm_fdb56e4cc5936d29",
+          "filePath": "server/edge/chunks/28ea8_next_dist_compiled_@vercel_og_resvg_23ace1ce.wasm"
+        },
+        {
+          "name": "wasm_1ccdc983b1fd9f87",
+          "filePath": "server/edge/chunks/28ea8_next_dist_compiled_@vercel_og_yoga_23ace1ce.wasm"
+        }
+      ],
+      "assets": [
+        {
+          "name": "server/edge/assets/noto-sans-v27-latin-regular.bdfa676c.ttf",
+          "filePath": "server/edge/assets/noto-sans-v27-latin-regular.bdfa676c.ttf"
+        }
+      ],
+      "env": {
+        "__NEXT_BUILD_ID": "Pa_6f-tjtRZKE2JjeU3k2",
+        "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "cplUAaUuHMsZm4FZNlb2UtzHUPvKdUVwfkBFQ2DnNZ4=",
+        "__NEXT_PREVIEW_MODE_ID": "8fa8a2fd25a770e5e731182e65492d96",
+        "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "80c83db551888c48f560b8474a500c1644e4e539da8057c989fcb1c6da795951",
+        "__NEXT_PREVIEW_MODE_SIGNING_KEY": "538ed9432a4280b264658dbe29a2817b92ccef009558ed0bf5e9cd456bca5f81"
+      }
+    }
+  }
+}

@@ -1,0 +1,13 @@
+var R=require("../../../chunks/[turbopack]_runtime.js")("server/app/api/frame/route.js")
+R.c("server/chunks/28ea8_193d021c._.js")
+R.c("server/chunks/28ea8_abitype_dist_esm_65bd5f6b._.js")
+R.c("server/chunks/f3744_@noble_curves_esm_secp256k1_7d410365.js")
+R.c("server/chunks/[root-of-the-server]__8abb5522._.js")
+R.c("server/chunks/28ea8_viem__esm_clients_createPublicClient_14a6b6e3.js")
+R.c("server/chunks/[root-of-the-server]__734e147a._.js")
+R.c("server/chunks/28ea8_88a6b5e2._.js")
+R.c("server/chunks/28ea8_viem__esm_4bc8527d._.js")
+R.c("server/chunks/28ea8_viem__esm_34139d44._.js")
+R.c("server/chunks/2078d_scratch_folymarket__next-internal_server_app_api_frame_route_actions_a2d75987.js")
+R.m(339052)
+module.exports=R.m(339052).exports

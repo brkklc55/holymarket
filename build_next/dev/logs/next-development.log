@@ -1,0 +1,9 @@
+[00:00:01.722] Server  LOG     
+[00:00:01.723] Server  LOG       We detected TypeScript in your project and reconfigured your tsconfig.json file for you.
+[00:00:01.723] Server  LOG       The following suggested values were added to your tsconfig.json. These values can be changed to fit your project's needs:
+
+[00:00:01.726] Server  LOG       	- include was updated to add 'build_next/types/**/*.ts'
+[00:00:01.727] Server  LOG       	- include was updated to add 'build_next/dev/types/**/*.ts'
+[00:00:01.727] Server  LOG     
+[00:00:01.769] Server  WARN    ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+[00:00:02.095] Server  LOG     ✓ Ready in 1494ms

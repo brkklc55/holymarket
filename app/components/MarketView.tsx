@@ -10,6 +10,13 @@ import { sdk } from "@farcaster/miniapp-sdk";
 import { PREDICTION_MARKET_ADDRESS, PREDICTION_MARKET_ABI } from "../constants";
 import { useToast } from "./ui/ToastProvider";
 
+const publicClient = createPublicClient({
+    chain: baseSepolia,
+    transport: http(process.env.NEXT_PUBLIC_BASE_SEPOLIA_RPC_URL || "https://base-sepolia.publicnode.com"),
+});
+
+const marketAddress = (process.env.NEXT_PUBLIC_PREDICTION_MARKET_ADDRESS || PREDICTION_MARKET_ADDRESS) as `0x${string}`;
+
 export default function MarketView() {
     const { address: userAddress, isConnected } = useAccount();
     const chainId = useChainId();
@@ -76,7 +83,6 @@ export default function MarketView() {
         return parts.join(" ");
     };
 
-    const marketAddress = (process.env.NEXT_PUBLIC_PREDICTION_MARKET_ADDRESS || PREDICTION_MARKET_ADDRESS) as `0x${string}`;
 
     const [userPoints, setUserPoints] = useState<number>(0);
     const [pointsLeaderboard, setPointsLeaderboard] = useState<Array<{ user: string; points: number }>>([]);
@@ -410,10 +416,6 @@ export default function MarketView() {
         }
     };
 
-    const publicClient = createPublicClient({
-        chain: baseSepolia,
-        transport: http(process.env.NEXT_PUBLIC_BASE_SEPOLIA_RPC_URL || "https://base-sepolia.publicnode.com"),
-    });
 
     useEffect(() => {
         init();
@@ -803,26 +805,28 @@ export default function MarketView() {
 
     const fetchAllMarkets = async (count: bigint) => {
         try {
-            const markets = [];
             const start = count > 10n ? count - 9n : 1n;
+            const promises = [];
             for (let i = count; i >= start; i--) {
-                const data: any = await publicClient.readContract({
-                    address: marketAddress,
-                    abi: PREDICTION_MARKET_ABI,
-                    functionName: "markets",
-                    args: [i],
-                });
-                markets.push({
-                    id: i,
-                    question: data[0],
-                    endTime: data[1],
-                    yesPool: data[2],
-                    noPool: data[3],
-                    resolved: data[4],
-                    cancelled: data[5],
-                    outcome: data[6]
-                });
+                promises.push(
+                    publicClient.readContract({
+                        address: marketAddress,
+                        abi: PREDICTION_MARKET_ABI,
+                        functionName: "markets",
+                        args: [i],
+                    }).then((data: any) => ({
+                        id: i,
+                        question: data[0],
+                        endTime: data[1],
+                        yesPool: data[2],
+                        noPool: data[3],
+                        resolved: data[4],
+                        cancelled: data[5],
+                        outcome: data[6]
+                    }))
+                );
             }
+            const markets = await Promise.all(promises);
             setAllMarkets(markets);
         } catch (e) {
             console.error("Failed to fetch all markets:", e);

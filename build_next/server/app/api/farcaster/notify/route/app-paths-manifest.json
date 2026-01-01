@@ -1,0 +1,3 @@
+{
+  "/api/farcaster/notify/route": "app/api/farcaster/notify/route.js"
+}

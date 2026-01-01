@@ -2,31 +2,8 @@ import type { NextConfig } from "next";
 import path from "path";
 
 const nextConfig = {
-  outputFileTracingRoot: path.join(__dirname),
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   typescript: {
     ignoreBuildErrors: true,
-  },
-  webpack: (config: any, { isServer }: { isServer: boolean }) => {
-    config.resolve = config.resolve || {};
-    config.resolve.alias = {
-      ...(config.resolve.alias || {}),
-      tap: false,
-      "why-is-node-running": false,
-      "@react-native-async-storage/async-storage": false,
-    };
-
-    config.plugins = config.plugins || [];
-    config.plugins.push(
-      new (require("webpack").IgnorePlugin)({
-        resourceRegExp: /^\.\/test\//,
-        contextRegExp: /thread-stream/,
-      }),
-    );
-
-    return config;
   },
   async headers() {
     return [
@@ -67,6 +44,7 @@ const nextConfig = {
     return [
       { source: "/i", destination: "/icon.png" },
       { source: "/farcaster.json", destination: "/.well-known/farcaster.json" },
+      { source: "/manifest.json", destination: "/api/manifest.json" },
     ];
   },
   async redirects() {

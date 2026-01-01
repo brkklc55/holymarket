@@ -1,0 +1,11 @@
+var R=require("../../../../chunks/[turbopack]_runtime.js")("server/app/api/farcaster/webhook/route.js")
+R.c("server/chunks/[root-of-the-server]__dfbca1ef._.js")
+R.c("server/chunks/[root-of-the-server]__734e147a._.js")
+R.c("server/chunks/28ea8_abitype_dist_esm_eec71222._.js")
+R.c("server/chunks/28ea8_@supabase_supabase-js_dist_index_mjs_15f8a7ba._.js")
+R.c("server/chunks/28ea8_397c5051._.js")
+R.c("server/chunks/[root-of-the-server]__dcc7fc19._.js")
+R.c("server/chunks/[root-of-the-server]__6ba4b47e._.js")
+R.c("server/chunks/3bc30__next-internal_server_app_api_farcaster_webhook_route_actions_f1180cfd.js")
+R.m(99829)
+module.exports=R.m(99829).exports
