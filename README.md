@@ -1,36 +1,85 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# HolyMarket 🎯
+
+A prediction market application built as a Farcaster Mini App on Base Sepolia testnet.
+
+## Features
+
+- 🎲 **Prediction Markets** - Bet YES or NO on various outcomes
+- 💰 **Points System** - Earn points for participation
+- 👥 **Referral Program** - Invite friends and earn bonus points
+- 📊 **Leaderboard** - Compete with other predictors
+- 🔔 **Notifications** - Get notified about market results
+
+## Tech Stack
+
+- **Frontend:** Next.js 14, React 19, TailwindCSS 4
+- **Blockchain:** Base Sepolia, Viem, Wagmi
+- **Wallet:** RainbowKit, WalletConnect
+- **Platform:** Farcaster Mini App SDK
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18+
+- npm or yarn
+
+### Installation
+
+```bash
+# Install dependencies
+npm install
+
+# Copy environment template
+# See ENV_TEMPLATE.md for all available variables
+```
+
+### Environment Variables
+
+Create a `.env.local` file with the following required variables:
+
+```bash
+# WalletConnect Project ID (Required for wallet connections)
+# Get yours at: https://cloud.walletconnect.com/
+NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID=your_project_id_here
+
+# App URL
+NEXT_PUBLIC_MINIAPP_URL=https://www.baseappholymarket.xyz
+```
+
+See `ENV_TEMPLATE.md` for the complete list of environment variables.
+
+### Development
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Build
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+npm start
+```
 
-## Learn More
+## Farcaster Integration
 
-To learn more about Next.js, take a look at the following resources:
+The app includes full Farcaster Mini App integration:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Manifest:** `/.well-known/farcaster.json`
+- **Webhook:** `/api/farcaster/webhook`
+- **Notifications:** Push notifications for market updates
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Smart Contract
 
-## Deploy on Vercel
+The prediction market smart contract is deployed on Base Sepolia:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+Address: 0xd2424429bd9b9254b99b81a651c582b9897be880
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## License
+
+MIT

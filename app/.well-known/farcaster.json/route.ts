@@ -8,7 +8,7 @@ export async function GET() {
     const signature = process.env.FARCASTER_ACCOUNT_ASSOCIATION_SIGNATURE || "djS2iHgdtIQvBfLZDP0oKhqGCvTUIi2J1sPNDhrjCbdmGpOv/lwQwkL8ND3y3yG0fae6LcNjEo18jBPkMu0h1xs=";
     const baseUrl = process.env.NEXT_PUBLIC_MINIAPP_URL || "https://www.baseappholymarket.xyz";
 
-    return NextResponse.json({
+    const manifest = {
         accountAssociation: { header, payload, signature },
         miniapp: {
             version: "1",
@@ -18,9 +18,9 @@ export async function GET() {
             imageUrl: `${baseUrl}/splash-bg.png`,
             buttonTitle: "Play HolyMarket",
             splashImageUrl: `${baseUrl}/splash-bg.png`,
+            splashBackgroundColor: "#050b1a",
             subtitle: "HolyMarket",
             description: "HolyMarket: Bet your beliefs on Base.",
-            screenshotUrls: [`${baseUrl}/api/og/v47.png`],
             primaryCategory: "finance",
             tags: ["prediction", "market", "base", "finance"],
             heroImageUrl: `${baseUrl}/splash-bg.png`,
@@ -29,10 +29,14 @@ export async function GET() {
             ogDescription: "Bet your beliefs on Base. Join the market",
             ogImageUrl: `${baseUrl}/splash-bg.png`,
             noindex: false,
-            castShareUrl: `${baseUrl}/`
+            castShareUrl: `${baseUrl}/`,
+            screenshotUrls: [`${baseUrl}/api/og?v=50`],
+            webhookUrl: `${baseUrl}/api/farcaster/webhook`
         },
         baseBuilder: { ownerAddress: "0x35e98FbA6f5034D252a773F36D059ae1A5640980" }
-    }, {
+    };
+
+    return NextResponse.json(manifest, {
         headers: {
             'Cache-Control': 'public, max-age=0, must-revalidate',
             'Access-Control-Allow-Origin': '*',
@@ -47,7 +51,7 @@ export async function OPTIONS() {
         headers: {
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'GET, OPTIONS',
-            'Access-Control-Allow-Headers': 'Content-Type',
-        },
+            'Access-Control-Allow-Headers': 'Content-Type'
+        }
     });
 }

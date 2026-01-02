@@ -1,0 +1,22 @@
+{
+  "users": {},
+  "devices": {},
+  "admins": {
+    "0x33713b87bab352c46bba4953ab6cb11afe895d93": {
+      "role": "superadmin",
+      "createdAt": "2026-01-02T10:53:34.222Z",
+      "updatedAt": "2026-01-02T10:53:34.223Z"
+    },
+    "0x96a445dd060efd79ab27742de12128f24b4edaec": {
+      "role": "admin",
+      "createdAt": "2026-01-02T10:53:34.223Z",
+      "updatedAt": "2026-01-02T10:53:34.223Z"
+    },
+    "0x3df3b1c5a77ff85ff25727e54685b17171cc2526": {
+      "role": "admin",
+      "createdAt": "2026-01-02T10:53:34.223Z",
+      "updatedAt": "2026-01-02T10:53:34.223Z"
+    }
+  },
+  "shareBoosts": {}
+}

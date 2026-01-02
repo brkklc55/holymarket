@@ -11,7 +11,7 @@ export async function GET(req: NextRequest) {
     const noPct = searchParams.get('noPct') || '50';
     const volume = searchParams.get('volume') || '0.00';
 
-    const baseUrl = 'https://www.baseappholymarket.xyz';
+    const baseUrl = process.env.NEXT_PUBLIC_MINIAPP_URL || 'https://www.baseappholymarket.xyz';
     const premiumImageUrl = `${baseUrl}/hm_og_v12.png`;
 
     try {

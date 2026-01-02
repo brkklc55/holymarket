@@ -17,9 +17,23 @@ import { ToastProvider } from "./components/ui/ToastProvider";
 
 import '@rainbow-me/rainbowkit/styles.css';
 
+// WalletConnect Cloud Project ID
+// Get yours at: https://cloud.walletconnect.com/
+const WALLETCONNECT_PROJECT_ID = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || '';
+
+// Warn in development if project ID is missing
+if (typeof window !== 'undefined' && !WALLETCONNECT_PROJECT_ID) {
+    console.warn(
+        '[HolyMarket] WalletConnect Project ID not configured. ' +
+        'Some wallet connections may not work. ' +
+        'Set NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID in your .env file. ' +
+        'Get a free Project ID at: https://cloud.walletconnect.com/'
+    );
+}
+
 const config = getDefaultConfig({
     appName: 'HolyMarket',
-    projectId: 'YOUR_PROJECT_ID', // Optional for local dev/test
+    projectId: WALLETCONNECT_PROJECT_ID || 'holymarket-dev-placeholder',
     chains: [baseSepolia],
     ssr: false,
 });

@@ -6,7 +6,7 @@ export const runtime = 'edge';
 export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const size = parseInt(searchParams.get('s') || '512');
-    const baseUrl = 'https://www.baseappholymarket.xyz';
+    const baseUrl = process.env.NEXT_PUBLIC_MINIAPP_URL || 'https://www.baseappholymarket.xyz';
     const bgUrl = `${baseUrl}/icon.png`; // Using the non-v-indexed one as base if possible, or static
 
     return new ImageResponse(

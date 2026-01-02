@@ -4,7 +4,7 @@ import { createPublicClient, http } from 'viem';
 import { baseSepolia } from 'viem/chains';
 import { PREDICTION_MARKET_ABI, PREDICTION_MARKET_ADDRESS } from '../../constants';
 
-const rpcUrl = process.env.BASE_SEPOLIA_RPC_URL || baseSepolia.rpcUrls.default.http[0];
+const rpcUrl = process.env.NEXT_PUBLIC_BASE_SEPOLIA_RPC_URL || process.env.BASE_SEPOLIA_RPC_URL || baseSepolia.rpcUrls.default.http[0];
 
 const client = createPublicClient({
     chain: baseSepolia,
@@ -102,4 +102,15 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
     return GET(req);
+}
+
+export async function OPTIONS() {
+    return new NextResponse(null, {
+        status: 204,
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        },
+    });
 }

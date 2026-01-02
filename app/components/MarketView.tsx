@@ -104,9 +104,9 @@ export default function MarketView() {
 
     const getShareBaseUrl = () => {
         // Use environment variable if available, otherwise fallback to default
-        const envUrl = process.env.NEXT_PUBLIC_URL;
+        const envUrl = process.env.NEXT_PUBLIC_MINIAPP_URL || process.env.NEXT_PUBLIC_URL;
         if (envUrl) return envUrl.replace(/\/?$/, '');
-        return "https://baseappholymarket.xyz";
+        return "https://www.baseappholymarket.xyz";
     };
 
     const getMarketShareUrl = (forcedChoice?: "YES" | "NO") => {
@@ -1973,7 +1973,7 @@ export default function MarketView() {
                                             type="button"
                                             className="px-3 py-1.5 bg-blue-500 text-[10px] font-black text-white rounded-lg shadow-lg shadow-blue-500/20 active:scale-95 transition-all"
                                             onClick={async () => {
-                                                const link = `https://baseappholymarket.xyz/?ref=${userAddress}`;
+                                                const link = `${getShareBaseUrl()}/?ref=${userAddress}`;
                                                 try {
                                                     // Try native clipboard API first
                                                     if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
@@ -2012,7 +2012,7 @@ export default function MarketView() {
                                         </button>
                                     </div>
                                     <div className="p-3 rounded-xl bg-black/20 border border-white/5 font-mono text-[10px] text-slate-400 break-all mb-4">
-                                        {`https://baseappholymarket.xyz/?ref=${userAddress}`}
+                                        {`${getShareBaseUrl()}/?ref=${userAddress}`}
                                     </div>
                                     <div className="flex items-start gap-3 bg-white/5 p-4 rounded-xl border border-white/5">
                                         <div className="mt-0.5 text-blue-400 h-4 w-4 shrink-0">

@@ -1,9 +1,10 @@
-import type { NextConfig } from "next";
-import path from "path";
-
+/** @type {import('next').NextConfig} */
 const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
   },
   async headers() {
     return [

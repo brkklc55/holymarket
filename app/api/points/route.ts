@@ -107,7 +107,7 @@ function getSupabaseClient() {
 
 const basePublicClient = createPublicClient({
     chain: baseSepolia,
-    transport: http(process.env.BASE_SEPOLIA_RPC_URL || "https://base-sepolia.publicnode.com"),
+    transport: http(process.env.NEXT_PUBLIC_BASE_SEPOLIA_RPC_URL || process.env.BASE_SEPOLIA_RPC_URL || "https://base-sepolia.publicnode.com"),
 });
 
 async function getUserFromSupabase(addr: string): Promise<{ user: string; points: number; referrer: string | null; volumeBnb: number } | null> {
@@ -850,4 +850,15 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({ error: "Unknown action" }, { status: 400 });
+}
+
+export async function OPTIONS() {
+    return new NextResponse(null, {
+        status: 204,
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        },
+    });
 }
