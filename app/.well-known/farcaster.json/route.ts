@@ -3,9 +3,9 @@ import { NextResponse } from 'next/server';
 export const runtime = 'edge';
 
 export async function GET() {
-    const header = process.env.FARCASTER_ACCOUNT_ASSOCIATION_HEADER || "eyJmaWQiOjEzOTU5NjEsInR5cGUiOiJjdXN0b2R5Iiwia2V5IjoiMHgzREYzYjFDNUE3N0ZmODVGRjI1NzI3RTU0Njg1YjE3MTcxQ0MyNTI2In0";
+    const header = process.env.FARCASTER_ACCOUNT_ASSOCIATION_HEADER || "eyJmaWQiOjEzOTU5NjEsInR5cGUiOiJhdXRoIiwia2V5IjoiMHgzNWU5OEZiQTZmNTAzNEQyNTJhNzczRjM2ZDA1OWFlMUE1NjQwOTgwIn0";
     const payload = process.env.FARCASTER_ACCOUNT_ASSOCIATION_PAYLOAD || "eyJkb21haW4iOiJ3d3cuYmFzZWFwcGhvbHltYXJrZXQueHl6In0";
-    const signature = process.env.FARCASTER_ACCOUNT_ASSOCIATION_SIGNATURE || "N4Gq/z4JDiZhtJjAwBMFp+CsYLEmYI8yKRbElau4XgNmZ9wS7gHk4xSonkpdIBqCa6NpGI8lmp+nk/m0SkMBnRs=";
+    const signature = process.env.FARCASTER_ACCOUNT_ASSOCIATION_SIGNATURE || "djS2iHgdtIQvBfLZDP0oKhqGCvTUIi2J1sPNDhrjCbdmGpOv/lwQwkL8ND3y3yG0fae6LcNjEo18jBPkMu0h1xs=";
     const baseUrl = process.env.NEXT_PUBLIC_MINIAPP_URL || "https://www.baseappholymarket.xyz";
 
     const manifest = {
